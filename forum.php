@@ -1,46 +1,48 @@
 <?php
-require_once 'includes/auth.php';
-require_once 'includes/forum.php';
+    require_once 'includes/auth.php';
+    require_once 'includes/forum.php';
 
-$auth = new Auth();
-$forum = new Forum();
-$user = $auth->getCurrentUser();
+    $auth = new Auth();
+    $forum = new Forum();
+    $user = $auth->getCurrentUser();
 
-$forum_id = $_GET['id'] ?? 0;
-$page = $_GET['page'] ?? 1;
-$limit = 20;
-$offset = ($page - 1) * $limit;
+    $forum_id = $_GET['id'] ?? 0;
+    $page = $_GET['page'] ?? 1;
+    $limit = 20;
+    $offset = ($page - 1) * $limit;
 
-$database = new Database();
-$conn = $database->getConnection();
+    $database = new Database();
+    $conn = $database->getConnection();
 
-// Get forum info
-$forum_query = "SELECT f.*, c.name as category_name FROM forums f JOIN categories c ON f.category_id = c.id WHERE f.id = ?";
-$stmt = $conn->prepare($forum_query);
-$stmt->execute([$forum_id]);
-$forum_info = $stmt->fetch(PDO::FETCH_ASSOC);
+    // Get forum info
+    $forum_query = "SELECT f.*, c.name as category_name FROM forums f JOIN categories c ON f.category_id = c.id WHERE f.id = ?";
+    $stmt = $conn->prepare($forum_query);
+    $stmt->execute([$forum_id]);
+    $forum_info = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if(!$forum_info) {
-    header('Location: index.php');
-    exit;
-}
+    if(!$forum_info) {
+        header('Location: index.php');
+        exit;
+    }
 
-$topics = $forum->getTopics($forum_id, $limit, $offset);
+    $topics = $forum->getTopics($forum_id, $limit, $offset);
 
-// Get total topics for pagination
-$count_query = "SELECT COUNT(*) as total FROM topics WHERE forum_id = ?";
-$stmt = $conn->prepare($count_query);
-$stmt->execute([$forum_id]);
-$total_topics = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-$total_pages = ceil($total_topics / $limit);
+    // Get total topics for pagination
+    $count_query = "SELECT COUNT(*) as total FROM topics WHERE forum_id = ?";
+    $stmt = $conn->prepare($count_query);
+    $stmt->execute([$forum_id]);
+    $total_topics = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+    $total_pages = ceil($total_topics / $limit);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($forum_info['name']); ?> - PSUC Forum</title>
-    <link rel="stylesheet" href="assets/style.css">
+    <link rel="stylesheet" href="assets/stylesheets/main.css">
+    <link rel="stylesheet" href="assets/stylesheets/dark-theme.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -167,6 +169,7 @@ $total_pages = ceil($total_topics / $limit);
                 <?php endif; ?>
             </aside>
         </div>
+        <script src="assets/scripts/main.js"></script>
     </main>
 </body>
 </html>

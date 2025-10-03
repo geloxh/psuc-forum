@@ -1,38 +1,38 @@
 <?php
-require_once 'includes/auth.php';
-require_once 'includes/forum.php';
+    require_once 'includes/auth.php';
+    require_once 'includes/forum.php';
 
-$auth = new Auth();
-$forum = new Forum();
-$user = $auth->getCurrentUser();
+    $auth = new Auth();
+    $forum = new Forum();
+    $user = $auth->getCurrentUser();
 
-$topic_id = $_GET['id'] ?? 0;
-$page = $_GET['page'] ?? 1;
-$limit = 10;
-$offset = ($page - 1) * $limit;
+    $topic_id = $_GET['id'] ?? 0;
+    $page = $_GET['page'] ?? 1;
+    $limit = 10;
+    $offset = ($page - 1) * $limit;
 
-$topic = $forum->getTopic($topic_id);
-if(!$topic) {
-    header('Location: index.php');
-    exit;
-}
+    $topic = $forum->getTopic($topic_id);
+    if(!$topic) {
+        header('Location: index.php');
+        exit;
+    }
 
-$posts = $forum->getPosts($topic_id, $limit, $offset);
+    $posts = $forum->getPosts($topic_id, $limit, $offset);
 
-// Handle new post
-if($_POST && $user) {
-    if($forum->createPost($topic_id, $user['id'], $_POST['content'])) {
+    // Handle new post
+    if($_POST && $user) {
+        if($forum->createPost($topic_id, $user['id'], $_POST['content'])) {
+            header("Location: topic.php?id=$topic_id");
+            exit;
+        }
+    }
+
+    // Handle voting
+    if($_GET['action'] == 'vote' && $user) {
+        $forum->vote($user['id'], $_GET['type'], $_GET['target_id'], $_GET['vote']);
         header("Location: topic.php?id=$topic_id");
         exit;
     }
-}
-
-// Handle voting
-if($_GET['action'] == 'vote' && $user) {
-    $forum->vote($user['id'], $_GET['type'], $_GET['target_id'], $_GET['vote']);
-    header("Location: topic.php?id=$topic_id");
-    exit;
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">

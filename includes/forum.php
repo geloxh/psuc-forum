@@ -46,7 +46,10 @@ class Forum {
                   ORDER BY is_pinned DESC, updated_at DESC 
                   LIMIT ? OFFSET ?";
         $stmt = $this->conn->prepare($query);
-        $stmt->execute([$forum_id, $limit, $offset]);
+        $stmt -> bindValue(1, $forum_id, PDO::PARAM_INT);
+        $stmt -> bindValue(2, (int) $limit, PDO::PARAM_INT);
+        $stmt -> bindValue(3, (int) $offset, PDO::PARAM_INT);
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     

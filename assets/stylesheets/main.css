@@ -104,7 +104,9 @@ body {
     background-color: var(--light-color);
 }
 
-/* Main Content */
+
+/* ===== Main Content ===== */
+
 .main-content {
     display: grid;
     grid-template-columns: 1fr 300px;
@@ -113,10 +115,156 @@ body {
 }
 
 .forum-content {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    background-color: var(--bg-color);
+    border-radius: 8px;
     overflow: hidden;
+}
+
+.topic-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s;
+}
+
+.topic-item:last-child {
+    border-bottom: none;
+}
+
+.topic-item:hover {
+    background-color: var(--hover-bg-color);
+}
+
+.topic-info {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.topic-icon {
+    font-size: 1.5rem;
+    margin-right: 1rem;
+    color: var(--primary-color);
+}
+
+.topic-details h4 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.topic-details h4 a {
+    color: var(--text-color);
+    text-decoration: none;
+}
+
+.topic-details h4 a:hover {
+    text-decoration: undeline;
+}
+
+.topic-meta {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.topic-stats {
+    text-align: center;
+    width: 80px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.topic-stats strong {
+    display: block;
+    font-size: 1.2rem;
+    color: var(--text-color);
+}
+
+.last-post {
+    width: 200px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-align: right;
+}
+
+.last-post small {
+    font-size: 0.8rem;
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 12px;
+    font-weight: bold;
+    margin-right: 0.5rem;
+}
+
+.badge.pinned {
+    background-color: #f0ad4e;
+    color: white;
+}
+
+.badge.locked {
+    background-color: #d9534f;
+    color: white;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.pagination a {
+    color: var(--text-color);
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    border: 1px solid var(--border-color);
+    margin: 0 0.2rem;
+    border-radius: 4px;
+}
+
+.pagination a.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.pagination a:hover:not(.active) {
+    background-color: var(--hover-bg-color);
+}
+
+.sidebar .widget {
+    background-color: var(--bg-color);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.sidebar .widget h3 {
+    margin-top: 0;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    text-align: center;
+}
+
+.stat-item strong {
+    display: block;
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+.stat-item span {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
 }
 
 .sidebar {
@@ -138,7 +286,10 @@ body {
     font-size: 1.1rem;
 }
 
-/* Forum Categories */
+
+
+/* ===== Forum Categories ===== */
+
 .category {
     border-bottom: 1px solid var(--border-color);
 }
@@ -211,7 +362,9 @@ body {
     text-align: right;
 }
 
-/* Topics */
+
+/* ===== Topics ===== */
+
 .topic-item {
     display: grid;
     grid-template-columns: 1fr auto auto auto;
@@ -269,7 +422,10 @@ body {
     color: var(--text-primary);
 }
 
-/* Posts */
+
+
+/* ===== Posts ===== */
+
 .post {
     display: grid;
     grid-template-columns: 200px 1fr;
@@ -369,7 +525,9 @@ body {
     border-color: var(--danger-color);
 }
 
-/* Forms */
+
+/* ===== Forms ===== */
+
 .form-group {
     margin-bottom: 1.5rem;
 }
@@ -550,7 +708,9 @@ textarea.form-control {
     flex: 1;
 }
 
-/* Responsive */
+
+/* ===== Responsive ===== */
+
 @media (max-width: 768px) {
     .main-content {
         grid-template-columns: 1fr;
@@ -582,7 +742,9 @@ textarea.form-control {
     }
 }
 
-/* Utilities */
+
+/* ===== Utilities ===== */
+
 .text-center { text-align: center; }
 .text-right { text-align: right; }
 .text-secondary { color: var(--text-secondary); }
