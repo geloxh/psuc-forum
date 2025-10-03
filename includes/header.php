@@ -7,6 +7,7 @@
             <nav>
                 <ul class="nav-menu">
                     <li><a href="index.php"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="about.php"><i class="fas fa-info-circle"></i>About</a></li>
                     <li><a href="search.php"><i class="fas fa-search"></i> Search</a></li>
                     <li>
                         <button onclick="toggleTheme()" class="btn" style="background: rgba(255,255,255,0.1); border: none; color: white;">
@@ -39,4 +40,4 @@
             </nav>
         </div>
     </div>
-</header
+</header>

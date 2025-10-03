@@ -15,6 +15,7 @@
         <title>About Page - PSUC Forum</title>
         <!-- ===== CSS ===== -->
         <link rel="stylesheet" href="assets/stylesheets/main.css">
+        
         <link rel="stylesheet" href="assets/stylesheets/dark-theme.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -23,11 +24,14 @@
         <?php
             include 'includes/header.php';
         ?>
-            <main class="container">
-                <div class="main-content">
+            <main class="about-container">
+                <header class="about-header">
                     <h1><i class="fas fa-info-circle"></i>About PSUC Forum</h1>
-                    <h2>Strategic Collaboration and Partnership of State Universities and Colleges in the Philippines</h2>
-                    <h3>ABSTRACT</h3>
+                    <p>Strategic Collaboration and Partnership of State Universities and Colleges in the Philippines</p>
+                </header>
+                   
+                <div class="about-card">
+                    <h2>ABSTRACT</h2>
                     <p>
                         State Universities and Colleges (SUCs) in the Philippines play a critical role in national 
                         development, particularly in advancing inclusive education, research, innovation, and regional 
@@ -37,7 +41,9 @@
                         international partners — is essential for Philippine higher education institutions to meet evolving 
                         societal and economic needs.
                     </p>
-                    <h3>EXECUTIVE SUMMARY</h3>
+                </div>
+                <div class="about-card">
+                    <h2>EXECUTIVE SUMMARY</h2>
                     <p>
                         SUCs in the Philippines are increasingly pursuing strategic partnerships to enhance educational 
                         quality, research productivity, and societal impact. Collaboration takes various forms, including 
@@ -48,7 +54,9 @@
                         for maximizing the potential of SUCs as drivers of inclusive innovation and regional 
                         development.
                     </p>
-                    <h3>INTRODUCTION</h3>
+                </div>
+                <div class="about-card">
+                    <h2>INTRODUCTION</h2>
                     <p>
                         State Universities and Colleges (SUCs) serve as the backbone of public higher education in the 
                         Philippines. With 112 SUCs operating over 400 campuses nationwide (Commission on Higher 
@@ -61,12 +69,10 @@
                         Strategic collaborations enable SUCs to pool resources, enhance academic offerings, foster 
                         research and innovation, and extend their societal reach. This paper examines the key models, 
                         challenges, and prospects of strategic collaboration among SUCs and their partners.
-                    </p><p>
-                        Strategic collaborations enable SUCs to pool resources, enhance academic offerings, foster 
-                        research and innovation, and extend their societal reach. This paper examines the key models, 
-                        challenges, and prospects of strategic collaboration among SUCs and their partners.
                     </p>
-                    <h3>THE IMPORTANCE OF COLLABORATION FOR SUCs</h3>
+                </div>
+                <div class="about-card">
+                    <h2>THE IMPORTANCE OF COLLABORATION FOR SUCs</h2>   
                     <p>
                         The growing complexity of societal problems — from climate change to digital transformation 
                         — demands interdisciplinary and cross-sectoral solutions. Collaboration offers multiple benefits:</p>
@@ -91,7 +97,9 @@
                         Moreover, international collaborations contribute to academic excellence by exposing faculty 
                         and students to global standards and best practices.
                     </p>
-                    <h3>MODELS OF STRATEGIC COLLABORATION</h3>
+                </div>
+                <div class="about-card">
+                    <h2>MODELS OF STRATEGIC COLLABORATION</h2>
                     <h4>1. Academic Consortia and Networks</h4>
                     <p>
                         SUCs often form consortia to harmonize academic programs, share faculty, and pursue joint 
@@ -121,7 +129,9 @@
                         agricultural innovation, and health initiatives — enhancing their community engagement 
                         mandates.
                     </p>
-                    <h3>CHALLENGES TO EFFECTIVE COLLABORATION</h3>
+                </div>
+                <div class="about-card">
+                    <h2>CHALLENGES TO EFFECTIVE COLLABORATION</h2>
                     <p>
                         Despite the potential, several challenges constrain the effectiveness of partnerships:
                     </p>
@@ -141,30 +151,9 @@
                                 and inadequate faculty preparation hamper deeper partnerships.
                         </li>
                     </ul>
-                    <p>
-                        State Universities and Colleges (SUCs) serve as the backbone of public higher education in the 
-                        Philippines. With 112 SUCs operating over 400 campuses nationwide (Commission on Higher 
-                        Education [CHED], 2023), these institutions are instrumental in democratizing access to higher 
-                        education and driving regional development. Amid globalization, technological disruption, and 
-                        the push for innovation-led growth, collaboration and partnership have become essential 
-                        strategies for SUCs to remain relevant, competitive, and impactful.
-                    </p>
-                    <p>
-                        Strategic collaborations enable SUCs to pool resources, enhance academic offerings, foster 
-                        research and innovation, and extend their societal reach. This paper examines the key models, 
-                        challenges, and prospects of strategic collaboration among SUCs and their partners.
-                    </p>
-                    <h3>THE IMPORTANCE OF COLLABORATION FOR SUCs</h3>
-                    <p>
-                        The growing complexity of societal problems — from climate change to digital transformation 
-                        — demands interdisciplinary and cross-sectoral solutions. Collaboration offers multiple benefits:
-                    </p>
-                        <li>
-                            <strong>Capacity Gaps:</strong> Limited internationalization capabilities, weak research management systems, 
-                                and inadequate faculty preparation hamper deeper partnerships.
-                        </li>
-                    </ul>
-                    <h3>OPPORTUNITIES AND PROSPECTS</h3>
+                <div>
+                <div class="about-card"> 
+                    <h2>OPPORTUNITIES AND PROSPECTS</h2>
                     <p>
                         Several opportunities can catalyze stronger SUC collaborations:
                     </p>
@@ -190,7 +179,9 @@
                         Strengthening institutional frameworks for collaboration, investing in capacity-building, and 
                         fostering a culture of openness and mutual trust are necessary to fully unlock these opportunities.
                     </p>
-                    <h3>CONCLUSION</h3>
+                </div>
+                <div class="about-card"> 
+                    <h2>CONCLUSION</h2> 
                     <p>
                         Strategic collaboration and partnership are not optional for State Universities and Colleges in the 
                         Philippines; they are imperative for survival and relevance in a rapidly changing global 
@@ -203,6 +194,8 @@
                         collaboration into their core strategies, supported by enabling policies and sustained investment 
                         in partnership capacities.
                     </p>
+                </div>
+                <div class="about-card"> 
                     <h3>References</h3>
                     <ul>
                         <li>
@@ -219,8 +212,29 @@
                             Tan, E. A. (2019). Higher Education in the Philippines: Challenges and Opportunities. Ateneo
                         </li>   
                     </ul>
-            </div>
-        </main>
+                </div>
+            </main>
+            <section class="contact-section">
+                <div class="contact-form">
+                    <h2>Contact Us</h2>
+                    <form action="#" method="post">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" required></textarea>
+                        </div>
+                        <button type="submit" class="btn-submit">Send Message</button>
+                    </form>
+                </div>
+            </section>
+        <script src="assets/scripts/main.js"></script>
     </body>
 </html>
 
