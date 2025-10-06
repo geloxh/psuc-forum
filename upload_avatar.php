@@ -9,45 +9,58 @@
         exit;
     }
 
-    if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['avatar'])) {
-        $target_dir = "assets/avatars/";
+    if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['avatar']) && $_FILES['avatar']['error'] == UPLOAD_ERR_OK) {
+        $target_dir = __DIR__ . "/assets/avatars/";
+
+        if(!file_exists($target_dir)) {
+            mkdir($target_dir, 0777, true);
+        }
+
         $file_extension = pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION);
         $new_filename = $user['id'] . '_' . time() . '.' . $file_extension;
         $target_file = $target_dir . $new_filename;
         $uploadOk = 1;
         $imageFileType = strtolower($file_extension);
+        $errorMessage = '';
 
         // Check if image file is a actual image or fake image
         $check = getimagesize($_FILES['avatar']['tmp_name']);
-        if($check !== false) {
-            $uploadOk = 1;
-        } else {
-            echo "Invalid file type. Only JPG, JPEG, and PNG files are allowed.";
+        if($check === false) {
+            $errorMessage = "File is not an image.";
             $uploadOk = 0;
         }
 
         // Check file size
         if($_FILES['avatar']['size'] > 500000) {
-            echo "The file exceeds the maximum allowed size of 500KB.";
+            $errorMessage = "The file exceeds the maximum allowed size of 500KB.";
             $uploadOk = 0;
         }
 
-        // Allow certain file formats
-        if($imageFileType != 'jpg' && $imageFileType != 'png' && $imageFileType != 'jpeg' && $imageFileType != 'gif'
-            && $imageFileType != 'webp') {
-                echo "Please use JPG, JPEG, PNG, GIF, or WEBP file format.";
-                $uploadOk = 0;
+        $allowed_types = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        if(!in_array($imageFileType, $allowed_types)) {
+            $errorMessage = "Invalid file type. Only JPG, JPEG, PNG, GIF, and WEBP files are allowed.";
+            $uploadOk = 0;
         }
 
-        if ($uploadOk == 0) {
-            echo "File not uploaded.";
+        if($uploadOk == 0) {
+            $_SESSION['upload_error'] = $errorMessage;
         } else {
-            if (move_uploaded_file($_FILES['avatar']['tmp_name'], $target_file)) {
+            if ($user['avatar'] && $user['avatar'] != 'default.png' && file_exists($target_dir . $user['avatar'])) {
+                unlink($target_dir . $user['avatar']);
+            }
+
+            if(move_uploaded_file($_FILES['avatar']['tmp_name'], $target_file)) {
                 $auth -> updateAvatar($user['id'], $new_filename);
-                header('Location: profile.php');
+                $_SESSION['upload_success'] = "File Uploaded Successfully.";
             } else {
-                echo "Oops, there was an error uploading your file.";
+                $_SESSION['upload_error'] = "Oops, there was an error uploading your file.";
             }
         }
+
+    } else {
+        $_SESSION['upload_error'] = "No file was uploaded or an error occurred during upload.";
     }
+
+    header('Location: profile.php');
+    exit;
 ?>

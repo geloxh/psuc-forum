@@ -52,13 +52,19 @@ class Auth {
     }
     
     public function getCurrentUser() {
-        if($this -> isLoggedIn()) {
+        if(isset($_SESSION['user_id'])) {
             $query = "SELECT * FROM users WHERE id = ?";
             $stmt = $this -> conn -> prepare($query);
             $stmt -> execute([$_SESSION['user_id']]);
             return $stmt -> fetch(PDO::FETCH_ASSOC);
         }
         return null;
+    }
+
+    public function updateAvatar($user_id, $avatar_filename) {
+        $query = "UPDATE users SET avatar = ? WHERE id = ?";
+        $stmt = $this -> conn -> prepare($query);
+        return $stmt -> execute([$avatar_filename,  $user_id]);
     }
     
     public function hasPermission($permission) {

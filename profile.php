@@ -33,6 +33,22 @@
 
 ?>
 
+<?php
+    if(!isset($_SESSION)) { 
+        session_start(); 
+    }
+
+    if(isset($_SESSION['upload_error'])) {
+        echo '<div class="alert alert-danger">' . $_SESSION['upload_error'] . '</div>';
+        unset($_SESSION['upload_error']);
+    }
+    
+    if(isset($_SESSION['upload_success'])) {
+        echo '<div class="alert alert-success">' . $_SESSION['upload_success'] . '</div>';
+        unset($_SESSION['upload_success']);
+    }
+?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -63,12 +79,22 @@
                                     <?php echo ucfirst($user['role']); ?>
                                 </span>
                                 <span class="badge" style="background: var(--success-color);">
-                                    <i class="fas fa-star"></i> <?php echo $user['reputation']; ?> Reputation
+                                    <i class="fas fa-star"></i> <?php echo $user['reputation']; ?>Reputation
                                 </span>
                             </div>
                             <p><i class="fas fa-university"></i> <?php echo htmlspecialchars($user['university']); ?></p>
-                            <p><i class="fas fa-calendar"></i> Joined <?php echo date('M Y', strtotime($user['created_at'])); ?></p>
+                            <p><i class="fas fa-calendar"></i>Joined<?php echo date('M Y', strtotime($user['created_at'])); ?></p>
                         </div>
+                    </div>
+
+                    <div class="widget" style="margin-bottom: 2rem;">
+                        <h3><i class="fas fa-camera"></i>Change Avatar</h3>
+                        <form action="upload_avatar.php" method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <input type="file" name="avatar" id="avatar" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Upload</button>
+                        </form>
                     </div>
 
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
@@ -109,20 +135,20 @@
 
             <aside class="sidebar">
                 <div class="widget">
-                    <h3><i class="fas fa-cog"></i> Profile Actions</h3>
+                    <h3><i class="fas fa-cog"></i>Profile Actions</h3>
                     <a href="settings.php" class="btn btn-primary" style="width: 100%; margin-bottom: 0.5rem;">
-                        <i class="fas fa-edit"></i> Edit Profile
+                        <i class="fas fa-edit"></i>Edit Profile
                     </a>
                     <a href="messages.php" class="btn btn-secondary" style="width: 100%; margin-bottom: 0.5rem;">
-                        <i class="fas fa-envelope"></i> Messages
+                        <i class="fas fa-envelope"></i>Messages
                     </a>
                     <a href="notifications.php" class="btn btn-success" style="width: 100%;">
-                        <i class="fas fa-bell"></i> Notifications
+                        <i class="fas fa-bell"></i>Notifications
                     </a>
                 </div>
 
                 <div class="widget">
-                    <h3><i class="fas fa-share-alt"></i> Social Media</h3>
+                    <h3><i class="fas fa-share-alt"></i>Social Media</h3>
                     <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
                         <a href="#" class="btn" style="background: #1877f2; color: white; padding: 0.5rem;">
                             <i class="fab fa-facebook"></i>
@@ -143,7 +169,7 @@
                 </div>
 
                 <div class="widget">
-                    <h3><i class="fas fa-trophy"></i> Achievements</h3>
+                    <h3><i class="fas fa-trophy"></i>Achievements</h3>
                     <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                         <?php if($stats['topics_created'] >= 10): ?>
                             <div style="display: flex; align-items: center; gap: 0.5rem;">
