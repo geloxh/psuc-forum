@@ -228,11 +228,6 @@ We welcome contributions from the PSUC community! Please follow these guidelines
 
 <div align="center">
 
-**Made by geloxh**
-**aliyun@user-email.com
-**aliyun2
-**Adminisaliyun
-
 *Connecting minds, sharing knowledge, building futures*
 
 </div>

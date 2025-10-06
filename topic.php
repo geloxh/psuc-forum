@@ -4,44 +4,45 @@
 
     $auth = new Auth();
     $forum = new Forum();
-    $user = $auth->getCurrentUser();
+    $user = $auth -> getCurrentUser();
 
     $topic_id = $_GET['id'] ?? 0;
     $page = $_GET['page'] ?? 1;
     $limit = 10;
     $offset = ($page - 1) * $limit;
 
-    $topic = $forum->getTopic($topic_id);
+    $topic = $forum -> getTopic($topic_id);
     if(!$topic) {
         header('Location: index.php');
         exit;
     }
 
-    $posts = $forum->getPosts($topic_id, $limit, $offset);
+    $posts = $forum -> getPosts($topic_id, $limit, $offset);
 
     // Handle new post
     if($_POST && $user) {
-        if($forum->createPost($topic_id, $user['id'], $_POST['content'])) {
+        if($forum -> createPost($topic_id, $user['id'], $_POST['content'])) {
             header("Location: topic.php?id=$topic_id");
             exit;
         }
     }
 
     // Handle voting
-    if($_GET['action'] == 'vote' && $user) {
-        $forum->vote($user['id'], $_GET['type'], $_GET['target_id'], $_GET['vote']);
-        header("Location: topic.php?id=$topic_id");
+    if(isset($_GET['action']) && $_GET['action'] == 'vote' && $user) {
+        $forum -> vote($user['id'], $_GET['type'], $_GET['target_id'], $_GET['vote']);
+        header("Location: topic.php?id = $topic_id");
         exit;
     }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($topic['title']); ?> - PSUC Forum</title>
-    <link rel="stylesheet" href="assets/style.css">
-    <link rel="stylesheet" href="assets/dark-theme.css">
+    <link rel="stylesheet" href="assets/stylesheets/main.css">
+    <link rel="stylesheet" href="assets/stylesheets/dark-theme.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>

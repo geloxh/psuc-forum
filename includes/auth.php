@@ -7,16 +7,16 @@ class Auth {
     
     public function __construct() {
         $database = new Database();
-        $this->conn = $database->getConnection();
+        $this -> conn = $database -> getConnection();
     }
     
     public function register($username, $email, $password, $full_name, $university) {
         $query = "INSERT INTO users (username, email, password, full_name, university) VALUES (?, ?, ?, ?, ?)";
-        $stmt = $this->conn->prepare($query);
+        $stmt = $this -> conn -> prepare($query);
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
         
-        if($stmt->execute([$username, $email, $hashed_password, $full_name, $university])) {
-            $this->createNotification($this->conn->lastInsertId(), 'welcome', 'Welcome to PSUC Forum!', 'Thank you for joining our community.');
+        if($stmt -> execute([$username, $email, $hashed_password, $full_name, $university])) {
+            $this -> createNotification($this->conn->lastInsertId(), 'welcome', 'Welcome to PSUC Forum!', 'Thank you for joining our community.');
             return true;
         }
         return false;
@@ -24,11 +24,11 @@ class Auth {
     
     public function login($username, $password) {
         $query = "SELECT id, username, email, password, role, full_name FROM users WHERE (username = ? OR email = ?) AND status = 'active'";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute([$username, $username]);
+        $stmt = $this -> conn -> prepare($query);
+        $stmt -> execute([$username, $username]);
         
-        if($stmt->rowCount() > 0) {
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        if($stmt -> rowCount() > 0) {
+            $user = $stmt -> fetch(PDO::FETCH_ASSOC);
             if(password_verify($password, $user['password'])) {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
@@ -52,11 +52,11 @@ class Auth {
     }
     
     public function getCurrentUser() {
-        if($this->isLoggedIn()) {
+        if($this -> isLoggedIn()) {
             $query = "SELECT * FROM users WHERE id = ?";
-            $stmt = $this->conn->prepare($query);
-            $stmt->execute([$_SESSION['user_id']]);
-            return $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt = $this -> conn -> prepare($query);
+            $stmt -> execute([$_SESSION['user_id']]);
+            return $stmt -> fetch(PDO::FETCH_ASSOC);
         }
         return null;
     }
@@ -77,14 +77,14 @@ class Auth {
     
     private function updateLastActive($user_id) {
         $query = "UPDATE users SET last_active = NOW() WHERE id = ?";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute([$user_id]);
+        $stmt = $this -> conn -> prepare($query);
+        $stmt -> execute([$user_id]);
     }
     
     private function createNotification($user_id, $type, $title, $content, $url = null) {
         $query = "INSERT INTO notifications (user_id, type, title, content, url) VALUES (?, ?, ?, ?, ?)";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute([$user_id, $type, $title, $content, $url]);
+        $stmt = $this -> conn -> prepare($query);
+        $stmt -> execute([$user_id, $type, $title, $content, $url]);
     }
 }
 ?>

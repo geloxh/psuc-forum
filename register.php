@@ -1,31 +1,33 @@
 <?php
-require_once 'includes/auth.php';
+    require_once 'includes/auth.php';
 
-$auth = new Auth();
-$error = '';
-$success = '';
+    $auth = new Auth();
+    $error = '';
+    $success = '';
 
-if($_POST) {
-    if($auth->register($_POST['username'], $_POST['email'], $_POST['password'], $_POST['full_name'], $_POST['university'])) {
-        $success = 'Registration successful! You can now login.';
-    } else {
-        $error = 'Registration failed. Username or email may already exist.';
+    if($_POST) {
+        if($auth->register($_POST['username'], $_POST['email'], $_POST['password'], $_POST['full_name'], $_POST['university'])) {
+            $success = 'Registration successful! You can now login.';
+        } else {
+            $error = 'Registration failed. Username or email may already exist.';
+        }
     }
-}
 
-$universities = [
-    'University of the Philippines',
-    'Polytechnic University of the Philippines',
-    'Technological University of the Philippines',
-    'Philippine Normal University',
-    'Mindanao State University',
-    'Central Luzon State University',
-    'Visayas State University',
-    'Bataan Peninsula State University',
-    'Bulacan State University',
-    'Cavite State University'
-];
+    $universities = [
+        'University of the Philippines',
+        'Polytechnic University of the Philippines',
+        'Technological University of the Philippines',
+        'Philippine Normal University',
+        'Mindanao State University',
+        'Central Luzon State University',
+        'Visayas State University',
+        'Bataan Peninsula State University',
+        'Bulacan State University',
+        'Cavite State University'
+    ];
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

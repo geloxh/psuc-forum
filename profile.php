@@ -1,43 +1,47 @@
 <?php
-require_once 'includes/auth.php';
+    require_once 'includes/auth.php';
 
-$auth = new Auth();
-$user = $auth->getCurrentUser();
+    $auth = new Auth();
+    $user = $auth->getCurrentUser();
 
-if(!$user) {
-    header('Location: login.php');
-    exit;
-}
+    if(!$user) {
+        header('Location: login.php');
+        exit;
+    }
 
-$database = new Database();
-$conn = $database->getConnection();
+    $database = new Database();
+    $conn = $database->getConnection();
 
-// Get user statistics
-$stats_query = "SELECT 
-    (SELECT COUNT(*) FROM topics WHERE user_id = ?) as topics_created,
-    (SELECT COUNT(*) FROM posts WHERE user_id = ?) as posts_made,
-    (SELECT COUNT(*) FROM votes WHERE user_id = ?) as votes_cast,
-    (SELECT COUNT(*) FROM messages WHERE sender_id = ?) as messages_sent";
-$stmt = $conn->prepare($stats_query);
-$stmt->execute([$user['id'], $user['id'], $user['id'], $user['id']]);
-$stats = $stmt->fetch(PDO::FETCH_ASSOC);
+    // Get user statistics
+    $stats_query = "SELECT 
+        (SELECT COUNT(*) FROM topics WHERE user_id = ?) as topics_created,
+        (SELECT COUNT(*) FROM posts WHERE user_id = ?) as posts_made,
+        (SELECT COUNT(*) FROM votes WHERE user_id = ?) as votes_cast,
+        (SELECT COUNT(*) FROM messages WHERE sender_id = ?) as messages_sent";
 
-// Get recent topics
-$recent_topics_query = "SELECT t.*, f.name as forum_name FROM topics t 
-                       JOIN forums f ON t.forum_id = f.id 
-                       WHERE t.user_id = ? ORDER BY t.created_at DESC LIMIT 5";
-$stmt = $conn->prepare($recent_topics_query);
-$stmt->execute([$user['id']]);
-$recent_topics = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt = $conn -> prepare($stats_query);
+    $stmt -> execute([$user['id'], $user['id'], $user['id'], $user['id']]);
+    $stats = $stmt -> fetch(PDO::FETCH_ASSOC);
+
+    // Get recent topics
+    $recent_topics_query = "SELECT t.*, f.name as forum_name FROM topics t 
+                        JOIN forums f ON t.forum_id = f.id 
+                        WHERE t.user_id = ? ORDER BY t.created_at DESC LIMIT 5";
+    $stmt = $conn -> prepare($recent_topics_query);
+    $stmt -> execute([$user['id']]);
+    $recent_topics = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile - PSUC Forum</title>
-    <link rel="stylesheet" href="assets/style.css">
-    <link rel="stylesheet" href="assets/dark-theme.css">
+    <link rel="stylesheet" href="assets/stylesheets/main.css">
+    <link rel="stylesheet" href="assets/stylesheets/dark-theme.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>

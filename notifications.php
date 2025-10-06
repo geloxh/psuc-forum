@@ -1,35 +1,36 @@
 <?php
-require_once 'includes/auth.php';
-require_once 'includes/forum.php';
+    require_once 'includes/auth.php';
+    require_once 'includes/forum.php';
 
-$auth = new Auth();
-$forum = new Forum();
-$user = $auth->getCurrentUser();
+    $auth = new Auth();
+    $forum = new Forum();
+    $user = $auth->getCurrentUser();
 
-if(!$user) {
-    header('Location: login.php');
-    exit;
-}
-
-// Mark notification as read
-if($_GET['action'] == 'read' && $_GET['id']) {
-    $forum->markNotificationRead($_GET['id'], $user['id']);
-    if($_GET['url']) {
-        header('Location: ' . urldecode($_GET['url']));
+    if(!$user) {
+        header('Location: login.php');
         exit;
     }
-}
 
-$notifications = $forum->getNotifications($user['id'], 50);
+    // Mark notification as read
+    if(isset($_GET['action']) && $_GET['action'] == 'read' && isset($_GET['id'])) {
+        $forum -> markNotificationRead($_GET['id'], $user['id']);
+        if(isset($_GET['url']) && $_GET['url']) {
+            header('Location: ' . urldecode($_GET['url']));
+            exit;
+        }
+    }
+
+    $notifications = $forum -> getNotifications($user['id'], 50);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notifications - PSUC Forum</title>
-    <link rel="stylesheet" href="assets/style.css">
-    <link rel="stylesheet" href="assets/dark-theme.css">
+    <link rel="stylesheet" href="assets/stylesheets/main.css">
+    <link rel="stylesheet" href="assets/stylesheets/dark-theme.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -135,44 +136,8 @@ $notifications = $forum->getNotifications($user['id'], 50);
         </div>
     </main>
 
-    <script>
-        function toggleTheme() {
-            const body = document.body;
-            const icon = document.getElementById('themeIcon');
-            
-            if (body.classList.contains('dark-theme')) {
-                body.classList.remove('dark-theme');
-                icon.className = 'fas fa-moon';
-                localStorage.setItem('theme', 'light');
-            } else {
-                body.classList.add('dark-theme');
-                icon.className = 'fas fa-sun';
-                localStorage.setItem('theme', 'dark');
-            }
-        }
-
-        function toggleDropdown() {
-            document.getElementById('userDropdown').classList.toggle('show');
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const savedTheme = localStorage.getItem('theme');
-            const icon = document.getElementById('themeIcon');
-            
-            if (savedTheme === 'dark') {
-                document.body.classList.add('dark-theme');
-                if(icon) icon.className = 'fas fa-sun';
-            }
-        });
-
-        window.onclick = function(event) {
-            if (!event.target.matches('.user-menu a')) {
-                var dropdown = document.getElementById('userDropdown');
-                if (dropdown && dropdown.classList.contains('show')) {
-                    dropdown.classList.remove('show');
-                }
-            }
-        }
-    </script>
+    <!-- ===== MAIN JS ===== -->
+    <script src="assets/scripts/main.js"></script>
+    
 </body>
 </html>

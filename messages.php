@@ -1,44 +1,46 @@
 <?php
-require_once 'includes/auth.php';
+    require_once 'includes/auth.php';
 
-$auth = new Auth();
-$user = $auth->getCurrentUser();
+    $auth = new Auth();
+    $user = $auth -> getCurrentUser();
 
-if(!$user) {
-    header('Location: login.php');
-    exit;
-}
+    if(!$user) {
+        header('Location: login.php');
+        exit;
+    }
 
-$database = new Database();
-$conn = $database->getConnection();
+    $database = new Database();
+    $conn = $database -> getConnection();
 
-// Handle sending message
-if($_POST && isset($_POST['send_message'])) {
-    $query = "INSERT INTO messages (sender_id, receiver_id, subject, content) VALUES (?, ?, ?, ?)";
-    $stmt = $conn->prepare($query);
-    $stmt->execute([$user['id'], $_POST['receiver_id'], $_POST['subject'], $_POST['content']]);
-    $success = "Message sent successfully!";
-}
+    // Handle sending message
+    if($_POST && isset($_POST['send_message'])) {
+        $query = "INSERT INTO messages (sender_id, receiver_id, subject, content) VALUES (?, ?, ?, ?)";
+        $stmt = $conn -> prepare($query);
+        $stmt -> execute([$user['id'], $_POST['receiver_id'], $_POST['subject'], $_POST['content']]);
+        $success = "Message sent successfully!";
+    }
 
-// Get messages
-$messages_query = "SELECT m.*, 
-                   u1.username as sender_name, 
-                   u2.username as receiver_name 
-                   FROM messages m 
-                   JOIN users u1 ON m.sender_id = u1.id 
-                   JOIN users u2 ON m.receiver_id = u2.id 
-                   WHERE m.sender_id = ? OR m.receiver_id = ? 
-                   ORDER BY m.created_at DESC";
-$stmt = $conn->prepare($messages_query);
-$stmt->execute([$user['id'], $user['id']]);
-$messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Get messages
+    $messages_query = "SELECT m.*, 
+                    u1.username as sender_name, 
+                    u2.username as receiver_name 
+                    FROM messages m 
+                    JOIN users u1 ON m.sender_id = u1.id 
+                    JOIN users u2 ON m.receiver_id = u2.id 
+                    WHERE m.sender_id = ? OR m.receiver_id = ? 
+                    ORDER BY m.created_at DESC";
+    $stmt = $conn -> prepare($messages_query);
+    $stmt -> execute([$user['id'], $user['id']]);
+    $messages = $stmt -> fetchAll(PDO::FETCH_ASSOC);
 
-// Get users for messaging
-$users_query = "SELECT id, username FROM users WHERE id != ? ORDER BY username";
-$stmt = $conn->prepare($users_query);
-$stmt->execute([$user['id']]);
-$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Get users for messaging
+    $users_query = "SELECT id, username FROM users WHERE id != ? ORDER BY username";
+    $stmt = $conn -> prepare($users_query);
+    $stmt -> execute([$user['id']]);
+    $users = $stmt -> fetchAll(PDO::FETCH_ASSOC);
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -169,46 +171,8 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </main>
 
-    <script>
-        function toggleTheme() {
-            const body = document.body;
-            const icon = document.getElementById('themeIcon');
-            
-            if (body.classList.contains('dark-theme')) {
-                body.classList.remove('dark-theme');
-                icon.className = 'fas fa-moon';
-                localStorage.setItem('theme', 'light');
-            } else {
-                body.classList.add('dark-theme');
-                icon.className = 'fas fa-sun';
-                localStorage.setItem('theme', 'dark');
-            }
-        }
-
-        function toggleDropdown() {
-            document.getElementById('userDropdown').classList.toggle('show');
-        }
-
-        // Load saved theme
-        document.addEventListener('DOMContentLoaded', function() {
-            const savedTheme = localStorage.getItem('theme');
-            const icon = document.getElementById('themeIcon');
-            
-            if (savedTheme === 'dark') {
-                document.body.classList.add('dark-theme');
-                if(icon) icon.className = 'fas fa-sun';
-            }
-        });
-
-        // Close dropdown when clicking outside
-        window.onclick = function(event) {
-            if (!event.target.matches('.user-menu a')) {
-                var dropdown = document.getElementById('userDropdown');
-                if (dropdown && dropdown.classList.contains('show')) {
-                    dropdown.classList.remove('show');
-                }
-            }
-        }
-    </script>
+    <!-- ===== MAIN JS ===== -->
+    <script src="assets/scripts/main.js"></script>
+    
 </body>
 </html>

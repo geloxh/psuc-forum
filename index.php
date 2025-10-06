@@ -81,15 +81,15 @@
                     <h3><i class="fas fa-chart-line"></i> Forum Statistics</h3>
                     <?php
                     $database = new Database();
-                    $conn = $database->getConnection();
+                    $conn = $database -> getConnection();
                     $stats_query = "SELECT 
                         (SELECT COUNT(*) FROM users) as total_users,
                         (SELECT COUNT(*) FROM topics) as total_topics,
                         (SELECT COUNT(*) FROM posts) as total_posts,
                         (SELECT username FROM users ORDER BY created_at DESC LIMIT 1) as newest_user";
                     $stmt = $conn->prepare($stats_query);
-                    $stmt->execute();
-                    $stats = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $stmt -> execute();
+                    $stats = $stmt -> fetch(PDO::FETCH_ASSOC);
                     ?>
                     <div class="stats-grid">
                         <div class="stat-item">
@@ -119,9 +119,9 @@
                                    JOIN users u ON t.user_id = u.id 
                                    JOIN forums f ON t.forum_id = f.id 
                                    ORDER BY t.created_at DESC LIMIT 5";
-                    $stmt = $conn->prepare($recent_query);
-                    $stmt->execute();
-                    $recent_topics = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $stmt = $conn -> prepare($recent_query);
+                    $stmt -> execute();
+                    $recent_topics = $stmt -> fetchAll(PDO::FETCH_ASSOC);
                     ?>
                     <?php foreach($recent_topics as $topic): ?>
                         <div class="activity-item mb-2">
@@ -136,9 +136,9 @@
                     <h3><i class="fas fa-users"></i> Online Users</h3>
                     <?php
                     $online_query = "SELECT username FROM users WHERE last_active > DATE_SUB(NOW(), INTERVAL 15 MINUTE) ORDER BY last_active DESC LIMIT 10";
-                    $stmt = $conn->prepare($online_query);
-                    $stmt->execute();
-                    $online_users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $stmt = $conn -> prepare($online_query);
+                    $stmt -> execute();
+                    $online_users = $stmt -> fetchAll(PDO::FETCH_ASSOC);
                     ?>
                     <?php if(count($online_users) > 0): ?>
                         <?php foreach($online_users as $online_user): ?>

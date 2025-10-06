@@ -1,72 +1,76 @@
 <?php
-require_once 'includes/auth.php';
+    require_once 'includes/auth.php';
 
-$auth = new Auth();
-$user = $auth->getCurrentUser();
+    $auth = new Auth();
+    $user = $auth->getCurrentUser();
 
-if(!$user) {
-    header('Location: login.php');
-    exit;
-}
-
-$success = '';
-$error = '';
-
-if($_POST) {
-    $database = new Database();
-    $conn = $database->getConnection();
-    
-    if(isset($_POST['update_profile'])) {
-        $query = "UPDATE users SET full_name = ?, university = ? WHERE id = ?";
-        $stmt = $conn->prepare($query);
-        if($stmt->execute([$_POST['full_name'], $_POST['university'], $user['id']])) {
-            $success = 'Profile updated successfully!';
-        } else {
-            $error = 'Failed to update profile.';
-        }
+    if(!$user) {
+        header('Location: login.php');
+        exit;
     }
+
+    $success = '';
+    $error = '';
+
+    if($_POST) {
+        $database = new Database();
+        $conn = $database->getConnection();
     
-    if(isset($_POST['change_password'])) {
-        if(password_verify($_POST['current_password'], $user['password'])) {
-            if($_POST['new_password'] === $_POST['confirm_password']) {
-                $hashed_password = password_hash($_POST['new_password'], PASSWORD_DEFAULT);
-                $query = "UPDATE users SET password = ? WHERE id = ?";
-                $stmt = $conn->prepare($query);
-                if($stmt->execute([$hashed_password, $user['id']])) {
+        if(isset($_POST['update_profile'])) {
+            $query = "UPDATE users SET full_name = ?, university = ? WHERE id = ?";
+            $stmt = $conn -> prepare($query);
+            if($stmt -> execute([$_POST['full_name'], $_POST['university'], $user['id']])) {
+                $success = 'Profile updated successfully!';
+            } else {
+                $error = 'Failed to update profile.';
+            }
+        }
+    
+        if(isset($_POST['change_password'])) {
+            if(password_verify($_POST['current_password'], $user['password'])) {
+                if($_POST['new_password'] === $_POST['confirm_password']) {
+                    $hashed_password = password_hash($_POST['new_password'], PASSWORD_DEFAULT);
+                    $query = "UPDATE users SET password = ? WHERE id = ?";
+                    $stmt = $conn->prepare($query);
+
+                    if($stmt -> execute([$hashed_password, $user['id']])) {
                     $success = 'Password changed successfully!';
+                    } else {
+                        
+                        $error = 'Failed to change password.';
+                    }
                 } else {
-                    $error = 'Failed to change password.';
+                    $error = 'New passwords do not match.';
                 }
             } else {
-                $error = 'New passwords do not match.';
+                $error = 'Current password is incorrect.';
             }
-        } else {
-            $error = 'Current password is incorrect.';
         }
     }
-}
 
-$universities = [
-    'University of the Philippines',
-    'Polytechnic University of the Philippines',
-    'Technological University of the Philippines',
-    'Philippine Normal University',
-    'Mindanao State University',
-    'Central Luzon State University',
-    'Visayas State University',
-    'Bataan Peninsula State University',
-    'Bulacan State University',
-    'Cavite State University'
-];
+    $universities = [
+        'University of the Philippines',
+        'Polytechnic University of the Philippines',
+        'Technological University of the Philippines',
+        'Philippine Normal University',
+        'Mindanao State University',
+        'Central Luzon State University',
+        'Visayas State University',
+        'Bataan Peninsula State University',
+        'Bulacan State University',
+        'Cavite State University'
+    ];
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings - PSUC Forum</title>
-    <link rel="stylesheet" href="assets/style.css">
-    <link rel="stylesheet" href="assets/dark-theme.css">
+    <link rel="stylesheet" href="assets/stylesheets/main.css">
+    <link rel="stylesheet" href="assets/stylesheets/dark-theme.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>

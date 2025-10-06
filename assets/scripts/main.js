@@ -30,8 +30,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Close dropdown when clicking outside
 window.onclick = function(event) {
-    if (!event.target.matches('.user-menu-a')) {
-        var dropdown = this.document.getElementById('userDropdown');
+    if (!event.target.matches('.user-menu a')) {
+        var dropdown = document.getElementById('userDropdown');
         if (dropdown && dropdown.classList.contains('show')) {
             dropdown.classList.remove('show');
         }
