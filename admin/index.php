@@ -1,34 +1,36 @@
 <?php
-require_once '../includes/auth.php';
+    require_once '../includes/auth.php';
 
-$auth = new Auth();
-$user = $auth->getCurrentUser();
+    $auth = new Auth();
+    $user = $auth->getCurrentUser();
 
-if(!$user || $user['role'] != 'admin') {
-    header('Location: ../login.php');
-    exit;
-}
+    if(!$user || $user['role'] != 'admin') {
+        header('Location: ../login.php');
+        exit;
+    }
 
-$database = new Database();
-$conn = $database->getConnection();
+    $database = new Database();
+    $conn = $database -> getConnection();
 
-// Get statistics
-$stats_query = "SELECT 
-    (SELECT COUNT(*) FROM users) as total_users,
-    (SELECT COUNT(*) FROM topics) as total_topics,
-    (SELECT COUNT(*) FROM posts) as total_posts,
-    (SELECT COUNT(*) FROM users WHERE created_at > DATE_SUB(NOW(), INTERVAL 7 DAY)) as new_users_week";
-$stmt = $conn->prepare($stats_query);
-$stmt->execute();
-$stats = $stmt->fetch(PDO::FETCH_ASSOC);
+    // Get statistics
+    $stats_query = "SELECT 
+        (SELECT COUNT(*) FROM users) as total_users,
+        (SELECT COUNT(*) FROM topics) as total_topics,
+        (SELECT COUNT(*) FROM posts) as total_posts,
+        (SELECT COUNT(*) FROM users WHERE created_at > DATE_SUB(NOW(), INTERVAL 7 DAY)) as new_users_week";
+    $stmt = $conn -> prepare($stats_query);
+    $stmt -> execute();
+    $stats = $stmt -> fetch(PDO::FETCH_ASSOC);
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - PSUC Forum</title>
-    <link rel="stylesheet" href="../assets/stylsheets/main.css">
+    <link rel="stylesheet" href="assets/stylsheets/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -40,9 +42,11 @@ $stats = $stmt->fetch(PDO::FETCH_ASSOC);
                 </a>
                 <nav>
                     <ul class="nav-menu">
-                        <li><a href="index.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                        <li><a href="../index.php"><i class="fas fa-arrow-left"></i> Back to Forum</a></li>
-                        <li><a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        <li><a href="index.php"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
+                        <li><a href="users.php"><i class="fas fa-users"></i>Manage Users</a></li>
+                        <li><a href="settings.php"><i class="fas fa-cog"></i>Forum Settings</a></li>
+                        <li><a href="../index.php"><i class="fas fa-arrow-left"></i>Back to Forum</a></li>
+                        <li><a href="../logout.php"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
                     </ul>
                 </nav>
             </div>
