@@ -6,7 +6,7 @@
     $success = '';
 
     if($_POST) {
-        if($auth->register($_POST['username'], $_POST['email'], $_POST['password'], $_POST['full_name'], $_POST['university'])) {
+        if($auth -> register($_POST['username'], $_POST['email'], $_POST['password'], $_POST['full_name'], $_POST['university'], $_POST['role'])) {
             $success = 'Registration successful! You can now login.';
         } else {
             $error = 'Registration failed. Username or email may already exist.';
@@ -74,6 +74,14 @@
                             <?php foreach($universities as $uni): ?>
                                 <option value="<?php echo $uni; ?>"><?php echo $uni; ?></option>
                             <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Role</label>
+                        <select name="role" class="form-control" required>SS
+                            <option value="college student">College Student</option>
+                            <option value="faculty">Faculty</option>
+                            <option value="other">Other</option>
                         </select>
                     </div>
                     <div class="form-group">

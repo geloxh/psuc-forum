@@ -10,13 +10,14 @@ class Auth {
         $this -> conn = $database -> getConnection();
     }
     
-    public function register($username, $email, $password, $full_name, $university) {
-        $query = "INSERT INTO users (username, email, password, full_name, university) VALUES (?, ?, ?, ?, ?)";
+    public function register($username, $email, $password, $full_name, $university, $role) {
+
+        $query = "INSERT INTO users (username, email, password, full_name, university, role) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $this -> conn -> prepare($query);
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
         
-        if($stmt -> execute([$username, $email, $hashed_password, $full_name, $university])) {
-            $this -> createNotification($this->conn->lastInsertId(), 'welcome', 'Welcome to PSUC Forum!', 'Thank you for joining our community.');
+        if($stmt -> execute([$username, $email, $hashed_password, $full_name, $university, $role])) {
+            $this -> createNotification($this -> conn -> lastInsertId(), 'welcome', 'Welcome to PSUC Forum!', 'Thank you for joining our community.');
             return true;
         }
         return false;
@@ -68,14 +69,15 @@ class Auth {
     }
     
     public function hasPermission($permission) {
-        $user = $this->getCurrentUser();
+        $user = $this -> getCurrentUser();
         if(!$user) return false;
         
         $permissions = [
             'admin' => ['manage_users', 'manage_forums', 'moderate_content', 'system_settings'],
             'moderator' => ['moderate_content', 'manage_topics', 'pin_topics'],
             'faculty' => ['create_announcements', 'pin_topics', 'moderate_discussions'],
-            'student' => ['create_topics', 'reply_posts', 'vote_content', 'send_messages']
+            'college student' => ['create_topics', 'reply_posts', 'vote_content', 'send_messages'],
+            'other' => ['create_topics', 'reply_posts', 'vote_content', 'send_messages']
         ];
         
         return in_array($permission, $permissions[$user['role']] ?? []);

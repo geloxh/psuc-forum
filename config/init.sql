@@ -8,7 +8,7 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL,
     full_name VARCHAR(100) NOT NULL,
     university VARCHAR(100) NOT NULL,
-    role ENUM('admin', 'moderator', 'faculty', 'student') DEFAULT 'student',
+    role ENUM('admin', 'moderator', 'faculty', 'college student', 'other') DEFAULT 'other',
     avatar VARCHAR(255) DEFAULT 'default.png',
     reputation INT DEFAULT 0,
     status ENUM('active', 'banned', 'pending') DEFAULT 'active',
@@ -165,4 +165,5 @@ INSERT INTO user_groups (name, description, color, permissions) VALUES
 ('Administrators', 'Full system access and management', '#dc3545', '{"manage_users": true, "manage_forums": true, "moderate_content": true, "system_settings": true}'),
 ('Moderators', 'Content moderation and topic management', '#ffc107', '{"moderate_content": true, "manage_topics": true, "pin_topics": true}'),
 ('Faculty Members', 'Teaching staff and faculty', '#28a745', '{"create_announcements": true, "pin_topics": true, "moderate_discussions": true}'),
-('Students', 'Regular student members', '#007bff', '{"create_topics": true, "reply_posts": true, "vote_content": true, "send_messages": true}');
+('College Student', 'College student members', '#007bff', '{"create_topics": true, "reply_posts": true, "vote_content": true, "send_messages": true}'),
+('Other', 'Other members', '#6c757d', '{"create_topics": true, "reply_posts": true, "vote_content": true, "send_messages": true}');
