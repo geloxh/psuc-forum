@@ -1,1 +1,121 @@
-ECHO is on.
+/* Admin Panel Styles */
+
+:root {
+     --primary-color: #3b82f6;
+    --primary-dark: #1e40af;
+    --secondary-color: #6b7280;
+    --success-color: #10b981;
+    --danger-color: #ef4444;
+    --light-color: #f9fafb;
+    --dark-color: #1f2937;
+    --body-bg: #f3f4f6;
+    --card-bg: #ffffff;
+    --text-color: #374151;
+    --border-color: #e5e7eb;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --border-radius: 0.75rem;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--body-bg);
+    color: var(--text-ccolor);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+.container {
+    width: 90px;
+    max-width: 1400px;
+    margin: auto;
+    overflow: hidden;
+    padding: 0 1.5rem;
+}
+
+.header {
+    background: var(--card-bg);
+    color: var(--dark-color);
+    padding-top: 1rem 0;
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--dark-color);
+    text-decoration: none;
+}
+
+.logo i {
+    color: var(--primary-color);
+}
+
+.nav-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.nav-menu a {
+    color: var(--secondary-color);
+    text-decoration: none;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.nav-menu a:hover,
+.nav-menu a.active {
+    background-color: var(--body-bg);
+    color: var(--primary-color);
+}
+
+main {
+    padding: 2rem 0;
+}
+
+.main-content {
+    display: grid;
+    gap: 2rem;
+}
+
+.forum-content {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+h1, h2, h3 {
+    color: var(--dark-color);
+    font-weight: 600;
+}
+
+.text-secondary {
+    color: var(--secondary-color);
+}
+
+.p-3 {
+    padding: 1.5rem;
+}
