@@ -31,7 +31,7 @@
         <div class="main-content">
             <div class="forum-content">
                 <div class="p-3">
-                    <h1><i class="fas fa-comments"></i> Welcome to PSUC Forum</h1>
+                    <h1><i class="fas fa-comments"></i>Welcome to Philippines State Universities and Colleges Forum</h1>
                     <p class="text-secondary mb-3">Connect, collaborate, and share knowledge with fellow students and faculty from Philippine State Universities and Colleges.</p>
                 </div>
 

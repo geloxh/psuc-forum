@@ -2,7 +2,7 @@
     <div class="container">
         <div class="header-content">
             <a href="index.php" class="logo">
-                <i class="fas fa-graduation-cap"></i>PSUC Forum
+                <img src="assets/imgs/suc-logo.jpg" alt="SUC Forum Logo" style="height: 40px;">
             </a>
             <nav>
                 <ul class="nav-menu">

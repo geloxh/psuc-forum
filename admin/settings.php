@@ -30,7 +30,7 @@
             <div class="container">
                 <div class="header-content">
                     <a href="index.php" class="logo">
-                        <i class="fas fa-shield-alt"></i>PSUC Admin
+                        <i class="../assets/imgs/suc-logo.jpg" alt="PSUC Admin Logo" style="height: 40px;">></i>PSUC Admin
                     </a>
                     <nav>
                         <ul class="nav-menu">
