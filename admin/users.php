@@ -12,27 +12,62 @@
     $database = new Database();
     $conn = $database -> getConnection();
 
-    // Handle user actions (e.g., delete, change role)
-    if(isset($_GET['action']) && isset($_GET['id'])) {
-        $action = $_GET['action'];
-        $user_id = $_GET['id'];
+    // Handle AJAX requests
+    if(isset($_POST['ajax'])) {
+        header('Content-Type: application/json');
 
-        if($action == 'delete') {
-            $stmt = $conn -> prepare("DELETE FROM users WHERE id = ?");
-            $stmt -> execute([$user_id]);
-        } elseif($action == 'role') {
-            $new_role = $_GET['role'];
+        if($_POST['action'] == 'update_role') {
             $stmt = $conn -> prepare("UPDATE users SET role = ? WHERE id = ?");
-            $stmt -> execute([$new_role, $user_id]);
+            $result = $stmt -> execute([$_POST['role'], $_POST['user_id']]);
+            echo json_encode(['success' => $result]);
+            exit;
         }
-        header('Location: users.php');
-        exit;
+
+        if($_POST['action'] == 'delete_user') {
+            $stmt = $conn -> prepare('DELETE FROM users WHERE id = ?');
+            $result = $stmt -> execute([$_POST['user_id']]);
+            echo json_encode(['success' => $result]);
+            exit;
+        }
     }
 
-    // Get all users
-    $stmt = $conn -> prepare("SELECT * FROM users");
-    $stmt -> execute();
+    // Pagination and search
+    $page = isset($_GET['page']) ?  (int)$_GET['page'] : 1;
+    $search = isset($_GET['search']) ? $_GET['search'] : '';
+    $role_filter = isset($_GET['role']) ? $_GET['role'] : '';
+    $per_page = 20;
+    $offset = ($page - 1) * $per_page;
+
+    $where_conditions = [];
+    $params  = [];
+
+    if($search) {
+        $where_conditions[] = "(username LIKE ? OR email LIKE ? OR full_name LIKE ?)";
+        $params[] = "%$search%";
+        $params[] = "%$search%";
+        $params[] = "%$search%";
+    }
+
+    if($role_filter) {
+        $where_conditions[] = "role = ?";
+        $params[] = $role_filter;
+    }
+
+    $where_clause = $where_conditions ? "WHERE " . implode(" AND ", $where_conditions) : "";
+
+    // Get total count
+    $count_query = "SELECT COUNT(*) FROM users $where_clause";
+    $stmt = $conn -> prepare($count_query);
+    $stmt -> execute($params);
+    $total_users = $stmt -> fetchColumn();
+    $total_pages = cell($total_users / $per_page);
+
+    // Get users
+    $query = "SELECT * FROM users $where_clause ORDER BY created_at DESC LIMIT $per_page OFFSET $offset";
+    $stmt = $conn -> prepare($query);
+    $stmt -> execute($params);
     $users = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <!DOCTYPE html>
@@ -45,76 +80,95 @@
         <link rel="stylesheet" href="assets/stylesheets/https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <a href="index.php" class="logo">
-                    <i class="../assets/imgs/suc-logo.jpg" alt="PSUC Admin Logo" styles="height: 40px;"></i> PSUC Admin
-                </a>
-                <nav>
-                    <ul class="nav-menu">
-                        <li><a href="index.php"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
-                        <li><a href="users.php"><i class="fas fa-users"></i> Manage Users</a></li>
-                        <li><a href="settings.php"><i class="fas fa-cog"></i> Forum Settings</a></li>
-                        <li><a href="../index.php"><i class="fas fa-arrow-left"></i> Back to Forum</a></li>
-                        <li><a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </header>
-
+    <?php
+        include 'includes/header.php';
+    
+    ?>
     <main class="container">
         <div class="main-content" style="grid-template-columns: 1fr;">
-            <div class="p-3">
-                <h1><i class="fas fa-users"></i>Manage Users</h1>
-                <p class="text-secondary">Total users: <?php echo count($users); ?></p>
-            </div>
+            <div class="forum-content">
+                <div class="p-3">
+                    <h1><i class="fas fa-users"></i> Manage Users</h1>
+                    <p class="text-secondary">Total users: <?php echo $total_users; ?></p>
+                </div>
 
-            <div class="p-3">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>ID</td>
-                            <th>Username</td>
-                            <th>Email</td>
-                            <th>Role</td>
-                            <th>Actions</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach($users as $u): ?>
+                <!-- Filters -->
+                <div class="p-3">
+                    <form method="GET" class="filters">
+                        <input type="text" name="search" placeholder="Search users..." value="<?php echo htmlspecialchars($search); ?>" class="form-control">
+                        <select name="role" class="form-control">
+                            <option value="">All Roles</option>
+                            <option value="admin" <?php echo $role_filter == 'admin' ? 'selected' : ''; ?>>Admin</option>
+                            <option value="moderator" <?php echo $role_filter == 'moderator' ? 'selected' : ''; ?>>Moderator</option>
+                            <option value="faculty" <?php echo $role_filter == 'faculty' ? 'selected' : ''; ?>>Faculty</option>
+                            <option value="student" <?php echo $role_filter == 'student' ? 'selected' : ''; ?>>Student</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary">Filter</button>
+                        <a href="users.php" class="btn btn-secondary">Clear</a>
+                    </form>
+                </div>
+
+                <!-- Users Table -->
+                <div class="p-3">
+                    <table class="user-table">
+                        <thead>
                             <tr>
-                                <td><?php echo $u['id']; ?></td>
-                                <td><?php echo htmlspecialchars($u['username']); ?></td>
-                                <td><?php echo htmlspecialchars($u['email']); ?> </td>
-                                <td>
-                                    <form action="users.php" method="GET" style="display: inline;">
-                                        <input type="hidden" name="action" value="role">
-                                        <input type="hidden" name="id" value="<?php echo $u['id']; ?>">
-                                        <select name="role" onchange="this.form.submit()">
-                                            <option value="admin" <?php if($u['role'] == 'admin') echo 'selected'; ?>Admin</option>
-                                            <option value="moderator" <?php if($u['role'] == 'moderator') echo 'selected'; ?>Moderator</option>
-                                            <option value="faculty" <?php if($u['role'] == 'faculty') echo 'selected'; ?>Faculty</option>
-                                            <option value="student" <?php if($u['role'] == 'student') echo 'selected'; ?>Student</option>
-                                            <option value="other" <?php if($u['role'] == 'other') echo 'selected'; ?>Other</option>
-                                        </select>
-                                    </form>
-                                </td>
-                                <td>
-                                    <a href="users.php?action=delete&id=<?php echo $u['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this user?');">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </td>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Joined</th>
+                                <th>Actions</th>
                             </tr>
-                        <?php 
-                            endforeach; 
-                        ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <?php foreach($users as $u): ?>
+                                <tr data-user-id="<?php echo $u['id']; ?>">
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 1rem;">
+                                            <img src="../assets/avatars/<?php echo $u['avatar'] ?: 'default.png'; ?>" 
+                                                 alt="Avatar" class="user-avatar">
+                                            <div>
+                                                <strong><?php echo htmlspecialchars($u['username']); ?></strong>
+                                                <br><small><?php echo htmlspecialchars($u['full_name']); ?></small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><?php echo htmlspecialchars($u['email']); ?></td>
+                                    <td>
+                                        <select class="role-select" data-user-id="<?php echo $u['id']; ?>">
+                                            <option value="admin" <?php echo $u['role'] == 'admin' ? 'selected' : ''; ?>>Admin</option>
+                                            <option value="moderator" <?php echo $u['role'] == 'moderator' ? 'selected' : ''; ?>>Moderator</option>
+                                            <option value="faculty" <?php echo $u['role'] == 'faculty' ? 'selected' : ''; ?>>Faculty</option>
+                                            <option value="student" <?php echo $u['role'] == 'student' ? 'selected' : ''; ?>>Student</option>
+                                        </select>
+                                    </td>
+                                    <td><?php echo date('M j, Y', strtotime($u['created_at'])); ?></td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm delete-user" data-user-id="<?php echo $u['id']; ?>">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+
+                    <!-- Pagination -->
+                    <?php if($total_pages > 1): ?>
+                        <div class="pagination">
+                            <?php for($i = 1; $i <= $total_pages; $i++): ?>
+                                <a href="?page=<?php echo $i; ?>&search=<?php echo urlencode($search); ?>&role=<?php echo urlencode($role_filter); ?>" 
+                                   class="<?php echo $i == $page ? 'active' : ''; ?>">
+                                    <?php echo $i; ?>
+                                </a>
+                            <?php endfor; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
-    </div>
     </main>
+
+    <script src="assets/scripts/main.js"></script>
 </body>
 </html>
