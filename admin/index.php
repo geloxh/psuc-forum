@@ -24,14 +24,20 @@
     $stmt -> execute();
     $stats = $stmt -> fetch(PDO::FETCH_ASSOC);
 
-    // Get recent activities
-    $recent_query = "SELECT 'user' as type, username as title, created_at FROM users
-        UNION ALL
-        SELECT 'topic' as type, title, created_at FROM topics
-        ORDER BY created_at DESC LIMIT 10";
-    $stmt = $conn -> prepare($recent_query);
+    // Get recent users
+    $recent_users_query = "SELECT username, full_name, created_at FROM users ORDER BY created_at DESC LIMIT 5";
+    $stmt = $conn->prepare($recent_users_query);
     $stmt -> execute();
-    $recent_activities = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+    $recent_users = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+
+    // Get top topics
+    $top_topics_query = "SELECT t.title, t.created_at, u.username, 
+        (SELECT COUNT(*) FROM posts p WHERE p.topic_id = t.id) as reply_count 
+            FROM topics t JOIN users u ON t.user_id = u.id 
+            ORDER BY reply_count DESC LIMIT 5";
+    $stmt = $conn -> prepare($top_topics_query);
+    $stmt -> execute();
+    $top_topics = $stmt -> fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 
@@ -50,94 +56,143 @@
 
     ?>
 
-    <main class="container">
-        <div class="main-content" style="grid-template-columns: 1fr;">
-            <div class="forum-content">
-                <div class="p-3">
-                    <h1><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h1>
-                    <p class="text-secondary">Welcome back, <?php echo htmlspecialchars($user['full_name']); ?>!</p>
-                </div>
-
-                <!-- Enhanced Statistics Cards -->
-                <div class="stats-grid p-3">
-                    <div class="stat-card" style="background: linear-gradient(135deg, #3b82f6, #1e40af);">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <h3 style="margin: 0; font-size: 2rem;"><?php echo $stats['total_users']; ?></h3>
-                                <p style="margin: 0; opacity: 0.9;">Total Users</p>
-                            </div>
-                            <i class="fas fa-users" style="font-size: 2.5rem; opacity: 0.7;"></i>
-                        </div>
-                        <small style="opacity: 0.8;">+<?php echo $stats['new_users_week']; ?> this week</small>
+     <div class="dashboard-container">
+        <div class="container">
+            <!-- Welcome Section -->
+            <div class="welcome-section">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div>
+                        <h1 style="margin: 0; color: #2d3748; font-size: 2rem;">
+                            Welcome back, <?php echo htmlspecialchars($user['full_name']); ?>! 👋
+                        </h1>
+                        <p style="margin: 0.5rem 0 0 0; color: #718096;">
+                            Here's what's happening with your forum today.
+                        </p>
                     </div>
-
-                    <div class="stat-card" style="background: linear-gradient(135deg, #10b981, #047857);">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <h3 style="margin: 0; font-size: 2rem;"><?php echo $stats['total_topics']; ?></h3>
-                                <p style="margin: 0; opacity: 0.9;">Total Topics</p>
-                            </div>
-                            <i class="fas fa-comments" style="font-size: 2.5rem; opacity: 0.7;"></i>
-                        </div>
-                        <small style="opacity: 0.8;">+<?php echo $stats['topics_today']; ?> today</small>
-                    </div>
-
-                    <div class="stat-card" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <h3 style="margin: 0; font-size: 2rem;"><?php echo $stats['total_posts']; ?></h3>
-                                <p style="margin: 0; opacity: 0.9;">Total Posts</p>
-                            </div>
-                            <i class="fas fa-reply" style="font-size: 2.5rem; opacity: 0.7;"></i>
-                        </div>
-                        <small style="opacity: 0.8;">+<?php echo $stats['posts_today']; ?> today</small>
+                    <div style="text-align: right; color: #718096;">
+                        <div><?php echo date('l, F j, Y'); ?></div>
+                        <div id="current-time"><?php echo date('g:i A'); ?></div>
                     </div>
                 </div>
+            </div>
 
-                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; padding: 1.5rem;">
-                    <!-- Quick Actions -->
-                    <div>
-                        <h3><i class="fas fa-tools"></i> Quick Actions</h3>
-                        <div class="quick-actions">
-                            <a href="users.php" class="btn btn-primary" style="text-align: center; padding: 1rem;">
-                                <i class="fas fa-users"></i><br>Manage Users
-                            </a>
-                            <a href="categories.php" class="btn btn-secondary" style="text-align: center; padding: 1rem;">
-                                <i class="fas fa-folder"></i><br>Categories
-                            </a>
-                            <a href="reports.php" class="btn btn-warning" style="text-align: center; padding: 1rem;">
-                                <i class="fas fa-chart-bar"></i><br>Reports
-                            </a>
-                            <a href="settings.php" class="btn btn-success" style="text-align: center; padding: 1rem;">
-                                <i class="fas fa-cog"></i><br>Settings
-                            </a>
-                        </div>
+            <!-- Statistics Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
                     </div>
+                    <h3 class="stat-number"><?php echo number_format($stats['total_users']); ?></h3>
+                    <p class="stat-label">Total Users</p>
+                    <div class="stat-change">+<?php echo $stats['new_users_week']; ?> this week</div>
+                </div>
 
-                    <!-- Recent Activity -->
-                    <div>
-                        <h3><i class="fas fa-clock"></i> Recent Activity</h3>
-                        <div style="background: var(--card-bg); border-radius: 8px; overflow: hidden;">
-                            <?php foreach(array_slice($recent_activities, 0, 5) as $activity): ?>
-                                <div class="activity-item">
-                                    <div class="activity-icon" style="background: <?php echo $activity['type'] == 'user' ? '#3b82f6' : '#10b981'; ?>;">
-                                        <i class="fas fa-<?php echo $activity['type'] == 'user' ? 'user-plus' : 'comment'; ?>" style="color: white;"></i>
-                                    </div>
-                                    <div>
-                                        <p style="margin: 0; font-weight: 500;"><?php echo htmlspecialchars($activity['title']); ?></p>
-                                        <small class="text-secondary"><?php echo date('M j, H:i', strtotime($activity['created_at'])); ?></small>
-                                    </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3 class="stat-number"><?php echo number_format($stats['total_topics']); ?></h3>
+                    <p class="stat-label">Total Topics</p>
+                    <div class="stat-change">+<?php echo $stats['topics_today']; ?> today</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-reply"></i>
+                    </div>
+                    <h3 class="stat-number"><?php echo number_format($stats['total_posts']); ?></h3>
+                    <p class="stat-label">Total Posts</p>
+                    <div class="stat-change">+<?php echo $stats['posts_today']; ?> today</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="stat-number"><?php echo round(($stats['posts_today'] + $stats['topics_today']) / max($stats['total_users'], 1) * 100, 1); ?>%</h3>
+                    <p class="stat-label">Activity Rate</p>
+                    <div class="stat-change">Daily engagement</div>
+                </div>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div class="dashboard-grid">
+                <!-- Quick Actions -->
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-bolt" style="color: #667eea;"></i>
+                        <h3 class="card-title">Quick Actions</h3>
+                    </div>
+                    <div class="quick-actions">
+                        <a href="users.php" class="action-btn">
+                            <i class="fas fa-users" style="color: #667eea;"></i>
+                            <span>Manage Users</span>
+                        </a>
+                        <a href="categories.php" class="action-btn">
+                            <i class="fas fa-folder" style="color: #f093fb;"></i>
+                            <span>Categories</span>
+                        </a>
+                        <a href="reports.php" class="action-btn">
+                            <i class="fas fa-chart-bar" style="color: #4facfe;"></i>
+                            <span>Reports</span>
+                        </a>
+                        <a href="settings.php" class="action-btn">
+                            <i class="fas fa-cog" style="color: #43e97b;"></i>
+                            <span>Settings</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div>
+                    <!-- Recent Users -->
+                    <div class="card" style="margin-bottom: 1.5rem;">
+                        <div class="card-header">
+                            <i class="fas fa-user-plus" style="color: #48bb78;"></i>
+                            <h3 class="card-title">Recent Users</h3>
+                        </div>
+                        <?php foreach($recent_users as $recent_user): ?>
+                            <div class="list-item">
+                                <div class="list-avatar">
+                                    <?php echo strtoupper(substr($recent_user['username'], 0, 1)); ?>
                                 </div>
-                            <?php endforeach; ?>
+                                <div class="list-content">
+                                    <p class="list-title"><?php echo htmlspecialchars($recent_user['full_name']); ?></p>
+                                    <p class="list-subtitle">@<?php echo htmlspecialchars($recent_user['username']); ?></p>
+                                </div>
+                                <div class="badge">
+                                    <?php echo date('M j', strtotime($recent_user['created_at'])); ?>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+
+                    <!-- Top Topics -->
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-fire" style="color: #f56565;"></i>
+                            <h3 class="card-title">Popular Topics</h3>
                         </div>
+                        <?php foreach($top_topics as $topic): ?>
+                            <div class="list-item">
+                                <div class="list-avatar" style="background: var(--gradient-2);">
+                                    <i class="fas fa-comment"></i>
+                                </div>
+                                <div class="list-content">
+                                    <p class="list-title"><?php echo htmlspecialchars(substr($topic['title'], 0, 30)) . '...'; ?></p>
+                                    <p class="list-subtitle">by <?php echo htmlspecialchars($topic['username']); ?></p>
+                                </div>
+                                <div class="badge">
+                                    <?php echo $topic['reply_count']; ?> replies
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
 
-    <script>
-        
-    </script>
+    <script src="assets/scripts/main.js"></script>
 </body>
 </html>
