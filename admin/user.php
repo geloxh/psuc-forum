@@ -60,7 +60,7 @@
     $stmt = $conn -> prepare($count_query);
     $stmt -> execute($params);
     $total_users = $stmt -> fetchColumn();
-    $total_pages = cell($total_users / $per_page);
+    $total_pages = ceil($total_users / $per_page);
 
     // Get users
     $query = "SELECT * FROM users $where_clause ORDER BY created_at DESC LIMIT $per_page OFFSET $offset";
@@ -81,7 +81,7 @@
 </head>
 <body>
     <?php
-        include 'includes/header.php';
+        include __DIR__ . '/includes/header.php';
     
     ?>
     <main class="container">

@@ -55,7 +55,7 @@
     
         public function getCurrentUser() {
             if(isset($_SESSION['user_id'])) {
-                $query = "SELECT * FROM users WHERE id = ?";
+                $query = "SELECT id, username, email, full_name, role, university, avatar, status, created_at FROM users WHERE id = ?";
                 $stmt = $this -> conn -> prepare($query);
                 $stmt -> execute([$_SESSION['user_id']]);
                 return $stmt -> fetch(PDO::FETCH_ASSOC);
@@ -66,7 +66,12 @@
         public function updateAvatar($user_id, $avatar_filename) {
             $query = "UPDATE users SET avatar = ? WHERE id = ?";
             $stmt = $this -> conn -> prepare($query);
-            return $stmt -> execute([$avatar_filename,  $user_id]);
+            $stmt -> execute([$user_id]);
+        }
+
+        public function isAdmin() {
+            $user = $this -> getCurrentUser();
+            return $user && $user['role'] === 'admin';
         }
     
         public function hasPermission($permission) {

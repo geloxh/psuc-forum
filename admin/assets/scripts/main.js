@@ -34,43 +34,53 @@
  * 
  */ 
 // Handle role changes
-        document.querySelectorAll('.role-select').forEach(select => {
-            select.addEventListener('change', function() {
-                const userId = this.dataset.userId;
-                const newRole = this.value;
+    document.querySelectorAll('.role-select').forEach(select => {
+        select.addEventListener('change', function() {
+            const userId = this.dataset.userId;
+            const newRole = this.value;
                 
+            fetch('users.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: `ajax=1&action=update_role&user_id=${userId}&role=${newRole}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    this.style.background = '#d4edda';
+                    setTimeout(() => this.style.background = '', 2000);
+                }
+            });
+        });
+    });
+
+    // Handle user deletion
+    document.querySelectorAll('.delete-user').forEach(btn => {
+        btn.addEventListener('click', function() {
+            if(confirm('Are you sure you want to delete this user?')) {
+                const userId = this.dataset.userId;
+                    
                 fetch('users.php', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                    body: `ajax=1&action=update_role&user_id=${userId}&role=${newRole}`
+                    body: `ajax=1&action=delete_user&user_id=${userId}`
                 })
                 .then(response => response.json())
                 .then(data => {
                     if(data.success) {
-                        this.style.background = '#d4edda';
-                        setTimeout(() => this.style.background = '', 2000);
+                        this.closest('tr').remove();
                     }
                 });
-            });
+            }
         });
+    });
 
-        // Handle user deletion
-        document.querySelectorAll('.delete-user').forEach(btn => {
-            btn.addEventListener('click', function() {
-                if(confirm('Are you sure you want to delete this user?')) {
-                    const userId = this.dataset.userId;
-                    
-                    fetch('users.php', {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                        body: `ajax=1&action=delete_user&user_id=${userId}`
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if(data.success) {
-                            this.closest('tr').remove();
-                        }
-                    });
-                }
-            });
-        });
+
+    /**
+     * For headers
+     */
+    // include/header.php
+    function toggleTheme() {
+        document.body.classList.toggle('dark-theme');
+        document.getElementById('themeIcon').className = document.body.classList.contains('dark-theme') ? 'fas fa-sun' : 'fas fa-moon';
+    }

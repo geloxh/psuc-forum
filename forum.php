@@ -4,7 +4,7 @@
 
     $auth = new Auth();
     $forum = new Forum();
-    $user = $auth->getCurrentUser();
+    $user = $auth -> getCurrentUser();
 
     $forum_id = $_GET['id'] ?? 0;
     $page = $_GET['page'] ?? 1;
@@ -12,13 +12,13 @@
     $offset = ($page - 1) * $limit;
 
     $database = new Database();
-    $conn = $database->getConnection();
+    $conn = $database -> getConnection();
 
     // Get forum info
     $forum_query = "SELECT f.*, c.name as category_name FROM forums f JOIN categories c ON f.category_id = c.id WHERE f.id = ?";
-    $stmt = $conn->prepare($forum_query);
-    $stmt->execute([$forum_id]);
-    $forum_info = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt = $conn -> prepare($forum_query);
+    $stmt -> execute([$forum_id]);
+    $forum_info = $stmt -> fetch(PDO::FETCH_ASSOC);
 
     if(!$forum_info) {
         header('Location: index.php');
@@ -29,9 +29,9 @@
 
     // Get total topics for pagination
     $count_query = "SELECT COUNT(*) as total FROM topics WHERE forum_id = ?";
-    $stmt = $conn->prepare($count_query);
-    $stmt->execute([$forum_id]);
-    $total_topics = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+    $stmt = $conn -> prepare($count_query);
+    $stmt -> execute([$forum_id]);
+    $total_topics = $stmt -> fetch(PDO::FETCH_ASSOC)['total'];
     $total_pages = ceil($total_topics / $limit);
 ?>
 
@@ -134,7 +134,7 @@
                         <p class="text-secondary">Be the first to start a discussion in this forum!</p>
                         <?php if($user): ?>
                             <a href="new_topic.php?forum_id=<?php echo $forum_id; ?>" class="btn btn-primary mt-2">
-                                <i class="fas fa-plus"></i> Create First Topic
+                                <i class="fas fa-plus"></i>Create First Topic
                             </a>
                         <?php endif; ?>
                     </div>

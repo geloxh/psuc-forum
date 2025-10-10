@@ -29,7 +29,7 @@
         <header class="header">
             <div class="container">
                 <div class="header-content">
-                    <a href="index.php" class="logo">
+                    <a href="admin_dashboard.php" class="logo">
                         <i class="../assets/imgs/suc-logo.jpg" alt="PSUC Admin Logo" style="height: 40px;">></i>PSUC Admin
                     </a>
                     <nav>

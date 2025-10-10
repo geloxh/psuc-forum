@@ -2,13 +2,13 @@
     require_once '../includes/auth.php';
 
     $auth = new Auth();
-    $user = $auth -> getCurrentUser();
 
-    if(!$user || $user['role'] != 'admin') {
+    if(!$auth -> isAdmin()) {
         header('Location: ../login.php');
         exit;
     }
 
+    $user = $auth -> getCurrentUser();
     $database = new Database();
     $conn = $database -> getConnection();
 
@@ -26,7 +26,7 @@
 
     // Get recent users
     $recent_users_query = "SELECT username, full_name, created_at FROM users ORDER BY created_at DESC LIMIT 5";
-    $stmt = $conn->prepare($recent_users_query);
+    $stmt = $conn -> prepare($recent_users_query);
     $stmt -> execute();
     $recent_users = $stmt -> fetchAll(PDO::FETCH_ASSOC);
 
@@ -47,12 +47,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - PSUC Forum</title>
-    <link rel="stylesheet" href="assets/stylsheets/main.css">
+    <link rel="stylesheet" href="assets/stylesheets/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <?php
-        include 'includes/header.php';
+        include __DIR__ . '/includes/header.php';
 
     ?>
 

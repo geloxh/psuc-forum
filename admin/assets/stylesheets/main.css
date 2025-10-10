@@ -19,18 +19,18 @@
 body {
     font-family: 'Inter', sans-serif;
     background-color: var(--body-bg);
-    color: var(--text-ccolor);
+    color: var(--text-color);
     margin: 0;
     padding: 0;
     line-height: 1.6;
 }
 
 .container {
-    width: 90px;
+    width: 90%;
     max-width: 1400px;
     margin: auto;
     overflow: hidden;
-    padding: 0 1.5rem;
+    padding: 1rem 0;
 }
 
 .header {
