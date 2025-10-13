@@ -37,11 +37,7 @@ function renderDropdownSidebar() {
     ];
 ?>
 
-<button class="sidebar-toggle" onclick="toggleDropdownSidebar()">
-    <i class="fas fa-bars"></i>
-</button>
-
-<div class="dropdown-sidebar" id="dropdownSidebar">
+<div class="dropdown-sidebar open" id="dropdownSidebar">
     <div class="category-dropdown">
         <?php foreach($categories as $category): ?>
             <div class="category-item-dropdown">
@@ -64,33 +60,8 @@ function renderDropdownSidebar() {
 </div>
 
 <script>
-function toggleDropdownSidebar() {
-    const sidebar = document.getElementById('dropdownSidebar');
-    sidebar.classList.toggle('open');
-}
 
-function toggleCategory(categoryId) {
-    const forums = document.getElementById('forums-' + categoryId);
-    const arrow = document.getElementById('arrow-' + categoryId);
-    
-    forums.classList.toggle('open');
-    arrow.classList.toggle('rotated');
-}
 
-function navigateToForum(forumName) {
-    // Navigate to specific forum - adjust URL as needed
-    window.location.href = 'forum.php?name=' + forumName;
-}
-
-// Close sidebar when clicking outside
-document.addEventListener('click', function(event) {
-    const sidebar = document.getElementById('dropdownSidebar');
-    const toggle = document.querySelector('.sidebar-toggle');
-    
-    if (!sidebar.contains(event.target) && !toggle.contains(event.target)) {
-        sidebar.classList.remove('open');
-    }
-});
 </script>
 
 <?php

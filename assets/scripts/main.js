@@ -37,3 +37,18 @@ window.onclick = function(event) {
         }
     }
 }
+
+// for web sidebar
+
+function toggleCategory(categoryId) {
+    const forums = document.getElementById('forums-' + categoryId);
+    const arrow = document.getElementById('arrow-' + categoryId);
+    
+    forums.classList.toggle('open');
+    arrow.classList.toggle('rotated');
+}
+
+function navigateToForum(forumName) {
+    // Navigate to specific forum - adjust URL as needed
+    window.location.href = 'forum.php?name=' + forumName;
+}
