@@ -924,3 +924,337 @@ body {
     background-color: #d4edda;
     border-color: #c3e6cb;
 }
+
+
+/* Utilized by about.php */
+.about-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    min-height: calc(100vh - 80px);
+}
+
+.about-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 3rem 2rem;
+    background: var(--primary-gradient);
+    color: white;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--hover-shadow);
+}
+
+.about-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-20px) rotate(180deg);
+    }
+}
+
+.about-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--card-shadow);
+    border: 1px solid rgba(59, 130, 246, 0.1);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.about-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gold-gradient);
+}
+
+.about-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--hover-shadow);
+    border-color: var(--secodanry-blue);
+}
+
+.about-card h2 {
+    color: var(--primary-blue);
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.about-card h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: var(--accent-gold);
+    border-radius: 2px;
+}
+
+.about-card h3 {
+    color: var(--primary-blue);
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 2rem 0 1rem 0;
+    position: relative;
+    padding-left: 1rem;
+}
+
+.about-card h3::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 20px;
+    background: var(--accent-gold);
+    border-radius: 2px;
+}
+
+.about-card h4 {
+    color: var(--secondary-blue);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 1.5rem 0 1rem 0;
+    padding-left: 0.5rem;
+    border-left: 3px solid var(--accent-light);
+}
+
+.about-card p {
+    color: v ar(--text-primary);
+    font-size: 1rem;
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+    text-align: justify;
+}
+
+.about-card ul {
+    margin: 1.5rem 0;
+    padding-left: 0;
+    list-style: none;
+}
+
+.about-card ul li {
+    position: relative;
+    padding: 0.75rem 0 0.75rem 2rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    line-height: 1.6;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.about-card ul li::before {
+    content: '▶';
+    position: absolute;
+    left: 0;
+    top: 0.75rem;
+    color: var(--accent-gold);
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.about-card ul li:hover {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(245, 158, 11, 0.05) 100%);
+    transform: translateX(5px);
+}
+
+.about-card ul li strong {
+    color: var(--primary-blue);
+    font-weight: 600;
+}
+
+.contact-section {
+    background: white;
+    border-radius: 20px;
+    padding: 3rem;
+    margin: 3rem auto 2rem;
+    max-width: 1000px;
+    box-shadow: var(--hover-shadow);
+    border: 1px solid rgba(59, 130, 246, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.contact-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--primary-gradient);
+}
+
+.contact-form h2 {
+    text-align: center;
+    color: var(--primary-blue);
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.contact-form h2::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: var(--accent-gold);
+    border-radius: 2px;
+}
+
+.contact-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--primary-blue);
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s ease;
+    background: #fff;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+    outline: none;
+    border-color: var(--secondary-blue);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    transform: translateY(-2px);
+}
+
+.contact-form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.btn-submit {
+    background: var(--primary-gradient);
+    color:white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: block;
+    margin: 2rem auto 0;
+    box-shadow: var(--card-shadow);
+}
+
+.btn-submit:hover {
+    transform: translateY(3px);
+    box-shadow: var(--hover-shadow);
+    opacity: 0.95;
+}
+
+.btn-submit:active {
+    transform: translateY(-1px);
+}
+
+/* Responsive Design for About Page */
+@media (max-width: 768px) {
+    .about-container {
+        padding: 1rem 0.5rem;
+    }
+
+    .about-header {
+        padding: 2rem 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .about-header h1 {
+        font-size: 2rem;
+    }
+
+    .about-header p {
+        font-size: 1rem;
+    }
+
+    .about-card {
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .about-card h2 {
+        font-size: 1.5rem;
+    }
+
+    .about-card h3 {
+        font-size: 1.2rem;
+    }
+
+    .about-card h4 {
+        font-size: 1.1rem;
+    }
+
+    .contact-section {
+        padding: 2rem 1rem;
+        margin: 2rem 0.5rem 1rem;
+    }
+
+    .contact-form h2 {
+        font-size: 1.6rem;
+    }
+}
+
+@media (max-width: 430px) {
+    .about-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .about-header h1 i {
+        display: block;
+        margin: 0 0 0.5 rem 0;
+    }
+
+    .about-card {
+        padding: 1rem;
+    }
+
+    .about-card ul li {
+        padding-left: 1.5rem;
+    }
+
+    .contact-section {
+        padding: 1.5rem 1rem;
+    }
+}
