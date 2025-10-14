@@ -41,6 +41,7 @@ body {
     padding: 0 20px;
 }
 
+/* Utilized by includes/header.php */
 /* Header */
 .header {
     background: var(--primary-gradient);
@@ -147,6 +148,7 @@ body {
     background-color: var(--light-color);
 }
 
+/* Utilized by index.php, forum.php, topic.php */
 /* Main Content */
 .main-content {
     display: grid;
@@ -168,6 +170,7 @@ body {
     transform: translateY(-2px);
 }
 
+/* Utilized by index.php */
 /* Grid Categories Layout */
 .categories-grid {
     display: grid;
@@ -315,6 +318,7 @@ body {
     color: var(--text-primary);
 }
 
+/* Utilized by index.php, forum.php */
 /* Enhanced Sidebar */
 .sidebar {
     display: flex;
@@ -379,6 +383,7 @@ body {
     font-weight: 600;
 }
 
+/* Utilized by index.php */
 /* Enhanced Stats Grid */
 .stats-grid {
     display: grid;
@@ -430,6 +435,7 @@ body {
     font-weight: 500;
 }
 
+/* Utilized by index.php */
 /* Enhanced Activity Items */
 .activity-list {
     display: flex;
@@ -476,6 +482,7 @@ body {
     font-weight: 500;
 }
 
+/* Utilized by index.php */
 /* Quick Actions Widget */
 .quick-actions {
     display: grid;
@@ -515,6 +522,7 @@ body {
     font-weight: 500;
 }
 
+/* Utilized by index.php */
 /* Trending Topics Widget */
 .trending-list {
     display: flex;
@@ -572,6 +580,7 @@ body {
     color: var(--text-secondary);
 }
 
+/* Utilized by index.php */
 /* Online Users */
 .online-users {
     display: flex;
@@ -611,6 +620,7 @@ body {
     font-weight: 600;
 }
 
+/* General utility classes */
 /* Utilities */
 .text-center { text-align: center; }
 .text-right { text-align: right; }
@@ -717,7 +727,7 @@ body {
     }
 }
 
-
+/* Utilized by includes/web-sidebar.php */
 /* Dropdown Sidebar */
 .dropdown-sidebar {
     position: fixed;
@@ -837,6 +847,7 @@ body {
     color: var(--text-secondary);
 }
 
+/* utilizes by register.php, login.php */
 /* Form Styles */
 .form-group {
     margin-bottom: 1rem;
@@ -896,7 +907,7 @@ body {
 /* Alert Styles */
 .alert {
     position: relative;
-    padding: 1rem 1.25 rem;
+    padding: 1rem 1.25rem;
     margin-bottom: 1rem;
     border: 1px solid transparent;
     border-radius: 8px;
