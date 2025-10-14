@@ -6,10 +6,14 @@
     $success = '';
 
     if($_POST) {
-        if($auth -> register($_POST['username'], $_POST['email'], $_POST['password'], $_POST['full_name'], $_POST['university'], $_POST['role'])) {
-            $success = 'Registration successful! You can now login.';
+        if ($_POST['password'] !== $_POST['confirm_password']) {
+            $error = "Passwords do not match.";
         } else {
-            $error = 'Registration failed. Username or email may already exist.';
+            if($auth -> register($_POST['username'], $_POST['email'], $_POST['password'], $_POST['full_name'], $_POST['university'], $_POST['role'])) {
+                $success = 'Registration successful! You can now login.';
+            } else {
+                $error = 'Registration failed. Username or email may already exist.';
+            }
         }
     }
 
@@ -78,7 +82,7 @@
                     </div>
                     <div class="form-group">
                         <label>Role</label>
-                        <select name="role" class="form-control" required>SS
+                        <select name="role" class="form-control" required>
                             <option value="college student">College Student</option>
                             <option value="faculty">Faculty</option>
                             <option value="other">Other</option>
@@ -87,6 +91,10 @@
                     <div class="form-group">
                         <label>Password</label>
                         <input type="password" name="password" class="form-control" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <input type="password" name="confirm_password" id="confirm_password" class="form-control" required minlength="6">
                     </div>
                     <button type="submit" class="btn btn-primary" style="width: 100%;">Register</button>
                 </form>
@@ -98,5 +106,7 @@
             </div>
         </div>
     </div>
+
+    <script src="assets/scripts/main.js"></script>
 </body>
 </html>

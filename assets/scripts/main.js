@@ -1,3 +1,5 @@
+
+// Dark - Light Mode Toggle
 function toggleTheme() {
     const body = document.body;
     const icon = document.getElementById('themeIcon');
@@ -38,8 +40,8 @@ window.onclick = function(event) {
     }
 }
 
-// for web sidebar
 
+// For Web Sidebar
 function toggleCategory(categoryId) {
     const forums = document.getElementById('forums-' + categoryId);
     const arrow = document.getElementById('arrow-' + categoryId);
@@ -52,3 +54,18 @@ function navigateToForum(forumName) {
     // Navigate to specific forum - adjust URL as needed
     window.location.href = 'forum.php?name=' + forumName;
 }
+
+// Password Confirmation
+const password = document.getElementById('password');
+const confirmPassword = document.getElementById('confirm_password');
+
+function validatePassword() {
+    if (password.value !== confirmPassword.value) {
+        confirmPassword.setCustomValidity("Passwords do not match.");
+    } else {
+        confirmPassword.setCustomValidity('');
+    }
+}
+
+password.onchange = validatePassword;
+confirmPassword.onkeyup = validatePassword;
