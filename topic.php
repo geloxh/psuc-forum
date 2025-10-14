@@ -73,9 +73,10 @@
                         <h5><?php echo htmlspecialchars($topic['username']); ?></h5>
                         <div class="role"><?php echo ucfirst($topic['role'] ?? 'Member'); ?></div>
                         <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">
-                            Reputation: <?php echo $topic['reputation']; ?>
+                            Reputation: <?php echo $topic['reputation'] ?? 0; ?>
                         </div>
                     </div>
+
                     <div class="post-content">
                         <div class="post-header">
                             <div class="post-date">
@@ -110,7 +111,7 @@
                             <h5><?php echo htmlspecialchars($post['username']); ?></h5>
                             <div class="role"><?php echo ucfirst($post['role']); ?></div>
                             <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">
-                                Reputation: <?php echo $post['reputation']; ?>
+                                Reputation: <?php echo $post['reputation'] ?? 0; ?>
                             </div>
                         </div>
                         <div class="post-content">

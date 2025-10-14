@@ -40,55 +40,65 @@
                     <p class="text-secondary mb-3">Connect, collaborate, and share knowledge with fellow students and faculty from Philippine State Universities and Colleges.</p>
                 </div>
 
-                <div class="categories-grid">
-                    <?php foreach($categories as $category): ?>
-                        <div class="category-card">
-                            <div class="category-card-header">
-                                <div class="category-icon">
-                                    <i class="<?php echo $category['icon']; ?>"></i>
-                                </div>
-                                <div class="category-info">
-                                    <h3><?php echo htmlspecialchars($category['name']); ?></h3>
-                                    <p><?php echo htmlspecialchars($category['description']); ?></p>
+                <div class="timeline-feed">
+                    <?php
+                    $database = new Database();
+                    $conn = $database->getConnection();
+                    $topics_query = "SELECT 
+                                        t.id,
+                                        t.title,
+                                        t.content,
+                                        t.created_at,
+                                        t.views,
+                                        u.username,
+                                        u.avatar,
+                                        f.name as forum_name,
+                                        (SELECT COUNT(*) FROM posts p WHERE p.topic_id = t.id) as reply_count
+                                    FROM 
+                                        topics t
+                                    JOIN 
+                                        users u ON t.user_id = u.id
+                                    JOIN 
+                                        forums f ON t.forum_id = f.id
+                                    ORDER BY 
+                                        t.created_at DESC";
+                    $stmt = $conn->prepare($topics_query);
+                    $stmt->execute();
+                    $topics = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                    foreach($topics as $topic):
+                    ?>
+                        <div class="topic-card">
+                            <div class="topic-card-header">
+                                <img src="assets/avatars/<?php echo htmlspecialchars($topic['avatar']); ?>" alt="<?php echo htmlspecialchars($topic['username']); ?>'s avatar" class="avatar">
+                                <div class="topic-info">
+                                    <h3 class="topic-title"><a href="topic.php?id=<?php echo $topic['id']; ?>"><?php echo htmlspecialchars($topic['title']); ?></a></h3>
+                                    <p class="topic-meta">
+                                        Posted by <a href="profile.php?username=<?php echo htmlspecialchars($topic['username']); ?>"><?php echo htmlspecialchars($topic['username']); ?></a>
+                                        in <a href="forum.php?name=<?php echo urlencode($topic['forum_name']); ?>"><?php echo htmlspecialchars($topic['forum_name']); ?></a>
+                                        - <span class="topic-time"><?php echo date('M j, Y g:i A', strtotime($topic['created_at'])); ?></span>
+                                    </p>
                                 </div>
                             </div>
-                            <div class="category-forums">
-                                <?php 
-                                $forums = $forum->getForumsByCategory($category['id']);
-                                foreach($forums as $f): 
-                                    $last_post_data = $f['last_post'] ? explode('|', $f['last_post']) : null;
+                            <div class="topic-content">
+                                <?php
+                                $content_snippet = strip_tags($topic['content']);
+                                if (strlen($content_snippet) > 200) {
+                                    $content_snippet = substr($content_snippet, 0, 200) . '...';
+                                }
+                                echo $content_snippet;
                                 ?>
-                                    <div class="forum-card" onclick="location.href='forum.php?id=<?php echo $f['id']; ?>'">
-                                        <div class="forum-card-header">
-                                            <h4 class="forum-title">
-                                                <a href="forum.php?id=<?php echo $f['id']; ?>"><?php echo htmlspecialchars($f['name']); ?></a>
-                                            </h4>
-                                            <div class="forum-stats">
-                                                <div class="forum-stat">
-                                                    <i class="fas fa-comments"></i>
-                                                    <span><?php echo $f['topics_count']; ?></span>
-                                                </div>
-                                                <div class="forum-stat">
-                                                    <i class="fas fa-reply"></i>
-                                                    <span><?php echo $f['posts_count']; ?></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <p class="forum-description"><?php echo htmlspecialchars($f['description']); ?></p>
-                                        <div class="forum-meta">
-                                            <span><?php echo $f['topics_count']; ?> topics, <?php echo $f['posts_count']; ?> posts</span>
-                                            <div class="last-post-info">
-                                                <?php if($last_post_data): ?>
-                                                    <strong><?php echo htmlspecialchars($last_post_data[1]); ?></strong><br>
-                                                    by <?php echo htmlspecialchars($last_post_data[0]); ?><br>
-                                                    <small><?php echo date('M j, Y g:i A', strtotime($last_post_data[2])); ?></small>
-                                                <?php else: ?>
-                                                    <em>No posts yet</em>
-                                                <?php endif; ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
+                            </div>
+                            <div class="topic-footer">
+                                <div class="topic-stat">
+                                    <i class="fas fa-eye"></i>
+                                    <span><?php echo $topic['views']; ?></span>
+                                </div>
+                                <div class="topic-stat">
+                                    <i class="fas fa-reply"></i>
+                                    <span><?php echo $topic['reply_count']; ?></span>
+                                </div>
+                                <a href="topic.php?id=<?php echo $topic['id']; ?>" class="read-more-btn">Read More</a>
                             </div>
                         </div>
                     <?php endforeach; ?>

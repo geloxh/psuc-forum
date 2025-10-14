@@ -143,7 +143,7 @@
 
             <aside class="sidebar">
                 <div class="widget">
-                    <h3><i class="fas fa-info-circle"></i> Forum Info</h3>
+                    <h3><i class="fas fa-info-circle"></i>Forum Info</h3>
                     <div class="stats-grid">
                         <div class="stat-item">
                             <strong><?php echo $total_topics; ?></strong>
@@ -169,6 +169,7 @@
                 <?php endif; ?>
             </aside>
         </div>
+        
         <script src="assets/scripts/main.js"></script>
     </main>
 </body>
