@@ -1,13 +1,14 @@
 <?php
-    require_once 'includes/auth.php';
-    require_once 'includes/forum.php';
+    require_once __DIR__ . '/auth.php';
+    require_once __DIR__ . '/forum.php';
+    require_once __DIR__ . '/../config/database.php';
 
     $auth = new Auth();
     $forum = new Forum();
     $user = $auth -> getCurrentUser();
 
     if (!$user) {
-        header('Location: login.php');
+        header('Location: ../login.php');
         exit;
     }
 
@@ -22,7 +23,7 @@
     $forum_info = $stmt -> fetch(PDO::FETCH_ASSOC);
 
     if (!$forum_info) {
-        header('Location: index.php');
+        header('Location: ../index.php');
         exit;
     }
 
@@ -33,7 +34,7 @@
         try {
             $topic_id = $forum -> createTopic($forum_id, $user['id'], $_POST['title'], $_POST['content']);
             if ($topic_id) {
-                header('Location: topic.php?id=$topic_id');
+                header('Location: ../topic.php?id=' . $topic_id);
                 exit;
             } else {
                 $error = 'Failed to create topic. Please try again.';
@@ -50,13 +51,13 @@
         <title>Create New Topic - PSUC forum</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="assets/stylesheets/main.css" rel="stylesheet">
-        <link href="assets/stylesheets/dark-theme.css" rel="stylesheet">
+        <link href="../assets/stylesheets/main.css" rel="stylesheet">
+        <link href="../assets/stylesheets/dark-theme.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     </head>
     <body>
         <?php
-            include 'includes/header.php';
+            include 'header.php';
         ?>
 
         <main class="container">
@@ -64,8 +65,8 @@
                 <div class="forum-content">
                     <div class="p-3">
                         <nav style="margin-bottom: 1rem;">
-                            <a href="index.php">Forum</a> >
-                            <a href="forum.php?id=<?php echo $forum_id; ?>"><?php echo htmlspecialchars($forum_info['name']); ?></a> >
+                            <a href="../index.php">Forum</a> >
+                            <a href="../forum.php?id=<?php echo $forum_id; ?>"><?php echo htmlspecialchars($forum_info['name']); ?></a> >
                             <strong>New Topic</strong>
                         </nav>
 
@@ -91,7 +92,7 @@
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-paper-plane"></i>Create Topic
                                 </button>
-                                <a href="forum.php?id=<?php echo $forum_id; ?>" class="btn btn-secondary">
+                                <a href="../forum.php?id=<?php echo $forum_id; ?>" class="btn btn-secondary">
                                     <i class="fas fa-times"></i>Cancel
                                 </a>
                             </div>
@@ -121,6 +122,6 @@
             </div>
         </main>
 
-        <script src="assets/scripts/main.js"></script>
+        <script src="../assets/scripts/main.js"></script>
     </body>
 </html>

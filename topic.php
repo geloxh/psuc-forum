@@ -105,7 +105,7 @@
 
                 <!-- Replies -->
                 <?php foreach($posts as $post): ?>
-                    <div class="post">
+                    <div class="post" id="post-<?php echo $post['id']; ?>">
                         <div class="post-author">
                             <img src="assets/avatars/<?php echo $post['avatar']; ?>" alt="Avatar" onerror="this.src='assets/avatars/default.png'">
                             <h5><?php echo htmlspecialchars($post['username']); ?></h5>
@@ -145,6 +145,11 @@
                 <?php if($user && !$topic['is_locked']): ?>
                     <div class="p-3" style="border-top: 1px solid var(--border-color);">
                         <h3>Post Reply</h3>
+                        <?php if ($error): ?>
+                            <div style="padding: 1rem; margin-bottom: 1rem; border: 1px solid var(--danger-color); color: var(--danger-color); background-color: rgba(239, 68, 68, 0.1); border-radius: 8px;">
+                                <?php echo $error; ?>
+                            </div>
+                        <?php endif; ?>
                         <form method="POST">
                             <div class="form-group">
                                 <textarea name="content" class="form-control" rows="6" placeholder="Write your reply..." required></textarea>
@@ -154,6 +159,7 @@
                             </button>
                         </form>
                     </div>
+                    
                 <?php elseif($topic['is_locked']): ?>
                     <div class="p-3 text-center" style="border-top: 1px solid var(--border-color);">
                         <i class="fas fa-lock" style="font-size: 2rem; color: var(--danger-color); margin-bottom: 1rem;"></i>

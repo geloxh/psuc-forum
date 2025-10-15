@@ -1,5 +1,5 @@
 <?php
-    require_once 'config/database.php';
+    require_once __DIR__ . '/../config/database.php';
 
 class Forum {
     private $conn;
@@ -85,6 +85,13 @@ class Forum {
         return $stmt -> fetchAll(PDO::FETCH_ASSOC);
     }
     
+    public function getPostCount($topic_id) {
+        $query = "SELECT COUNT(*) as count FROM posts WHERE topic_id = ?";
+        $stmt = $this -> conn -> prepare($query);
+        $stmt -> execute([$topic_id]);
+        return $stmt -> fetch(PDO::FETCH_ASSOC)['count'];
+    }
+
     public function createTopic($forum_id, $user_id, $title, $content) {
         $title = trim($title);
         $content = trim($content);
@@ -100,7 +107,7 @@ class Forum {
         if (empty($content)) {
             throw new Exception('Topic content cannot be empty.');
         }
-        
+
         $query = "INSERT INTO topics (forum_id, user_id, title, content) VALUES (?, ?, ?, ?)";
         $stmt = $this -> conn -> prepare($query);
         if($stmt -> execute([$forum_id, $user_id, $title, $content])) {
@@ -113,12 +120,17 @@ class Forum {
     }
     
     public function createPost($topic_id, $user_id, $content) {
+        $content = trim($content);
+        if (empty($content)) {
+            throw new Exception('Post content cannot be empty.');
+        }
+
         $query = "INSERT INTO posts (topic_id, user_id, content) VALUES (?, ?, ?)";
         $stmt = $this -> conn -> prepare($query);
         if($stmt -> execute([$topic_id, $user_id, $content])) {
             $this -> updateTopicStats($topic_id);
             $this -> notifyTopicParticipants($topic_id, $user_id, 'New reply to your topic');
-            return true;
+            return $this -> conn -> lastInsertId();
         }
         return false;
     }
