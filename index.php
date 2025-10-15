@@ -22,7 +22,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
  <?php
-        include 'includes/web-sidebar.php';
+        include 'includes/web_sidebar.php';
     ?>
 <body>
     <?php 

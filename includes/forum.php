@@ -86,6 +86,21 @@ class Forum {
     }
     
     public function createTopic($forum_id, $user_id, $title, $content) {
+        $title = trim($title);
+        $content = trim($content);
+
+        if (empty($title)) {
+            throw new Exception('Topic title cannot be empty.');
+        }
+
+        if (strlen($title) > 255) {
+            throw new Exception('Topic title cannot exceed 255 characters.');
+        }
+
+        if (empty($content)) {
+            throw new Exception('Topic content cannot be empty.');
+        }
+        
         $query = "INSERT INTO topics (forum_id, user_id, title, content) VALUES (?, ?, ?, ?)";
         $stmt = $this -> conn -> prepare($query);
         if($stmt -> execute([$forum_id, $user_id, $title, $content])) {
