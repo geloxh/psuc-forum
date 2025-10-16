@@ -118,6 +118,38 @@ class Forum {
         }
         return false;
     }
+
+    public function updateTopic($topic_id, $title, $content) {
+        $title = trim($title);
+        $content = trim($content);
+
+        if (empty($title)) {
+            throw new Exception('Topic title cannot be empty.');
+        }
+        if (strlen($title) > 255) {
+            throw new Exception('Topic title cannot exceed 255 characters.');
+        }
+        if (empty($content)) {
+            throw new Exception('Topic content cannot be empty.');
+        }
+
+        $query = "UPDATE topics SET title = ?, content = ? WHERE id = ?";
+        $stmt = $this->conn->prepare($query);
+        return $stmt->execute([$title, $content, $topic_id]);
+    }
+
+    public function deleteTopic($topic_id) {
+        // We can implement a soft delete later if needed by adding an 'is_deleted' flag.
+        // For now, we will perform a hard delete.
+        // The database is set up with ON DELETE CASCADE, so posts, votes, etc. will be deleted.
+        
+        $query = "DELETE FROM topics WHERE id = ?";
+        $stmt = $this->conn->prepare($query);
+        if ($stmt->execute([$topic_id])) {
+            return true;
+        }
+        return false;
+    }
     
     public function createPost($topic_id, $user_id, $content) {
         $content = trim($content);

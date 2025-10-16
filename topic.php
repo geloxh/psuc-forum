@@ -11,7 +11,16 @@
     $limit = 10;
     $offset = ($page - 1) * $limit;
 
+    $error = '';
+
     $topic = $forum -> getTopic($topic_id);
+    // Redirect to forum page if topic is deleted.
+    if (isset($_GET['deleted']) && $_GET['deleted'] == 'true' && $topic) {
+        header('Location: forum.php?id=' . $topic['forum_id']);
+        exit;
+    }
+
+
     if(!$topic) {
         header('Location: index.php');
         exit;
@@ -21,9 +30,13 @@
 
     // Handle new post
     if($_POST && $user) {
-        if($forum -> createPost($topic_id, $user['id'], $_POST['content'])) {
-            header("Location: topic.php?id=$topic_id");
-            exit;
+        try {
+            if($forum -> createPost($topic_id, $user['id'], $_POST['content'])) {
+                header("Location: topic.php?id=$topic_id");
+                exit;
+            }
+        } catch (Exception $e) {
+            $error = $e -> getMessage();
         }
     }
 
@@ -97,6 +110,17 @@
                                        class="vote-btn">
                                         <i class="fas fa-thumbs-down"></i> <?php echo $topic['votes_down']; ?>
                                     </a>
+                                </div>
+                                <div class="topic-actions">
+                                    <button class="btn btn-secondary" onclick="shareTopic()"><i class="fas fa-share-alt"></i> Share</button>
+                                    <?php if ($user && ($user['id'] == $topic['user_id'] || $auth->isAdmin())): ?>
+                                        <a href="edit_topic.php?id=<?php echo $topic['id']; ?>" class="btn btn-secondary">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        <a href="delete_topic.php?id=<?php echo $topic['id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this topic and all its replies? This action cannot be undone.');">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </a>
+                                    <?php endif; ?>
                                 </div>
                             <?php endif; ?>
                         </div>
@@ -203,6 +227,24 @@
         </div>
     </main>
 
-    <script src="assets/scripts/main./js"></script>
+    <script src="assets/scripts/main.js"></script>
+    <script>
+        function shareTopic() {
+            if (navigator.share) {
+                navigator.share({
+                    title: document.title,
+                    text: 'Check out this topic on PSUC Forum!',
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                // Fallback for browsers that don't support the Web Share API
+                navigator.clipboard.writeText(window.location.href).then(function() {
+                    alert('Topic URL copied to clipboard!');
+                }, function(err) {
+                    alert('Could not copy URL.');
+                });
+            }
+        }
+    </script>
 </body>
 </html>
