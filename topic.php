@@ -111,21 +111,22 @@
                                         <i class="fas fa-thumbs-down"></i> <?php echo $topic['votes_down']; ?>
                                     </a>
                                 </div>
-                                <div class="topic-actions">
-                                    <button class="btn btn-secondary" onclick="shareTopic()"><i class="fas fa-share-alt"></i> Share</button>
-                                    <?php if ($user && ($user['id'] == $topic['user_id'] || $auth->isAdmin())): ?>
-                                        <a href="edit_topic.php?id=<?php echo $topic['id']; ?>" class="btn btn-secondary">
-                                            <i class="fas fa-edit"></i> Edit
+                                <div class="post-actions-buttons">
+                                    <button class="btn btn-secondary" onclick="sharePost(<?php echo $post['id']; ?>">
+                                        <i class="fas fa-share-alt"></i>Share
+                                    </button>
+                                    <?php if ($user['id'] == $post['user_id'] || $auth -> isAdmin()): ?>
+                                        <a href="edit_post.php?id=<?php echo $post['id']; ?>" class="btn btn-secondary">
+                                            <i class="fas fa-edit"></i>Edit
                                         </a>
-                                        <a href="delete_topic.php?id=<?php echo $topic['id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this topic and all its replies? This action cannot be undone.');">
-                                            <i class="fas fa-trash"></i> Delete
+                                        <a href="delete_post.php?id=<?php echo $post['id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this post?');">
+                                            <i class="fas fa-trash"></i>Delete
                                         </a>
                                     <?php endif; ?>
                                 </div>
                             <?php endif; ?>
                         </div>
                     </div>
-                </div>
 
                 <!-- Replies -->
                 <?php foreach($posts as $post): ?>
@@ -240,6 +241,23 @@
                 // Fallback for browsers that don't support the Web Share API
                 navigator.clipboard.writeText(window.location.href).then(function() {
                     alert('Topic URL copied to clipboard!');
+                }, function(err) {
+                    alert('Could not copy URL.');
+                });
+            }
+        }
+
+        function sharePOst(postId) {
+            const url = window.location.href + '#post-' + postId;
+            if (navigator.share) {
+                navigator.share({
+                    title: document.title,
+                    text: 'Check out this post on PSUC Forum!',
+                    url: url
+                }).catch(console.error);
+            } else {
+                navigator.clipboard.writeText(url).then(function() {
+                    alert('Post URL copied to clipboard!');
                 }, function(err) {
                     alert('Could not copy URL.');
                 });

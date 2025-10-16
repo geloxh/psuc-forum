@@ -166,6 +166,29 @@ class Forum {
         }
         return false;
     }
+
+    public function getPost($post_id) {
+        $query = "SELECT p.*, u.username FROM posts p JOIN users u ON p.user_id = u.id WHERE p.id = ?";
+        $stmt = $this -> conn -> prepare($query);
+        $stmt -> execute([$post_id]);
+        return $stmt -> fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function updatePost($post_id, $content) {
+        $content = trim($content);
+        if (empty($content)) {
+            throw new Exception('Post content cannot be empty.');
+        }
+        $query = "UPDATE posts SET content = ? WHERE id = ?";
+        $stmt = $this -> conn -> prepare($query);
+        return $stmt -> execute([$content, $post_id]);
+    }
+
+    public function deletePost($post_id) {
+        $query = "DELETE FROM posts WHERE id =?";
+        $stmt = $this -> conn -> prepare($query);
+        return $stmt -> execute([$post_id]);
+    }
     
     public function vote($user_id, $target_type, $target_id, $vote_type) {
         $check_query = "SELECT vote_type FROM votes WHERE user_id = ? AND target_type = ? AND target_id = ?";
