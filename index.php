@@ -155,7 +155,7 @@
             <h3>Quick Actions</h3>
         </div>
         <div class="quick-actions">
-            <a href="includes/new_topic.php" class="action-btn">
+            <a href="new_topic.php" class="action-btn">
                 <i class="fas fa-plus"></i>
                 <span>New Topic</span>
             </a>
