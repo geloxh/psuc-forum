@@ -1,4 +1,3 @@
-
 // Dark - Light Mode Toggle
 function toggleTheme() {
     const body = document.body;
@@ -15,17 +14,23 @@ function toggleTheme() {
     }
 }
 
+// Apply theme before page load to prevent FOUC
+(function() {
+    const theme = localStorage.getItem('theme');
+    if (theme === 'dark') {
+        document.documentElement.classList.add('dark-theme');
+    }
+})();
+
 function toggleDropdown() {
     document.getElementById('userDropdown').classList.toggle('show');
 }
 
+
 // Load saved theme
 document.addEventListener('DOMContentLoaded', function() {
-    const savedTheme = localStorage.getItem('theme');
     const icon = document.getElementById('themeIcon');
-
-    if (savedTheme === 'dark') {
-        document.body.classList.add('dark-theme');
+    if (document.documentElement.classList.contains('dark-theme')) {
         if(icon) icon.className = 'fas fa-sun';
     }
 });
@@ -59,13 +64,15 @@ function navigateToForum(forumName) {
 const password = document.getElementById('password');
 const confirmPassword = document.getElementById('confirm_password');
 
-function validatePassword() {
-    if (password.value !== confirmPassword.value) {
+if (password && confirmPassword) {
+    function validatePassword() {
+        if (password.value !== confirmPassword.value) {
         confirmPassword.setCustomValidity("Passwords do not match.");
-    } else {
-        confirmPassword.setCustomValidity('');
+        } else {
+            confirmPassword.setCustomValidity('');
+        }
     }
-}
 
-password.onchange = validatePassword;
-confirmPassword.onkeyup = validatePassword;
+    password.onchange = validatePassword;
+    confirmPassword.onkeyup = validatePassword;
+}

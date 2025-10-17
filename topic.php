@@ -152,20 +152,32 @@
                                     </div>
                                     <div class="post-actions">
                                         <?php if($user): ?>
-                                        <div class="vote-buttons">
-                                            <a href="?id=<?php echo $topic_id; ?>&action=vote&type=post&target_id=<?php echo $post['id']; ?>&vote=up" 
-                                                class="vote-btn">
-                                                <i class="fas fa-thumbs-up"></i> <?php echo $post['votes_up']; ?>
-                                            </a>
-                                            <a href="?id=<?php echo $topic_id; ?>&action=vote&type=post&target_id=<?php echo $post['id']; ?>&vote=down" 
-                                                class="vote-btn">
-                                                <i class="fas fa-thumbs-down"></i> <?php echo $post['votes_down']; ?>
-                                            </a>
-                                        </div>
+                                            <div class="vote-buttons">
+                                                <a href="?id=<?php echo $topic_id; ?>&action=vote&type=post&target_id=<?php echo $post['id']; ?>&vote=up" 
+                                                    class="vote-btn">
+                                                    <i class="fas fa-thumbs-up"></i> <?php echo $post['votes_up']; ?>
+                                                </a>
+                                                <a href="?id=<?php echo $topic_id; ?>&action=vote&type=post&target_id=<?php echo $post['id']; ?>&vote=down" 
+                                                    class="vote-btn">
+                                                    <i class="fas fa-thumbs-down"></i> <?php echo $post['votes_down']; ?>
+                                                </a>
+                                            </div>
+                                            <div class="post-actions-buttons">
+                                                <button class="btn btn-secondary" onclick="sharePost(<?php echo $post['id']; ?>)">
+                                                    <i class="fas fa-share-alt"></i>Share
+                                                </button>
+                                                <?php if ($user['id'] == $post['user_id'] || $auth->isAdmin()): ?>
+                                                    <a href="edit_post.php?id=<?php echo $post['id']; ?>" class="btn btn-secondary">
+                                                        <i class="fas fa-edit"></i>Edit
+                                                    </a>
+                                                    <a href="delete_post.php?id=<?php echo $post['id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this post?');">
+                                                        <i class="fas fa-trash"></i>Delete
+                                                    </a>
+                                                <?php endif; ?>
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
-                                    <?php endif; ?>
                                 </div>
-                            </div>
                         </div>
                     <?php endforeach; ?>
 
