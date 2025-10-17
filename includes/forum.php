@@ -54,7 +54,7 @@ class Forum {
     }
     
     public function getTopic($topic_id) {
-        $query = "SELECT t.*, u.username, u.avatar, u.reputation, u.role, f.name as forum_name 
+        $query = "SELECT t.*, u.username, u.avatar, u.reputation, u.role, f.name as forum_name
                   FROM topics t 
                   JOIN users u ON t.user_id = u.id 
                   JOIN forums f ON t.forum_id = f.id 
@@ -64,7 +64,7 @@ class Forum {
         
         if($stmt -> rowCount() > 0) {
             $this -> incrementViews('topic', $topic_id);
-            return $stmt->fetch(PDO::FETCH_ASSOC);
+            return $stmt -> fetch(PDO::FETCH_ASSOC);
         }
         return null;
     }

@@ -1268,3 +1268,54 @@ body.dark-theme .topic-stat {
     border-radius: 8px;
     transition: all 0.3s ease;
 }
+
+/* Modern Post Styles - Utilized by topic.php */
+.post {
+    background: white;
+    border-radius: 16px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(229, 231, 235, 0.6);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.post::before {
+    content: '';
+    position: abosolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--gold-gradient);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.post:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246. 0.12);
+    border-color: rgba(59, 130, 246, 0.2);
+}
+
+.post:hover::before {
+    opacity: 1;
+}
+
+.post {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    min-height: 12px;
+}
+
+.post-author {
+    background: linear-gradient(135deg, rgba(248, 250, 252, 0.8), rgba(241, 245, 249, 0.8));
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border-right: 1px solid rgba(229, 231, 235, 0.6);
+    position: relative;
+}

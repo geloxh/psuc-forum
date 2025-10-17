@@ -14,6 +14,8 @@
     $error = '';
 
     $topic = $forum -> getTopic($topic_id);
+    $total_posts = $forum -> getPostCount($topic_id);
+
     // Redirect to forum page if topic is deleted.
     if (isset($_GET['deleted']) && $_GET['deleted'] == 'true' && $topic) {
         header('Location: forum.php?id=' . $topic['forum_id']);
@@ -112,14 +114,14 @@
                                     </a>
                                 </div>
                                 <div class="post-actions-buttons">
-                                    <button class="btn btn-secondary" onclick="sharePost(<?php echo $post['id']; ?>">
+                                    <button class="btn btn-secondary" onclick="shareTopic()">
                                         <i class="fas fa-share-alt"></i>Share
                                     </button>
-                                    <?php if ($user['id'] == $post['user_id'] || $auth -> isAdmin()): ?>
-                                        <a href="edit_post.php?id=<?php echo $post['id']; ?>" class="btn btn-secondary">
+                                    <?php if ($user['id'] == $topic['user_id'] || $auth -> isAdmin()): ?>
+                                        <a href="edit_post.php?id=<?php echo $topic['id']; ?>" class="btn btn-secondary">
                                             <i class="fas fa-edit"></i>Edit
                                         </a>
-                                        <a href="delete_post.php?id=<?php echo $post['id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this post?');">
+                                        <a href="delete_post.php?id=<?php echo $topic['id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this post?');">
                                             <i class="fas fa-trash"></i>Delete
                                         </a>
                                     <?php endif; ?>
@@ -128,46 +130,47 @@
                         </div>
                     </div>
 
-                <!-- Replies -->
-                <?php foreach($posts as $post): ?>
-                    <div class="post" id="post-<?php echo $post['id']; ?>">
-                        <div class="post-author">
-                            <img src="assets/avatars/<?php echo $post['avatar']; ?>" alt="Avatar" onerror="this.src='assets/avatars/default.png'">
-                            <h5><?php echo htmlspecialchars($post['username']); ?></h5>
-                            <div class="role"><?php echo ucfirst($post['role']); ?></div>
-                            <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">
-                                Reputation: <?php echo $post['reputation'] ?? 0; ?>
-                            </div>
-                        </div>
-                        <div class="post-content">
-                            <div class="post-header">
-                                <div class="post-date">
-                                    <?php echo date('M j, Y g:i A', strtotime($post['created_at'])); ?>
+                    <!-- Replies -->
+                    <?php foreach($posts as $post): ?>
+                        <div class="post" id="post-<?php echo $post['id']; ?>">
+                            <div class="post-author">
+                                <img src="assets/avatars/<?php echo $post['avatar']; ?>" alt="Avatar" onerror="this.src='assets/avatars/default.png'">
+                                <h5><?php echo htmlspecialchars($post['username']); ?></h5>
+                                <div class="role"><?php echo ucfirst($post['role']); ?></div>
+                                    <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">
+                                        Reputation: <?php echo $post['reputation'] ?? 0; ?>
+                                    </div>
+                                </div>
+                                <div class="post-content">
+                                    <div class="post-header">
+                                        <div class="post-date">
+                                            <?php echo date('M j, Y g:i A', strtotime($post['created_at'])); ?>
+                                        </div>
+                                    </div>
+                                    <div class="post-body">
+                                        <?php echo nl2br(htmlspecialchars($post['content'])); ?>
+                                    </div>
+                                    <div class="post-actions">
+                                        <?php if($user): ?>
+                                        <div class="vote-buttons">
+                                            <a href="?id=<?php echo $topic_id; ?>&action=vote&type=post&target_id=<?php echo $post['id']; ?>&vote=up" 
+                                                class="vote-btn">
+                                                <i class="fas fa-thumbs-up"></i> <?php echo $post['votes_up']; ?>
+                                            </a>
+                                            <a href="?id=<?php echo $topic_id; ?>&action=vote&type=post&target_id=<?php echo $post['id']; ?>&vote=down" 
+                                                class="vote-btn">
+                                                <i class="fas fa-thumbs-down"></i> <?php echo $post['votes_down']; ?>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <?php endif; ?>
                                 </div>
                             </div>
-                            <div class="post-body">
-                                <?php echo nl2br(htmlspecialchars($post['content'])); ?>
-                            </div>
-                            <div class="post-actions">
-                                <?php if($user): ?>
-                                    <div class="vote-buttons">
-                                        <a href="?id=<?php echo $topic_id; ?>&action=vote&type=post&target_id=<?php echo $post['id']; ?>&vote=up" 
-                                           class="vote-btn">
-                                            <i class="fas fa-thumbs-up"></i> <?php echo $post['votes_up']; ?>
-                                        </a>
-                                        <a href="?id=<?php echo $topic_id; ?>&action=vote&type=post&target_id=<?php echo $post['id']; ?>&vote=down" 
-                                           class="vote-btn">
-                                            <i class="fas fa-thumbs-down"></i> <?php echo $post['votes_down']; ?>
-                                        </a>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
                         </div>
-                    </div>
-                <?php endforeach; ?>
+                    <?php endforeach; ?>
 
-                <!-- Reply Form -->
-                <?php if($user && !$topic['is_locked']): ?>
+                    <!-- Reply Form -->
+                    <?php if($user && !$topic['is_locked']): ?>
                     <div class="p-3" style="border-top: 1px solid var(--border-color);">
                         <h3>Post Reply</h3>
                         <?php if ($error): ?>
@@ -185,13 +188,13 @@
                         </form>
                     </div>
                     
-                <?php elseif($topic['is_locked']): ?>
+                    <?php elseif($topic['is_locked']): ?>
                     <div class="p-3 text-center" style="border-top: 1px solid var(--border-color);">
                         <i class="fas fa-lock" style="font-size: 2rem; color: var(--danger-color); margin-bottom: 1rem;"></i>
                         <h3>Topic Locked</h3>
                         <p class="text-secondary">This topic has been locked and no new replies can be posted.</p>
                     </div>
-                <?php elseif(!$user): ?>
+                    <?php elseif(!$user): ?>
                     <div class="p-3 text-center" style="border-top: 1px solid var(--border-color);">
                         <p>Please <a href="login.php">login</a> to post a reply.</p>
                     </div>
@@ -200,10 +203,10 @@
 
             <aside class="sidebar">
                 <div class="widget">
-                    <h3><i class="fas fa-info-circle"></i> Topic Info</h3>
+                    <h3><i class="fas fa-info-circle"></i>Topic Info</h3>
                     <div class="stats-grid">
                         <div class="stat-item">
-                            <strong><?php echo count($posts); ?></strong>
+                            <strong><?php echo $total_posts; ?></strong>
                             <span>Replies</span>
                         </div>
                         <div class="stat-item">
@@ -213,14 +216,25 @@
                     </div>
                 </div>
 
+                <?php $total_pages = ceil($total_posts / $limit); ?>
+                <?php if ($total_pages > 1): ?>
+                <div class="pagination">
+                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                    <a href="?id=<?php echo $topic_id; ?>&page=<?php echo $i; ?>" class="<?php echo $i == $page ? 'active' : ''; ?>">
+                        <?php echo $i; ?>
+                    </a>
+                    <?php endfor; ?>
+                </div>
+                <?php endif; ?>
+
                 <?php if($user): ?>
                     <div class="widget">
-                        <h3><i class="fas fa-tools"></i> Quick Actions</h3>
+                        <h3><i class="fas fa-tools"></i>Quick Actions</h3>
                         <a href="new_topic.php?forum_id=<?php echo $topic['forum_id']; ?>" class="btn btn-primary" style="width: 100%; margin-bottom: 0.5rem;">
-                            <i class="fas fa-plus"></i> New Topic
+                            <i class="fas fa-plus"></i>New Topic
                         </a>
                         <a href="forum.php?id=<?php echo $topic['forum_id']; ?>" class="btn btn-secondary" style="width: 100%;">
-                            <i class="fas fa-arrow-left"></i> Back to Forum
+                            <i class="fas fa-arrow-left"></i>Back to Forum
                         </a>
                     </div>
                 <?php endif; ?>
@@ -247,7 +261,7 @@
             }
         }
 
-        function sharePOst(postId) {
+        function sharePost(postId) {
             const url = window.location.href + '#post-' + postId;
             if (navigator.share) {
                 navigator.share({
