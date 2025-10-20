@@ -82,7 +82,16 @@ class Forum {
         $stmt -> bindValue(3, $offset, PDO::PARAM_INT);
         $stmt -> execute();
     
-        return $stmt -> fetchAll(PDO::FETCH_ASSOC);
+        $posts = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+
+        // Fetch attachments for each post
+        foreach ($posts as $key => $post) {
+            $attachment_query = "SELECT * FROM post_attachments WHERE post_id = ?";
+            $attachment_stmt = $this -> conn -> prepare($attachment_query);
+            $attachment_stmt -> execute([$post['id']]);
+            $posts[$key]['attachments'] = $attachment_stmt -> fetchAll(PDO::FETCH_ASSOC);
+        }
+        return $posts;
     }
     
     public function getPostCount($topic_id) {
@@ -108,15 +117,36 @@ class Forum {
             throw new Exception('Topic content cannot be empty.');
         }
 
-        $query = "INSERT INTO topics (forum_id, user_id, title, content) VALUES (?, ?, ?, ?)";
-        $stmt = $this -> conn -> prepare($query);
-        if($stmt -> execute([$forum_id, $user_id, $title, $content])) {
+        $this->conn->beginTransaction();
+
+        try {
+            // First, create the topic
+            $query = "INSERT INTO topics (forum_id, user_id, title) VALUES (?, ?, ?)";
+            $stmt = $this -> conn -> prepare($query);
+            $stmt -> execute([$forum_id, $user_id, $title]);
             $topic_id = $this -> conn -> lastInsertId();
+
+            // Now, create the first post for this topic
+            $post_query = "INSERT INTO posts (topic_id, user_id, content) VALUES (?, ?, ?)";
+            $post_stmt = $this->conn->prepare($post_query);
+            $post_stmt->execute([$topic_id, $user_id, $content]);
+            $post_id = $this->conn->lastInsertId();
+
+            // Handle attachments for the post
+            if (isset($_FILES['attachments'])) {
+                $this->handleAttachments($post_id, $_FILES['attachments']);
+            }
+
             $this -> updateForumStats($forum_id);
             $this -> createNotification($user_id, 'topic_created', 'Topic Created', "Your topic '$title' has been posted.", "topic.php?id=$topic_id");
+            
+            $this->conn->commit();
             return $topic_id;
+
+        } catch (Exception $e) {
+            $this->conn->rollBack();
+            throw $e; // Re-throw the exception
         }
-        return false;
     }
 
     public function updateTopic($topic_id, $title, $content) {
@@ -167,12 +197,28 @@ class Forum {
             throw new Exception('Post content cannot be empty.');
         }
 
-        $query = "INSERT INTO posts (topic_id, user_id, content) VALUES (?, ?, ?)";
-        $stmt = $this -> conn -> prepare($query);
-        if($stmt -> execute([$topic_id, $user_id, $content])) {
+        $this -> conn -> beginTransaction();
+
+        try {
+            $query = "INSERT INTO posts (topic_id, user_id, content) VALUES (?, ?, ?)";
+            $stmt = $this -> conn -> prepare($query);
+            $stmt -> execute([$topic_id, $user_id, $content]);
+            $post_id = $this -> conn ->lastInsertId();
+
+            // Handle file uploads
+            if (isset($_FILES['attachments'])) {
+                $this -> handleAttachments($post_id, $_FILES['attachments']);
+            }
+
             $this -> updateTopicStats($topic_id);
             $this -> notifyTopicParticipants($topic_id, $user_id, 'New reply to your topic');
-            return $this -> conn -> lastInsertId();
+
+            $this -> conn -> commit();
+            return $post_id;
+        } catch (Exception $e) {
+            $this -> conn -> rollBack();
+            // Re-throw the exception to be caught by the calling script
+            throw new Exception("Failed to create post: " . $e -> getMessage());
         }
         return false;
     }
@@ -182,6 +228,13 @@ class Forum {
         $stmt = $this -> conn -> prepare($query);
         $stmt -> execute([$post_id]);
         return $stmt -> fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getAttachments($post_id) {
+        $query = "SELECT * FROM post_attachments WHERE post_id = ?";
+        $stmt = $this -> conn -> prepare($query);
+        $stmt -> execute([$post_id]);
+        return $stmt -> fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function updatePost($post_id, $content) {
@@ -211,6 +264,55 @@ class Forum {
             return true;
         }
         return false;
+    }
+
+    public function handleAttachments($post_id, $files) {
+        $target_dir = __DIR__ . "/../uploads/";
+        if (!file_exists($target_dir)) {
+            mkdir($target_dir, 0777, true);
+        }
+
+        foreach ($files['name'] as $key => $name) {
+            if ($files['error'][$key] === UPLOAD_ERR_OK) {
+                $file_name = basename($name);
+                $file_tmp = $files['tmp_name'][$key];
+                $file_size = $files['size'][$key];
+                $file_type = $files['type'][$key];
+
+                // Basic security: check file size (e.g., max 5MB) 
+                if ($file_size > 5000000) {
+                    throw new Exception("File '$file_name' is too large.");
+                }
+
+                // Create a unique file path
+                $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+                $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf', 'docx', 'txt', 'zip', 'rar'];
+
+                if (!in_array($file_extension, $allowed_extensions)) {
+                    throw new Exception("File type for '$file_name' is not allowed.");
+                }
+
+                // Sanitize filename and create a unique name
+                $safe_filename = preg_replace('/[^A-Za-z0-9.\-_]/', '', pathinfo($file_name, PATHINFO_FILENAME));
+                $unique_filename = $safe_filename . '_' . uniqid() . '.' . $file_extension;
+                $target_path = $target_dir . $unique_filename;
+
+                if (move_uploaded_file($file_tmp, $target_path)) {
+                    // Save attachment info to the database
+                    $query = "INSERT INTO post_attachments (post_id, file_name, file_path, file_type, file_size) VALUES (?, ?, ?, ?, ?)";
+                    $stmt = $this -> conn -> prepare($query);
+                    $stmt -> execute([
+                        $post_id,
+                        htmlspecialchars($file_name), // Original filename for display
+                        $unique_filename, // Stored filename
+                        $file_type,
+                        $file_size
+                    ]);
+                } else {
+                    throw new Exception("Failed to upload file '$file_name'.");
+                }
+            }
+        }
     }
     
     public function vote($user_id, $target_type, $target_id, $vote_type) {
@@ -283,6 +385,38 @@ class Forum {
         return $stmt -> execute([$notification_id, $user_id]);
     }
     
+    private function handleAttachmentUpload($attachment, $user_id, $post_id = null, $topic_id = null) {
+        $upload_dir = __DIR__ . '/../uploads/';
+        $max_file_size = 5 * 1024 * 1024; // 5MB
+        $allowed_types = ['image/jpeg', 'image/png', 'application/pdf', 'text/plain', 'application/zip'];
+
+        $file_name = $attachment['name'];
+        $file_size = $attachment['size'];
+        $file_tmp = $attachment['tmp_name'];
+        $file_type = $attachment['type'];
+
+        if ($file_size > $max_file_size) {
+            throw new Exception("File size exceeds the maximum limit of 5MB.");
+        }
+
+        if (!in_array($file_type, $allowed_types)) {
+            throw new Exception("File type is not allowed.");
+        }
+
+        // Create a unique file name to prevent overwriting
+        $file_extension = pathinfo($file_name, PATHINFO_EXTENSION);
+        $unique_file_name = uniqid('', true) . '.' . $file_extension;
+        $file_path = $upload_dir . $unique_file_name;
+
+        if (move_uploaded_file($file_tmp, $file_path)) {
+            $query = "INSERT INTO attachments (user_id, post_id, topic_id, file_name, file_path, file_size, file_type) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute([$user_id, $post_id, $topic_id, $file_name, 'uploads/' . $unique_file_name, $file_size, $file_type]);
+        } else {
+            throw new Exception("Failed to move uploaded file.");
+        }
+    }
+
     private function incrementViews($type, $id) {
         $table = $type == 'topic' ? 'topics' : 'posts';
         $query = "UPDATE $table SET views = views + 1 WHERE id = ?";

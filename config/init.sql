@@ -134,6 +134,21 @@ CREATE TABLE social_logins (
     UNIQUE KEY unique_social (provider, provider_id)
 );
 
+CREATE TABLE attachments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    post_id INT,
+    topic_id INT,
+    user_id INT NOT NULL,
+    file_name VARCHAR(255) NOT NULL,
+    file_path VARCHAR(255) NOT NULL,
+    file_size INT NOT NULL,
+    file_type VARCHAR(100) NOT NULL,
+    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+    FOREIGN KEY (topic_id) REFERENCES topics(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 -- Insert default categories
 INSERT INTO categories (name, description, icon, color) VALUES
 ('General Discussion', 'General topics for all PSUC members', 'fas fa-comments', '#007bff'),

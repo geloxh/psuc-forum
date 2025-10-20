@@ -30,21 +30,22 @@
 
     $posts = $forum -> getPosts($topic_id, $limit, $offset);
 
-    // Handle new post
-    if($_POST && $user) {
+    // Handle new post creation
+    if ($_POST && isset($_POST['action']) && $_POST['action'] == 'create_post' && $user) {
         try {
-            if($forum -> createPost($topic_id, $user['id'], $_POST['content'])) {
+            $post_id = $forum->createPost($topic_id, $user['id'], $_POST['content']);
+            if ($post_id) {
                 header("Location: topic.php?id=$topic_id");
                 exit;
             }
         } catch (Exception $e) {
-            $error = $e -> getMessage();
+            // You can handle the error here, e.g., display it
         }
     }
 
     // Handle voting
-    if(isset($_GET['action']) && $_GET['action'] == 'vote' && $user) {
-        $forum -> vote($user['id'], $_GET['type'], $_GET['target_id'], $_GET['vote']);
+    if (isset($_GET['action']) && $_GET['action'] == 'vote' && $user) {
+        $forum->vote($user['id'], $_GET['type'], $_GET['target_id'], $_GET['vote']);
         header("Location: topic.php?id = $topic_id");
         exit;
     }
@@ -111,6 +112,26 @@
                         <div class="post-body">
                             <?php echo nl2br(htmlspecialchars($topic['content'])); ?>
                         </div>
+
+                        <?php
+                            $topic_attachments = $forum->getAttachments(null, $topic['id']);
+                        ?>
+                        <?php if (!empty($topic_attachments)): ?>
+                            <div class="attachments">
+                                <strong>Attachments:</strong>
+                                <ul>
+                                    <?php foreach ($topic_attachments as $attachment): ?>
+                                        <li>
+                                            <a href="<?php echo htmlspecialchars($attachment['file_path']); ?>" download>
+                                                <i class="fas fa-paperclip"></i> <?php echo htmlspecialchars($attachment['file_name']); ?>
+                                            </a>
+                                            (<?php echo round($attachment['file_size'] / 1024, 2); ?> KB)
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        <?php endif; ?>
+
                         <div class="post-actions">
                             <?php if($user): ?>
                                 <div class="vote-buttons">
@@ -160,6 +181,26 @@
                                     <div class="post-body">
                                         <?php echo nl2br(htmlspecialchars($post['content'])); ?>
                                     </div>
+
+                                    <?php
+                                        $attachments = $forum->getAttachments($post['id']);
+                                    ?>
+                                    <?php if (!empty($attachments)): ?>
+                                        <div class="attachments">
+                                            <strong>Attachments:</strong>
+                                            <ul>
+                                                <?php foreach ($attachments as $attachment): ?>
+                                                    <li>
+                                                        <a href="uploads/<?php echo htmlspecialchars($attachment['file_path']); ?>" download="<?php echo htmlspecialchars($attachment['file_name']); ?>">
+                                                            <i class="fas fa-paperclip"></i> <?php echo htmlspecialchars($attachment['file_name']); ?>
+                                                        </a>
+                                                        (<?php echo round($attachment['file_size'] / 1024, 2); ?> KB)
+                                                    </li>
+                                                <?php endforeach; ?>
+                                            </ul>
+                                        </div>
+                                    <?php endif; ?>
+
                                     <div class="post-actions">
                                         <?php if($user): ?>
                                             <div class="vote-buttons">
@@ -192,25 +233,7 @@
                     <?php endforeach; ?>
 
                     <!-- Reply Form -->
-                    <?php if($user && !$topic['is_locked']): ?>
-                    <div class="p-3" style="border-top: 1px solid var(--border-color);">
-                        <h3>Post Reply</h3>
-                        <?php if ($error): ?>
-                            <div style="padding: 1rem; margin-bottom: 1rem; border: 1px solid var(--danger-color); color: var(--danger-color); background-color: rgba(239, 68, 68, 0.1); border-radius: 8px;">
-                                <?php echo $error; ?>
-                            </div>
-                        <?php endif; ?>
-                        <form method="POST">
-                            <div class="form-group">
-                                <textarea name="content" class="form-control" rows="6" placeholder="Write your reply..." required></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-reply"></i> Post Reply
-                            </button>
-                        </form>
-                    </div>
-                    
-                    <?php elseif($topic['is_locked']): ?>
+                    <?php if($topic['is_locked']): ?>
                     <div class="p-3 text-center" style="border-top: 1px solid var(--border-color);">
                         <i class="fas fa-lock" style="font-size: 2rem; color: var(--danger-color); margin-bottom: 1rem;"></i>
                         <h3>Topic Locked</h3>
@@ -220,6 +243,24 @@
                     <div class="p-3 text-center" style="border-top: 1px solid var(--border-color);">
                         <p>Please <a href="login.php">login</a> to post a reply.</p>
                     </div>
+                    <?php else: // User is logged in and topic is not locked ?>
+                        <div class="p-3" style="border-top: 1px solid var(--border-color);">
+                            <h3>Post a Reply</h3>
+                            <?php if ($error): ?>
+                                <div class="alert alert-danger"><?php echo $error; ?></div>
+                            <?php endif; ?>
+                            <form method="POST" enctype="multipart/form-data" class="reply-form">
+                                <input type="hidden" name="action" value="create_post">
+                                <div class="form-group">
+                                    <textarea name="content" class="form-control" rows="5" required placeholder="Write your reply..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="attachments">Attach Files</label>
+                                    <input type="file" id="attachments" name="attachments[]" class="form-control-file" multiple>
+                                </div>
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-reply"></i> Post Reply</button>
+                            </form>
+                        </div>
                 <?php endif; ?>
             </div>
 
