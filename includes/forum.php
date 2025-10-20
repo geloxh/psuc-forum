@@ -134,19 +134,29 @@ class Forum {
         }
 
         $query = "UPDATE topics SET title = ?, content = ? WHERE id = ?";
-        $stmt = $this->conn->prepare($query);
-        return $stmt->execute([$title, $content, $topic_id]);
+        $stmt = $this -> conn -> prepare($query);
+        return $stmt -> execute([$title, $content, $topic_id]);
     }
 
     public function deleteTopic($topic_id) {
-        // We can implement a soft delete later if needed by adding an 'is_deleted' flag.
-        // For now, we will perform a hard delete.
-        // The database is set up with ON DELETE CASCADE, so posts, votes, etc. will be deleted.
-        
+        $topic_query = "SELECT forum_id FROM topics WHERE id = ?";
+        $stmt = $this -> conn -> prepare($topic_query);
+        $stmt -> execute([$topic_id]);
+        $topic = $stmt -> fetch(PDO::FETCH_ASSOC);
+
+        if (!$topic) {
+            return false; // Topic doesn't exist
+        }
+        $forum_id = $topic['forum_id'];
+
+        // The database is set up with ON DELETE CASCADE(posts, votes, notifications) will be deleted automatically.
         $query = "DELETE FROM topics WHERE id = ?";
-        $stmt = $this->conn->prepare($query);
-        if ($stmt->execute([$topic_id])) {
-            return true;
+        $stmt = $this -> conn -> prepare($query);
+        
+        if ($stmt -> execute([$topic_id])) {
+            // Update the stats for the parent forum
+            $this -> updateForumStats($forum_id);
+            return true; 
         }
         return false;
     }
@@ -185,9 +195,22 @@ class Forum {
     }
 
     public function deletePost($post_id) {
+        $post_query = "SELECT topic_id FROM posts WHERE id = ?";
+        $stmt = $this -> conn -> prepare($post_query);
+        $stmt -> execute([$post_id]);
+        $post = $stmt -> fetch(PDO::FETCH_ASSOC);
+
+        if(!$post) {
+            return false; // Post doesn't exist
+        }
+
         $query = "DELETE FROM posts WHERE id =?";
         $stmt = $this -> conn -> prepare($query);
-        return $stmt -> execute([$post_id]);
+        if ($stmt -> execute([$post_id])) {
+            $this -> updateTopicStats($post['topic_id']);
+            return true;
+        }
+        return false;
     }
     
     public function vote($user_id, $target_type, $target_id, $vote_type) {

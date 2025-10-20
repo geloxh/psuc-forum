@@ -2,6 +2,9 @@
     require_once 'includes/auth.php';
     require_once 'includes/forum.php';
 
+    // Start session if not already started to handle CSRF tokens
+    if(session_status() == PHP_SESSION_NONE) session_start();
+
     $auth = new Auth();
     $forum = new Forum();
     $user = $auth -> getCurrentUser();
@@ -20,15 +23,26 @@
     }
 
     // Delete Confirmation
-    if ($_POST && isset($_POST['confirm_delete'])) {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_delete'])) {
+        //  Verify CSRF token
+        if(!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+            // Handle CSRF error
+            header('Location: topic.php?id=' . $post['topic_id'] . '&error=csrf_failed');
+            exit;
+        }
+        $topic_id = $post['topic_id'];
+        // The deletePost method handle stats updates
         if ($forum -> deletePost($post_id)) {
-            header('Location: topic.php?id=' . $post['topic_id'] . '&deleted=true');
+            header('Location: topic.php?id=' . $topic_id . '&status=post_deleted');
         } else {
-            header('Location: topic.php?id=' . $post['topic_id'] .'&error=delete_failed');
+            header('Location: topic.php?id=' . $topic_id .'&error=delete_failed');
         }
     
         exit;
     }
+
+    // Generate and store CSRF token
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 ?>
 
 <!DOCTYPE html>
@@ -67,8 +81,9 @@
                 </a>
                 
                 <form method="POST" style="display: inline;">
+                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                     <button type="submit" name="confirm_delete" class="btn-delete">
-                        <i class="fas fa-trash"></i> Delete Post
+                        <i class="fas fa-trash"></i>Delete Post
                     </button>
                 </form>
             </div>

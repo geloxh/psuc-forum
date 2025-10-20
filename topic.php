@@ -66,6 +66,16 @@
     <main class="container">
         <div class="main-content">
             <div class="forum-content">
+                <?php if(isset($_GET['status']) && $_GET['status'] == 'post_deleted'): ?>
+                    <div class="alert alert-success">
+                        The post has been successfully deleted.
+                    </div>
+                <?php endif; ?>
+                <?php if(isset($_GET['error'])): ?>
+                    <div class="alert alert-danger">
+                        There was an error deleting the item. Please try again.
+                    </div>
+                <?php endif; ?>
                 <div class="p-3" style="border-bottom: 1px solid var(--border-color);">
                     <nav style="margin-bottom: 1rem;">
                         <a href="index.php">Forum</a> > 
@@ -118,10 +128,10 @@
                                         <i class="fas fa-share-alt"></i>Share
                                     </button>
                                     <?php if ($user['id'] == $topic['user_id'] || $auth -> isAdmin()): ?>
-                                        <a href="edit_post.php?id=<?php echo $topic['id']; ?>" class="btn btn-secondary">
+                                        <a href="edit_topic.php?id=<?php echo $topic['id']; ?>" class="btn btn-secondary">
                                             <i class="fas fa-edit"></i>Edit
                                         </a>
-                                        <a href="delete_post.php?id=<?php echo $topic['id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this post?');">
+                                        <a href="delete_topic.php?id=<?php echo $topic['id']; ?>" class="btn btn-danger">
                                             <i class="fas fa-trash"></i>Delete
                                         </a>
                                     <?php endif; ?>
@@ -170,7 +180,7 @@
                                                     <a href="edit_post.php?id=<?php echo $post['id']; ?>" class="btn btn-secondary">
                                                         <i class="fas fa-edit"></i>Edit
                                                     </a>
-                                                    <a href="delete_post.php?id=<?php echo $post['id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this post?');">
+                                                    <a href="delete_post.php?id=<?php echo $post['id']; ?>" class="btn btn-danger">
                                                         <i class="fas fa-trash"></i>Delete
                                                     </a>
                                                 <?php endif; ?>
