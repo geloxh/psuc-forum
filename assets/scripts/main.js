@@ -1,50 +1,54 @@
 // Dark - Light Mode Toggle
 function toggleTheme() {
-    const body = document.body;
+    document.body.classList.toggle('dark-theme');
+    const isDark = document.body.classList.contains('dark-theme');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    updateThemeIcon(isDark);
+}
+
+function updateThemeIcon(isDark) {
     const icon = document.getElementById('themeIcon');
-
-    if (body.classList.contains('dark-theme')) {
-        body.classList.remove('dark-theme');
-        icon.className = 'fas fa-moon';
-        localStorage.setItem('theme', 'light');
-    } else {
-        body.classList.add('dark-theme');
-        icon.className = 'fas fa-sun';
-        localStorage.setItem('theme', 'dark');
+    if (icon) {
+        icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
     }
 }
 
-// Apply theme before page load to prevent FOUC
-(function() {
-    const theme = localStorage.getItem('theme');
-    if (theme === 'dark') {
-        document.documentElement.classList.add('dark-theme');
-    }
-})();
-
-function toggleDropdown() {
-    document.getElementById('userDropdown').classList.toggle('show');
-}
-
-
-// Load saved theme
+// Apply theme on initial load to prevent FOUC (Flash of Unstyled Content)
 document.addEventListener('DOMContentLoaded', function() {
-    const icon = document.getElementById('themeIcon');
-    if (document.documentElement.classList.contains('dark-theme')) {
-        if(icon) icon.className = 'fas fa-sun';
+    const theme = localStorage.getItem('theme');
+    const isDark = theme === 'dark';
+    if (isDark) {
+        document.body.classList.add('dark-theme');
     }
+    updateThemeIcon(isDark);
+
+    // Responsive navigation toggle
+    const navToggle = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('.nav');
+
+    navToggle?.addEventListener('click', () => {
+        nav?.classList.toggle('nav--visible');
+    });
 });
 
-// Close dropdown when clicking outside
-window.onclick = function(event) {
-    if (!event.target.matches('.user-menu a')) {
-        var dropdown = document.getElementById('userDropdown');
-        if (dropdown && dropdown.classList.contains('show')) {
-            dropdown.classList.remove('show');
-        }
-    }
-}
+// Consolidated Dropdown Logic
+document.addEventListener('click', function(event) {
+    const dropdownToggle = event.target.closest('.user-menu > a');
+    const clickedDropdownMenu = dropdownToggle?.nextElementSibling;
+    const isAlreadyOpen = clickedDropdownMenu?.classList.contains('show');
 
+    // Always close all open dropdowns first
+    document.querySelectorAll('.user-menu .dropdown.show').forEach(dropdown => {
+        dropdown.classList.remove('show');
+    });
+
+    // If a dropdown toggle was clicked and it wasn't already open, open it.
+    // This creates the toggle effect because we've already closed it above.
+    if (dropdownToggle && !isAlreadyOpen) {
+        event.preventDefault(); // Prevent navigation only when opening a dropdown
+        clickedDropdownMenu.classList.add('show');
+    }
+});
 
 // For Web Sidebar
 function toggleCategory(categoryId) {

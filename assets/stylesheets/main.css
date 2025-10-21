@@ -80,6 +80,16 @@ body {
     color: white;
 }
 
+.nav-toggle {
+    display: none; /* Hidden on desktop */
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    color: white;
+    font-size: 1.5rem;
+}
+
 .nav-menu {
     display: flex;
     list-style: none;
@@ -833,6 +843,78 @@ body.dark-theme .topic-stat {
 .p-2 { padding: 1rem; }
 .p-3 { padding: 1.5rem; }
 
+/* Responsive Breakpoints */
+
+/* For tablets and smaller desktops */
+@media (max-width: 992px) {
+    .header-content {
+        position: relative;
+    }
+
+    .nav-toggle {
+        display: block; /* Show hamburger icon */
+        order: 2; /* Position it after the logo */
+    }
+
+    .nav {
+        /* Hide nav by default on mobile/tablet */
+        visibility: hidden;
+        opacity: 0;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--primary-blue);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transform: translateY(-10px);
+        transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out, visibility 0.2s;
+    }
+
+    .nav.nav--visible {
+        /* Show nav when toggled */
+        visibility: visible;
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .nav-menu {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
+    }
+
+    .nav-menu > li {
+        width: 100%;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .nav-menu > li:last-child {
+        border-bottom: none;
+    }
+
+    .nav-menu a,
+    .nav-menu .btn-theme-toggle {
+        padding: 1rem 1.5rem;
+        width: 100%;
+        justify-content: flex-start;
+        border-radius: 0;
+    }
+
+    /* Adjust dropdowns for mobile view */
+    .user-menu .dropdown {
+        position: static; /* No longer absolute */
+        display: none; /* Hidden by default */
+        box-shadow: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        width: 100%;
+        background: rgba(0, 0, 0, 0.1); /* Slightly darker background */
+    }
+
+    .user-menu .dropdown.show {
+        display: block; /* Show when toggled */
+    }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .main-content {
@@ -883,16 +965,6 @@ body.dark-theme .topic-stat {
     
     .last-post-info {
         text-align: left;
-    }
-    
-    .nav-menu {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-    
-    .header-content {
-        flex-direction: column;
-        gap: 1rem;
     }
 }
 

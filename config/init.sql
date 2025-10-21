@@ -149,6 +149,111 @@ CREATE TABLE attachments (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+-- ============================================================================
+-- Academic Calendar Table
+-- ============================================================================
+CREATE TABLE academic_calendar (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    event_date DATE NOT NULL,
+    event_type ENUM('exam', 'enrollment', 'holiday', 'semester_start', 'semester_end', 'other') DEFAULT 'other',
+    university VARCHAR(100),
+    created_by INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- ============================================================================
+-- Job Board Table
+-- ============================================================================
+CREATE TABLE job_board (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    company VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    requirements TEXT,
+    location VARCHAR(255),
+    job_type ENUM('full-time', 'part-time', 'internship', 'freelance') DEFAULT 'full-time',
+    salary_range VARCHAR(100),
+    application_deadline DATE,
+    contact_email VARCHAR(255),
+    posted_by INT,
+    status ENUM('active', 'closed', 'expired') DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (posted_by) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- ============================================================================
+-- Document Library Table
+-- ============================================================================
+CREATE TABLE document_library (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    file_path VARCHAR(255) NOT NULL,
+    file_type VARCHAR(100) NOT NULL,
+    file_size INT NOT NULL,
+    category ENUM('syllabus', 'research', 'thesis', 'handbook', 'form', 'other') DEFAULT 'other',
+    university VARCHAR(100),
+    course VARCHAR(100),
+    uploaded_by INT,
+    downloads INT DEFAULT 0,
+    is_approved BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (uploaded_by) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- ============================================================================
+-- Events Table
+-- ============================================================================
+CREATE TABLE events (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    event_date DATETIME NOT NULL,
+    location VARCHAR(255),
+    university VARCHAR(100),
+    organizer VARCHAR(255),
+    max_participants INT,
+    registration_deadline DATETIME,
+    created_by INT,
+    status ENUM('upcoming', 'ongoing', 'completed', 'cancelled') DEFAULT 'upcoming',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- ============================================================================
+-- Event Registrations Table
+-- ============================================================================
+CREATE TABLE event_registrations (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    event_id INT,
+    user_id INT,
+    registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('registered', 'attended', 'cancelled') DEFAULT 'registered',
+    FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_registration (event_id, user_id)
+);
+
+-- ============================================================================
+-- Research Collaborations Table
+-- ============================================================================
+CREATE TABLE research_collaborations (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    research_area VARCHAR(255),
+    looking_for TEXT,
+    requirements TEXT,
+    contact_info VARCHAR(255),
+    created_by INT,
+    status ENUM('open', 'in_progress', 'completed', 'closed') DEFAULT 'open',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE
+);
+
 -- Insert default categories
 INSERT INTO categories (name, description, icon, color) VALUES
 ('General Discussion', 'General topics for all PSUC members', 'fas fa-comments', '#007bff'),

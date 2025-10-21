@@ -9,6 +9,12 @@
         if ($_POST['password'] !== $_POST['confirm_password']) {
             $error = "Passwords do not match.";
         } else {
+            $additional_data = [
+                'student_id' => $_POST['student_id'] ?? '',
+                'course' => $_POST['course'] ?? '',
+                'year_level' => $_POST['year_level'] ?? ''
+            ];
+
             if($auth -> register($_POST['username'], $_POST['email'], $_POST['password'], $_POST['full_name'], $_POST['university'], $_POST['role'])) {
                 $success = 'Registration successful! You can now login.';
             } else {
@@ -18,16 +24,55 @@
     }
 
     $universities = [
-        'University of the Philippines',
+    'University of the Philippines System' => [
+        'University of the Philippines Diliman',
+        'University of the Philippines Manila',
+        'University of the Philippines Los Baños',
+        'University of the Philippines Visayas',
+        'University of the Philippines Mindanao',
+        'University of the Philippines Open University',
+        'University of the Philippines Baguio',
+        'University of the Philippines Cebu'
+    ],
+    'Major State Universities' => [
         'Polytechnic University of the Philippines',
         'Technological University of the Philippines',
         'Philippine Normal University',
         'Mindanao State University',
         'Central Luzon State University',
         'Visayas State University',
+        'Bicol University',
+        'University of the Philippines in the Visayas'
+    ],
+    'Regional State Universities' => [
         'Bataan Peninsula State University',
         'Bulacan State University',
-        'Cavite State University'
+        'Cavite State University',
+        'Laguna State Polytechnic University',
+        'Nueva Ecija University of Science and Technology',
+        'Pangasinan State University',
+        'Tarlac State University',
+        'Aurora State College of Technology',
+        'Batangas State University',
+        'Rizal Technological University'
+    ],
+    'Mindanao State Universities' => [
+        'Mindanao State University - Main Campus',
+        'Mindanao State University - Iligan Institute of Technology',
+        'Mindanao State University - Tawi-Tawi',
+        'Western Mindanao State University',
+        'Southern Philippines Agribusiness and Marine and Aquatic School of Technology',
+        'Surigao State College of Technology'
+    ],
+    'Visayas State Universities' => [
+        'Visayas State University',
+        'Central Philippines State University',
+        'Negros Oriental State University',
+        'Silliman University',
+        'West Visayas State University',
+        'Aklan State University',
+        'Capiz State University'
+    ]
     ];
 ?>
 
