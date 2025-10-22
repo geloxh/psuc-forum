@@ -41,7 +41,7 @@ body {
     padding: 0 1rem;
 }
 
-/* Enhanced Responsive Header Styles */
+/*  utilized by header.php */
 .header {
     background: var(--primary-gradient);
     color: white;
