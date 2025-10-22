@@ -38,15 +38,14 @@ body {
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 1rem;
 }
 
-/* Utilized by includes/header.php */
-/* Header */
+/* Enhanced Responsive Header Styles */
 .header {
     background: var(--primary-gradient);
     color: white;
-    padding: 1rem 0;
+    padding: 0.75rem 0;
     box-shadow: var(--hover-shadow);
     position: sticky;
     top: 0;
@@ -67,43 +66,73 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
+    position: relative;
 }
 
 .logo {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    font-size: 1.8rem;
+    gap: 0.5rem;
+    font-size: 1.5rem;
     font-weight: 700;
     text-decoration: none;
     color: white;
+    z-index: 1001;
+}
+
+.logo img {
+    height: 35px;
+    width: auto;
 }
 
 .nav-toggle {
-    display: none; /* Hidden on desktop */
+    display: none;
     background: none;
     border: none;
     cursor: pointer;
     padding: 0.5rem;
     color: white;
     font-size: 1.5rem;
+    z-index: 1001;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.nav-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav {
+    display: block;
 }
 
 .nav-menu {
     display: flex;
     list-style: none;
-    gap: 2rem;
+    gap: 1rem;
     align-items: center;
+    margin: 0;
+    padding: 0;
 }
 
-.nav-menu a {
+.nav-menu a, .btn-theme-toggle {
     color: white;
     text-decoration: none;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
     transition: all 0.3s ease;
     position: relative;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-theme-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
 }
 
 .nav-menu a::before {
@@ -843,23 +872,45 @@ body.dark-theme .topic-stat {
 .p-2 { padding: 1rem; }
 .p-3 { padding: 1.5rem; }
 
-/* Responsive Breakpoints */
+/* Responsive breakpoints */
 
-/* For tablets and smaller desktops */
-@media (max-width: 992px) {
-    .header-content {
-        position: relative;
+/* Large tablets and small desktops */
+@media (max-width: 1024px) {
+    .nav-menu {
+        gap: 0.75rem;
     }
+    
+    .nav-menu a, .btn-theme-toggle {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.85rem;
+    }
+    
+    .logo {
+        font-size: 1.4rem;
+    }
+    
+    .logo img {
+        height: 32px;
+    }
+}
 
+/* Tablets */
+@media (max-width: 768px) {
+    .header {
+        padding: 0.5rem 0;
+    }
+    
     .nav-toggle {
-        display: block; /* Show hamburger icon */
-        order: 2; /* Position it after the logo */
+        display: block;
+        order: 3;
     }
-
+    
+    .logo {
+        order: 1;
+        font-size: 1.3rem;
+    }
+    
     .nav {
-        /* Hide nav by default on mobile/tablet */
-        visibility: hidden;
-        opacity: 0;
         position: absolute;
         top: 100%;
         left: 0;
@@ -867,51 +918,167 @@ body.dark-theme .topic-stat {
         background: var(--primary-blue);
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         transform: translateY(-10px);
-        transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out, visibility 0.2s;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        order: 4;
+        width: 100%;
     }
-
+    
     .nav.nav--visible {
-        /* Show nav when toggled */
-        visibility: visible;
-        opacity: 1;
         transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
     }
-
+    
     .nav-menu {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
         gap: 0;
+        padding: 0.5rem 0;
     }
-
+    
     .nav-menu > li {
         width: 100%;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
-
+    
     .nav-menu > li:last-child {
         border-bottom: none;
     }
-
-    .nav-menu a,
-    .nav-menu .btn-theme-toggle {
+    
+    .nav-menu a, .btn-theme-toggle {
         padding: 1rem 1.5rem;
         width: 100%;
         justify-content: flex-start;
         border-radius: 0;
+        font-size: 1rem;
     }
-
-    /* Adjust dropdowns for mobile view */
+    
     .user-menu .dropdown {
-        position: static; /* No longer absolute */
-        display: none; /* Hidden by default */
+        position: static;
+        display: none;
         box-shadow: none;
-        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
         width: 100%;
-        background: rgba(0, 0, 0, 0.1); /* Slightly darker background */
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 0;
     }
-
+    
     .user-menu .dropdown.show {
-        display: block; /* Show when toggled */
+        display: block;
+    }
+    
+    .dropdown a {
+        padding: 0.75rem 2rem !important;
+        color: rgba(255, 255, 255, 0.9) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    .dropdown a:hover {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        color: white !important;
+    }
+}
+
+/* Small tablets and large phones */
+@media (max-width: 640px) {
+    .container {
+        padding: 0 0.75rem;
+    }
+    
+    .logo {
+        font-size: 1.2rem;
+        gap: 0.4rem;
+    }
+    
+    .logo img {
+        height: 28px;
+    }
+    
+    .nav-menu a, .btn-theme-toggle {
+        padding: 0.875rem 1.25rem;
+        font-size: 0.95rem;
+    }
+    
+    .nav-menu a i {
+        width: 20px;
+        text-align: center;
+    }
+}
+
+/* Mobile phones */
+@media (max-width: 480px) {
+    .header {
+        padding: 0.4rem 0;
+    }
+    
+    .container {
+        padding: 0 0.5rem;
+    }
+    
+    .logo {
+        font-size: 1.1rem;
+        gap: 0.3rem;
+    }
+    
+    .logo img {
+        height: 26px;
+    }
+    
+    .nav-toggle {
+        padding: 0.4rem;
+        font-size: 1.3rem;
+    }
+    
+    .nav-menu a, .btn-theme-toggle {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .dropdown a {
+        padding: 0.6rem 1.5rem !important;
+        font-size: 0.85rem !important;
+    }
+}
+
+/* Very small screens */
+@media (max-width: 360px) {
+    .logo {
+        font-size: 1rem;
+    }
+    
+    .logo img {
+        height: 24px;
+    }
+    
+    .nav-menu a, .btn-theme-toggle {
+        padding: 0.65rem 0.875rem;
+        font-size: 0.85rem;
+    }
+    
+    .nav-toggle {
+        font-size: 1.2rem;
+    }
+}
+
+/* Landscape orientation on mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+    .header {
+        padding: 0.3rem 0;
+    }
+    
+    .logo {
+        font-size: 1rem;
+    }
+    
+    .logo img {
+        height: 24px;
+    }
+    
+    .nav-menu a, .btn-theme-toggle {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
     }
 }
 
