@@ -71,72 +71,93 @@
                     </div>
                 </div>
 
-                <?php if(count($topics) > 0): ?>
-                    <?php foreach($topics as $topic): 
-                        $last_reply = $topic['last_reply'] ? explode('|', $topic['last_reply']) : null;
-                    ?>
-                        <div class="topic-item">
-                            <div class="topic-info">
-                                <div class="topic-icon">
-                                    <i class="fas fa-comment"></i>
-                                </div>
-                                <div class="topic-details">
-                                    <h4>
-                                        <?php if($topic['is_pinned']): ?>
-                                            <span class="badge pinned">Pinned</span>
-                                        <?php endif; ?>
-                                        <?php if($topic['is_locked']): ?>
-                                            <span class="badge locked">Locked</span>
-                                        <?php endif; ?>
-                                        <a href="topic.php?id=<?php echo $topic['id']; ?>">
-                                            <?php echo htmlspecialchars($topic['title']); ?>
-                                        </a>
-                                    </h4>
-                                    <div class="topic-meta">
-                                        by <strong><?php echo htmlspecialchars($topic['username']); ?></strong> • 
-                                        <?php echo date('M j, Y g:i A', strtotime($topic['created_at'])); ?>
+                <div class="topics-list">
+                    <?php if(count($topics) > 0): ?>
+                        <?php foreach($topics as $topic): 
+                            $last_reply = $topic['last_reply'] ? explode('|', $topic['last_reply']) : null;
+                        ?>
+                            <div class="topic-card">
+                                <div class="topic-card-header">
+                                    <img src="assets/avatars/<?php echo $topic['avatar']; ?>" alt="Avatar" class="avatar" onerror="this.src='assets/avatars/default.png'">
+                                    <div class="topic-info">
+                                        <h3 class="topic-title">
+                                            <?php if($topic['is_pinned']): ?>
+                                                <span class="badge pinned"><i class="fas fa-thumbtack"></i> Pinned</span>
+                                            <?php endif; ?>
+                                            <?php if($topic['is_locked']): ?>
+                                                <span class="badge locked"><i class="fas fa-lock"></i> Locked</span>
+                                            <?php endif; ?>
+                                            <a href="topic.php?id=<?php echo $topic['id']; ?>">
+                                                <?php echo htmlspecialchars($topic['title']); ?>
+                                            </a>
+                                        </h3>
+                                        <div class="topic-meta">
+                                            <a href="#" class="author-link"><?php echo htmlspecialchars($topic['username']); ?></a>
+                                            <span class="topic-time"><?php echo date('M j, Y g:i A', strtotime($topic['created_at'])); ?></span>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="topic-footer">
+                                    <div class="topic-stats">
+                                        <div class="topic-stat">
+                                            <i class="fas fa-reply"></i>
+                                            <span><?php echo $topic['replies_count']; ?></span>
+                                        </div>
+                                        <div class="topic-stat">
+                                            <i class="fas fa-eye"></i>
+                                            <span><?php echo number_format($topic['views']); ?></span>
+                                        </div>
+                                        <?php if($topic['votes_up'] > 0 || $topic['votes_down'] > 0): ?>
+                                        <div class="topic-stat">
+                                            <i class="fas fa-thumbs-up"></i>
+                                            <span><?php echo $topic['votes_up']; ?></span>
+                                        </div>
+                                        <?php endif; ?>
+                                    </div>
+                                    <?php if($last_reply): ?>
+                                    <div class="last-reply">
+                                        <span class="last-reply-text">Last reply by</span>
+                                        <strong><?php echo htmlspecialchars($last_reply[0]); ?></strong>
+                                        <span class="last-reply-time"><?php echo date('M j, g:i A', strtotime($last_reply[1])); ?></span>
+                                    </div>
+                                    <?php endif; ?>
+                                </div>
                             </div>
-                            <div class="topic-stats">
-                                <strong><?php echo $topic['replies_count']; ?></strong>
-                                Replies
-                            </div>
-                            <div class="topic-stats">
-                                <strong><?php echo $topic['views']; ?></strong>
-                                Views
-                            </div>
-                            <div class="last-post">
-                                <?php if($last_reply): ?>
-                                    by <?php echo htmlspecialchars($last_reply[0]); ?><br>
-                                    <small><?php echo date('M j, g:i A', strtotime($last_reply[1])); ?></small>
-                                <?php else: ?>
-                                    <em>No replies</em>
-                                <?php endif; ?>
-                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div class="empty-state">
+                            <i class="fas fa-comments"></i>
+                            <h3>No topics yet</h3>
+                            <p>Be the first to start a discussion in this forum!</p>
+                            <?php if($user): ?>
+                                <a href="new_topic.php?forum_id=<?php echo $forum_id; ?>" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Create First Topic
+                                </a>
+                            <?php endif; ?>
                         </div>
-                    <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
 
-                    <?php if($total_pages > 1): ?>
+                <?php if($total_pages > 1): ?>
+                    <div class="pagination-wrapper">
                         <div class="pagination">
+                            <?php if($page > 1): ?>
+                                <a href="?id=<?php echo $forum_id; ?>&page=<?php echo $page-1; ?>" class="pagination-btn">
+                                    <i class="fas fa-chevron-left"></i> Previous
+                                </a>
+                            <?php endif; ?>
                             <?php for($i = 1; $i <= $total_pages; $i++): ?>
                                 <a href="?id=<?php echo $forum_id; ?>&page=<?php echo $i; ?>" 
-                                   class="<?php echo $i == $page ? 'active' : ''; ?>">
+                                   class="pagination-number <?php echo $i == $page ? 'active' : ''; ?>">
                                     <?php echo $i; ?>
                                 </a>
                             <?php endfor; ?>
+                            <?php if($page < $total_pages): ?>
+                                <a href="?id=<?php echo $forum_id; ?>&page=<?php echo $page+1; ?>" class="pagination-btn">
+                                    Next <i class="fas fa-chevron-right"></i>
+                                </a>
+                            <?php endif; ?>
                         </div>
-                    <?php endif; ?>
-                <?php else: ?>
-                    <div class="p-3 text-center">
-                        <i class="fas fa-comments" style="font-size: 3rem; color: var(--text-secondary); margin-bottom: 1rem;"></i>
-                        <h3>No topics yet</h3>
-                        <p class="text-secondary">Be the first to start a discussion in this forum!</p>
-                        <?php if($user): ?>
-                            <a href="new_topic.php?forum_id=<?php echo $forum_id; ?>" class="btn btn-primary mt-2">
-                                <i class="fas fa-plus"></i>Create First Topic
-                            </a>
-                        <?php endif; ?>
                     </div>
                 <?php endif; ?>
             </div>

@@ -2421,6 +2421,116 @@ body.dark-theme .action-desc {
     border-color: var(--primary-blue);
 }
 
+/* Forum Page Improvements */
+.topics-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem 0;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-secondary);
+}
+
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: var(--border-color);
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-right: 0.5rem;
+}
+
+.badge.pinned {
+    background: var(--accent-gold);
+    color: white;
+}
+
+.badge.locked {
+    background: var(--danger-color);
+    color: white;
+}
+
+.last-reply {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.last-reply-text {
+    margin-right: 0.25rem;
+}
+
+.last-reply-time {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+}
+
+.author-link {
+    color: var(--secondary-blue);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.author-link:hover {
+    text-decoration: underline;
+}
+
+.pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 2rem 0;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: white;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+}
+
+.pagination-number, .pagination-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    background: var(--light-color);
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 2px solid var(--border-color);
+}
+
+.pagination-number:hover, .pagination-btn:hover {
+    background: var(--secondary-blue);
+    color: white;
+    border-color: var(--secondary-blue);
+    transform: translateY(-2px);
+}
+
+.pagination-number.active {
+    background: var(--primary-gradient);
+    color: white;
+    border-color: var(--primary-blue);
+}
+
 /* Responsive adjustments */
 @media (max-width: 1024px) {
     .topic-layout {
