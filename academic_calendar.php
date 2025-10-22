@@ -1,135 +1,91 @@
 <?php
-    require_once 'includes/auth.php';
-    require_once 'config/database.php';
+require_once 'includes/auth.php';
 
-    $auth = new Auth();
-    $user = $auth -> getCurrentUser();
-    $database = new Database();
-    $conn = $database -> getConnection();
+$auth = new Auth();
+$user = $auth->getCurrentUser();
 
-    // Handle event creation
-    if ($_POST && $user && in_array($user['role'], ['admin', 'faculty'])) {
-        $stmt = $conn -> prepare("INSERT INTO academic_calendar (title, description, event_date, event_type, university, created_by) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt -> execute([
-            $_POST['title'],
-            $_POST['description'],
-            $_POST['event_date'],
-            $_POST['event_type'],
-            $_POST['university'],
-            $user['id']
-        ]);
-        header('Location: academic_calendar.php');
-        exit;
-    }
+$database = new Database();
+$conn = $database->getConnection();
 
-    // Get calendar events
-    $calendar_query = "SELECT ac.*, u.full_name AS creator_name
-                       FROM academic_calendar ac
-                       LEFT JOIN users u ON ac.created_by = u.id
-                       WHERE ac.event_date >= CURDATE()
-                       ORDER BY ac.event_date ASC";
-    $stmt =  $conn -> prepare($calendar_query);
-    $stmt -> execute();
-    $events = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+// Get calendar events
+$events_query = "SELECT * FROM academic_calendar ORDER BY event_date ASC";
+$stmt = $conn->prepare($events_query);
+$stmt->execute();
+$events = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
-<html lane="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Academic Calendar - PSUC Forum</title>
-        <link href="assets/stylesheets/main.css" rel="stylesheet">
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    </head>
-    <body>
-        <?php include 'includes/header.php'; ?>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Calendar - PSUC Forum</title>
+    <link rel="stylesheet" href="assets/stylesheets/main.css">
+    <link rel="stylesheet" href="assets/stylesheets/dark-theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <?php include 'includes/header.php'; ?>
 
-        <main class="container">
-            <div class="main-content">
-                <div class="forum-content">
-                    <div class="p-3">
-                        <h1><i class="fas fa-calendar-alt"></i>Academic Calendar</h1>
-                        <p class="text-secondary">Important dates and events for PSUC institutions</p>
-
-                        <?php if ($user && in_array($user['role'], ['admin', 'faculty'])): ?>
-                        <button onclick="toggleEventForm()" class="btn btn-primary mb-3">
-                            <i class="fas fa-plus"></i>Add Event
-                        </button>
-
-                        <div id="eventForm" class="card mb-4" style="display: none;">
-                            <div class="card-header">
-                                <h3>Add New Event</h3>
-                            </div>
-                            <div class="card-body">
-                                <form method="POST">
-                                    <div class="form-group">
-                                        <label>Event Title</label>
-                                        <input type="text" name="title" class="form-control" required>
-                                    </div>
-                                    <div class="form-group">
-                                    <label>Description</label>
-                                    <textarea name="description" class="form-control" rows="3"></textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label>Event Date</label>
-                                    <input type="date" name="event_date" class="form-control" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Event Type</label>
-                                    <select name="event_type" class="form-control" required>
-                                        <option value="exam">Examination</option>
-                                        <option value="enrollment">Enrollment</option>
-                                        <option value="holiday">Holiday</option>
-                                        <option value="semester_start">Semester Start</option>
-                                        <option value="semester_end">Semester End</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>University (Optional)</label>
-                                    <input type="text" name="university" class="form-control" placeholder="Leave blank for all universities">
-                                </div>
-                                <button type="submit" class="btn btn-primary">Add Event</button>
-                                <button type="button" onclick="toggleEventForm()" class="btn btn-secondary">Cancel</button>
-                            </form>
-                        </div>
-                    </div>
-                    <?php endif; ?>
+    <main class="container">
+        <div class="main-content">
+            <div class="forum-content">
+                <div class="p-3">
+                    <h1><i class="fas fa-calendar-alt"></i> Academic Calendar</h1>
+                    <p class="text-secondary">Important dates and events for PSUC institutions</p>
                     
-                    <div class="calendar-events">
-                        <?php foreach ($events as $event): ?>
-                        <div class="event-card">
-                            <div class="event-date">
-                                <div class="month"><?php echo date('M', strtotime($event['event_date'])); ?></div>
-                                <div class="day"><?php echo date('d', strtotime($event['event_date'])); ?></div>
-                            </div>
-                            <div class="event-details">
-                                <h3><?php echo htmlspecialchars($event['title']); ?></h3>
-                                <p><?php echo htmlspecialchars($event['description']); ?></p>
-                                <div class="event-meta">
-                                    <span class="event-type <?php echo $event['event_type']; ?>">
-                                        <?php echo ucfirst(str_replace('_', ' ', $event['event_type'])); ?>
-                                    </span>
-                                    <?php if ($event['university']): ?>
-                                    <span class="event-university"><?php echo htmlspecialchars($event['university']); ?></span>
-                                    <?php endif; ?>
+                    <?php if(count($events) > 0): ?>
+                        <div style="margin-top: 2rem;">
+                            <?php foreach($events as $event): ?>
+                                <div class="widget" style="margin-bottom: 1rem;">
+                                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                                        <div>
+                                            <h4><?php echo htmlspecialchars($event['title']); ?></h4>
+                                            <p><?php echo htmlspecialchars($event['description']); ?></p>
+                                            <?php if($event['university']): ?>
+                                                <small class="text-secondary">
+                                                    <i class="fas fa-university"></i> <?php echo htmlspecialchars($event['university']); ?>
+                                                </small>
+                                            <?php endif; ?>
+                                        </div>
+                                        <div style="text-align: right;">
+                                            <div class="badge" style="background: var(--primary-color);">
+                                                <?php echo date('M j, Y', strtotime($event['event_date'])); ?>
+                                            </div>
+                                            <div style="margin-top: 0.5rem;">
+                                                <span class="badge" style="background: var(--success-color);">
+                                                    <?php echo ucfirst($event['event_type']); ?>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            <?php endforeach; ?>
                         </div>
-                        <?php endforeach; ?>
-                    </div>
+                    <?php else: ?>
+                        <div class="text-center" style="padding: 3rem;">
+                            <i class="fas fa-calendar" style="font-size: 3rem; color: var(--text-secondary); margin-bottom: 1rem;"></i>
+                            <h3>No events scheduled</h3>
+                            <p class="text-secondary">Check back later for upcoming academic events and important dates.</p>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
+
+            <aside class="sidebar">
+                <div class="widget">
+                    <h3><i class="fas fa-info-circle"></i> Event Types</h3>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <div><span class="badge" style="background: #007bff;">Exam</span> Examination periods</div>
+                        <div><span class="badge" style="background: #28a745;">Enrollment</span> Registration dates</div>
+                        <div><span class="badge" style="background: #dc3545;">Holiday</span> Academic holidays</div>
+                        <div><span class="badge" style="background: #ffc107;">Semester</span> Term dates</div>
+                    </div>
+                </div>
+            </aside>
         </div>
     </main>
-    
-    <script>
-        function toggleEventForm() {
-            const form = document.getElementById('eventForm');
-            form.style.display = form.style.display === 'none' ? 'block' : 'none';
-        }
-    </script>
+
     <script src="assets/scripts/main.js"></script>
 </body>
 </html>

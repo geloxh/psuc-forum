@@ -6,17 +6,27 @@
     $success = '';
 
     if($_POST) {
+        // --- Basic Server-Side Validation ---
+        $username = trim($_POST['username']);
+        $email = trim($_POST['email']);
+        $password = $_POST['password'];
+        $full_name = trim($_POST['full_name']);
+        $university = $_POST['university'];
+        $role = $_POST['role'];
+
         if ($_POST['password'] !== $_POST['confirm_password']) {
             $error = "Passwords do not match.";
+        } elseif (strlen($password) < 6) {
+            $error = "Password must be at least 6 characters long.";
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $error = "Please enter a valid email address.";
+        } elseif (empty($username) || empty($full_name) || empty($university) || empty($role)) {
+            $error = "Please fill out all required fields.";
         } else {
-            $additional_data = [
-                'student_id' => $_POST['student_id'] ?? '',
-                'course' => $_POST['course'] ?? '',
-                'year_level' => $_POST['year_level'] ?? ''
-            ];
-
-            if($auth -> register($_POST['username'], $_POST['email'], $_POST['password'], $_POST['full_name'], $_POST['university'], $_POST['role'])) {
+            if($auth->register($username, $email, $password, $full_name, $university, $role)) {
                 $success = 'Registration successful! You can now login.';
+                // Clear POST data on success to not repopulate the form
+                $_POST = [];
             } else {
                 $error = 'Registration failed. Username or email may already exist.';
             }
@@ -106,31 +116,35 @@
                 <form method="POST">
                     <div class="form-group">
                         <label>Full Name</label>
-                        <input type="text" name="full_name" class="form-control" required>
+                        <input type="text" name="full_name" class="form-control" required value="<?php echo htmlspecialchars($_POST['full_name'] ?? ''); ?>">
                     </div>
                     <div class="form-group">
                         <label>Username</label>
-                        <input type="text" name="username" class="form-control" required>
+                        <input type="text" name="username" class="form-control" required value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>">
                     </div>
                     <div class="form-group">
                         <label>Email</label>
-                        <input type="email" name="email" class="form-control" required>
+                        <input type="email" name="email" class="form-control" required value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>">
                     </div>
                     <div class="form-group">
                         <label>University/College</label>
                         <select name="university" class="form-control" required>
                             <option value="">Select your institution</option>
-                            <?php foreach($universities as $uni): ?>
-                                <option value="<?php echo $uni; ?>"><?php echo $uni; ?></option>
+                            <?php foreach($universities as $group => $unis): ?>
+                                <optgroup label="<?php echo htmlspecialchars($group); ?>">
+                                    <?php foreach($unis as $uni): ?>
+                                        <option value="<?php echo htmlspecialchars($uni); ?>" <?php echo (isset($_POST['university']) && $_POST['university'] == $uni) ? 'selected' : ''; ?>><?php echo htmlspecialchars($uni); ?></option>
+                                    <?php endforeach; ?>
+                                </optgroup>
                             <?php endforeach; ?>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Role</label>
                         <select name="role" class="form-control" required>
-                            <option value="college student">College Student</option>
-                            <option value="faculty">Faculty</option>
-                            <option value="other">Other</option>
+                            <option value="college student" <?php echo (isset($_POST['role']) && $_POST['role'] == 'college student') ? 'selected' : ''; ?>>College Student</option>
+                            <option value="faculty" <?php echo (isset($_POST['role']) && $_POST['role'] == 'faculty') ? 'selected' : ''; ?>>Faculty</option>
+                            <option value="other" <?php echo (isset($_POST['role']) && $_POST['role'] == 'other') ? 'selected' : ''; ?>>Other</option>
                         </select>
                     </div>
                     <div class="form-group">

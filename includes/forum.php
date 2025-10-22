@@ -121,12 +121,12 @@ class Forum {
 
         try {
             // First, create the topic
-            $query = "INSERT INTO topics (forum_id, user_id, title) VALUES (?, ?, ?)";
+            $query = "INSERT INTO topics (forum_id, user_id, title, content) VALUES (?, ?, ?, ?)";
             $stmt = $this -> conn -> prepare($query);
-            $stmt -> execute([$forum_id, $user_id, $title]);
+            $stmt -> execute([$forum_id, $user_id, $title, $content]);
             $topic_id = $this -> conn -> lastInsertId();
 
-            // Now, create the first post for this topic
+            // Now, create the first post for this topic, which mirrors the topic content
             $post_query = "INSERT INTO posts (topic_id, user_id, content) VALUES (?, ?, ?)";
             $post_stmt = $this->conn->prepare($post_query);
             $post_stmt->execute([$topic_id, $user_id, $content]);
@@ -230,11 +230,11 @@ class Forum {
         return $stmt -> fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getAttachments($post_id) {
-        $query = "SELECT * FROM post_attachments WHERE post_id = ?";
+    public function getAttachments($post_id, $topic_id = null) {
+        $query = "SELECT * FROM attachments WHERE post_id = ? OR topic_id = ?";
         $stmt = $this -> conn -> prepare($query);
-        $stmt -> execute([$post_id]);
-        return $stmt -> fetchAll(PDO::FETCH_ASSOC);
+        $stmt->execute([$post_id, $topic_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function updatePost($post_id, $content) {
@@ -274,7 +274,7 @@ class Forum {
 
         foreach ($files['name'] as $key => $name) {
             if ($files['error'][$key] === UPLOAD_ERR_OK) {
-                $file_name = basename($name);
+                $file_name = htmlspecialchars(basename($name));
                 $file_tmp = $files['tmp_name'][$key];
                 $file_size = $files['size'][$key];
                 $file_type = $files['type'][$key];
@@ -299,12 +299,12 @@ class Forum {
 
                 if (move_uploaded_file($file_tmp, $target_path)) {
                     // Save attachment info to the database
-                    $query = "INSERT INTO post_attachments (post_id, file_name, file_path, file_type, file_size) VALUES (?, ?, ?, ?, ?)";
+                    $query = "INSERT INTO attachments (post_id, file_name, file_path, file_type, file_size) VALUES (?, ?, ?, ?, ?)";
                     $stmt = $this -> conn -> prepare($query);
                     $stmt -> execute([
                         $post_id,
-                        htmlspecialchars($file_name), // Original filename for display
-                        $unique_filename, // Stored filename
+                        $file_name, // Original filename for display
+                        'uploads/' . $unique_filename, // Stored filename
                         $file_type,
                         $file_size
                     ]);

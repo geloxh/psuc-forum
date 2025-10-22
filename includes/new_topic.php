@@ -77,10 +77,11 @@
                             <div class="alert alert-danger"><?php echo $error; ?></div>
                         <?php endif; ?>
 
-                        <form method="POST" style="margin-top: 2rem;">
+                        <form method="POST" enctype="multipart/form-data" style="margin-top: 2rem;">
+                            <input type="hidden" name="forum_id" value="<?php echo $forum_id; ?>">
                             <div class="form-group">
-                                <label>Topic Title</label>
-                                <input type="text" name="title" class="form-control" placeholder="Enter a descriptive title for your topic" required maxlength="255">
+                                <label for="title">Topic Title</label>
+                                <input type="text" id="title" name="title" class="form-control" placeholder="Enter a descriptive title for your topic" required maxlength="255">
                             </div>
 
                             <div class="form-group">
