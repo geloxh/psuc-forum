@@ -1146,34 +1146,8 @@ body {
     background: white;
     box-shadow: 2px 0 10px rgba(0,0,0,0.1);
     transform: translateX(0);
-    transition: transform 0.3s ease;
     z-index: 999;
     overflow-y: auto;
-}
-
-.dropdown-sidebar.open {
-    transform: translateX(0);
-}
-
-.sidebar-toggle {
-    position: fixed;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: var(--primary-gradient);
-    color: white;
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    z-index: 1000;
-    box-shadow: var(--card-shadow);
-    transition: all 0.3s ease;
-}
-
-.sidebar-toggle:hover {
-    transform: translateY(-50%) scale(1.1);
 }
 
 .category-dropdown {

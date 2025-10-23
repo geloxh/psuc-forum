@@ -28,18 +28,28 @@ document.addEventListener('click', function(event) {
     }
 });
 
-// For Web Sidebar
+// Category Sidebar Functionality
 function toggleCategory(categoryId) {
     const forums = document.getElementById('forums-' + categoryId);
     const arrow = document.getElementById('arrow-' + categoryId);
     
-    forums.classList.toggle('open');
-    arrow.classList.toggle('rotated');
+    if (forums && arrow) {
+        forums.classList.toggle('open');
+        arrow.classList.toggle('rotated');
+        
+        // Close other open categories for accordion effect
+        document.querySelectorAll('.forums-dropdown.open').forEach(dropdown => {
+            if (dropdown.id !== 'forums-' + categoryId) {
+                dropdown.classList.remove('open');
+                const otherArrow = document.getElementById(dropdown.id.replace('forums-', 'arrow-'));
+                if (otherArrow) otherArrow.classList.remove('rotated');
+            }
+        });
+    }
 }
 
-function navigateToForum(forumName) {
-    // Navigate to specific forum - adjust URL as needed
-    window.location.href = 'forum.php?name=' + forumName;
+function navigateToForum(forumId) {
+    window.location.href = 'forum.php?id=' + forumId;
 }
 
 // Password Confirmation
