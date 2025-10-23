@@ -87,20 +87,6 @@
     background: rgba(239, 68, 68, 0.8);
 }
 
-/* Dark theme adjustments */
-body.dark-theme .media-preview-container {
-    background: rgba(31, 41, 55, 0.5);
-    border-color: #4b5563;
-}
-
-body.dark-theme .media-preview-item {
-    background: rgba(17, 24, 39, 0.8);
-}
-
-body.dark-theme .pdf-preview {
-    background: rgba(239, 68, 68, 0.2);
-}
-
 @media (max-width: 768px) {
     .media-preview-container {
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));

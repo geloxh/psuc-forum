@@ -1,27 +1,5 @@
-// Dark - Light Mode Toggle
-function toggleTheme() {
-    document.body.classList.toggle('dark-theme');
-    const isDark = document.body.classList.contains('dark-theme');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    updateThemeIcon(isDark);
-}
-
-function updateThemeIcon(isDark) {
-    const icon = document.getElementById('themeIcon');
-    if (icon) {
-        icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-    }
-}
-
 // Apply theme on initial load to prevent FOUC (Flash of Unstyled Content)
 document.addEventListener('DOMContentLoaded', function() {
-    const theme = localStorage.getItem('theme');
-    const isDark = theme === 'dark';
-    if (isDark) {
-        document.body.classList.add('dark-theme');
-    }
-    updateThemeIcon(isDark);
-
     // Responsive navigation toggle
     const navToggle = document.querySelector('.nav-toggle');
     const nav = document.querySelector('.nav');

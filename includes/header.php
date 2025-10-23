@@ -38,11 +38,6 @@ if (!isset($auth)) {
                     </li>
                     <li><a href="about.php"><i class="fas fa-info-circle"></i>About</a></li>
                     <li><a href="search.php"><i class="fas fa-search"></i> Search</a></li>
-                    <li>
-                        <button onclick="toggleTheme()" class="btn btn-theme-toggle">
-                            <i class="fas fa-moon" id="themeIcon"></i>
-                        </button>
-                    </li>
                     <?php if($user): ?>
                         <li><a href="messages.php"><i class="fas fa-envelope"></i>Messages</a></li>
                         <li><a href="notifications.php"><i class="fas fa-bell"></i>Notifications</a></li>

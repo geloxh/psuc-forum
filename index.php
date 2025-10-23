@@ -17,7 +17,6 @@
     <title>Home Page - PSUC Forum</title>
     <!-- ===== CSS ===== -->
     <link rel="stylesheet" href="assets/stylesheets/main.css">
-    <link rel="stylesheet" href="assets/stylesheets/dark-theme.css">
     <link rel="stylesheet" href="assets/stylesheets/media-preview.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
