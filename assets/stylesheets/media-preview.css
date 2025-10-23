@@ -1,0 +1,115 @@
+/* Media Preview Styles */
+.media-preview-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(248, 250, 252, 0.5);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    min-height: 50px;
+}
+
+.media-preview-container:empty {
+    display: none;
+}
+
+.media-preview-item {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.media-preview-item:hover {
+    transform: scale(1.02);
+}
+
+.media-preview-item img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    display: block;
+}
+
+.media-preview-item video {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+}
+
+.pdf-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 120px;
+    padding: 1rem;
+    text-align: center;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.pdf-preview i {
+    font-size: 2rem;
+    color: #dc2626;
+    margin-bottom: 0.5rem;
+}
+
+.pdf-preview span {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    word-break: break-word;
+}
+
+.preview-remove-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+}
+
+.preview-remove-btn:hover {
+    background: rgba(239, 68, 68, 0.8);
+}
+
+/* Dark theme adjustments */
+body.dark-theme .media-preview-container {
+    background: rgba(31, 41, 55, 0.5);
+    border-color: #4b5563;
+}
+
+body.dark-theme .media-preview-item {
+    background: rgba(17, 24, 39, 0.8);
+}
+
+body.dark-theme .pdf-preview {
+    background: rgba(239, 68, 68, 0.2);
+}
+
+@media (max-width: 768px) {
+    .media-preview-container {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 0.75rem;
+    }
+    
+    .media-preview-item img,
+    .media-preview-item video,
+    .pdf-preview {
+        height: 100px;
+    }
+}

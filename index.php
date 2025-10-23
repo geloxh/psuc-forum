@@ -18,6 +18,7 @@
     <!-- ===== CSS ===== -->
     <link rel="stylesheet" href="assets/stylesheets/main.css">
     <link rel="stylesheet" href="assets/stylesheets/dark-theme.css">
+    <link rel="stylesheet" href="assets/stylesheets/media-preview.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -61,6 +62,18 @@
                     $stmt = $conn->prepare($topics_query);
                     $stmt->execute();
                     $topics = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    
+                    // Fetch attachments for each topic (only from original topic post, not replies)
+                    foreach($topics as $key => $topic) {
+                        $attachment_query = "SELECT a.* FROM attachments a 
+                                           JOIN posts p ON a.post_id = p.id 
+                                           WHERE p.topic_id = ? 
+                                           AND p.id = (SELECT MIN(id) FROM posts WHERE topic_id = ?) 
+                                           LIMIT 3";
+                        $attachment_stmt = $conn->prepare($attachment_query);
+                        $attachment_stmt->execute([$topic['id'], $topic['id']]);
+                        $topics[$key]['attachments'] = $attachment_stmt->fetchAll(PDO::FETCH_ASSOC);
+                    }
 
                     foreach($topics as $topic):
                     ?>
@@ -84,6 +97,39 @@
                                 }
                                 echo $content_snippet;
                                 ?>
+                                
+                                <?php if (!empty($topic['attachments'])): ?>
+                                    <div class="media-preview-container" style="margin-top: 1rem;">
+                                        <?php foreach (array_slice($topic['attachments'], 0, 3) as $attachment): ?>
+                                            <?php if (strpos($attachment['file_type'], 'image/') === 0): ?>
+                                                <div class="media-preview-item">
+                                                    <img src="<?php echo htmlspecialchars($attachment['file_path']); ?>" alt="<?php echo htmlspecialchars($attachment['file_name']); ?>">
+                                                </div>
+                                            <?php elseif (strpos($attachment['file_type'], 'video/') === 0): ?>
+                                                <div class="media-preview-item">
+                                                    <video controls>
+                                                        <source src="<?php echo htmlspecialchars($attachment['file_path']); ?>" type="<?php echo htmlspecialchars($attachment['file_type']); ?>">
+                                                    </video>
+                                                </div>
+                                            <?php else: ?>
+                                                <div class="media-preview-item">
+                                                    <div class="pdf-preview">
+                                                        <i class="fas fa-file-pdf"></i>
+                                                        <span><?php echo htmlspecialchars($attachment['file_name']); ?></span>
+                                                    </div>
+                                                </div>
+                                            <?php endif; ?>
+                                        <?php endforeach; ?>
+                                        <?php if (count($topic['attachments']) > 3): ?>
+                                            <div class="media-preview-item">
+                                                <div class="pdf-preview">
+                                                    <i class="fas fa-plus"></i>
+                                                    <span>+<?php echo count($topic['attachments']) - 3; ?> more</span>
+                                                </div>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                             <div class="topic-footer">
                                 <div class="topic-stat">

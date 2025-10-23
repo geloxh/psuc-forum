@@ -65,6 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Create New Topic - PSUC Forum</title>
     <link rel="stylesheet" href="assets/stylesheets/main.css">
     <link rel="stylesheet" href="assets/stylesheets/dark-theme.css">
+    <link rel="stylesheet" href="assets/stylesheets/media-preview.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -146,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 
                                 <div class="form-group">
                                     <label for="attachments"><i class="fas fa-paperclip"></i> Attachments (Optional)</label>
-                                    <input type="file" id="attachments" name="attachments[]" class="form-control-file" multiple>
+                                    <input type="file" id="attachments" name="attachments[]" class="form-control-file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt,.zip,.rar">
                                     <small class="form-text">Supported formats: JPG, PNG, PDF, DOC, TXT, ZIP (Max 5MB each)</small>
                                 </div>
                                 
@@ -205,5 +206,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </main>
 
     <script src="assets/scripts/main.js"></script>
+    <script src="assets/scripts/media-preview.js"></script>
 </body>
 </html>

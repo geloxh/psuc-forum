@@ -89,6 +89,20 @@
                                 <textarea name="content" class="form-control" rows="12" placeholder="Write your topic content here..." required></textarea>
                             </div>
 
+                            <div class="form-group">
+                                <label for="attachments">Attachments</label>
+                                <input type="file" id="attachments" name="attachments[]" class="form-control" multiple onchange="previewFiles(this)">
+                                <small class="form-text text-secondary">You can upload images, videos, PDFs, and other documents. Max file size: 5MB.</small>
+                                <div id="preview-container" class="attachment-previews" style="margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 1rem;"></div>
+                            </div>
+
+                            <style>
+                                .preview-item { position: relative; }
+                                .preview-item img, .preview-item video { max-width: 150px; max-height: 150px; border-radius: 5px; }
+                                .preview-item .file-placeholder { width: 150px; height: 150px; background-color: #f0f0f0; border: 1px solid #ddd; border-radius: 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 10px; }
+                                .preview-item .file-placeholder i { font-size: 2rem; margin-bottom: 0.5rem; }
+                            </style>
+
                             <div style="display: flex; gap: 1rem;">
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-paper-plane"></i>Create Topic
@@ -124,5 +138,49 @@
         </main>
 
         <script src="../assets/scripts/main.js"></script>
+        <script>
+            function previewFiles(input) {
+                const previewContainer = document.getElementById('preview-container');
+                previewContainer.innerHTML = ''; // Clear previous previews
+
+                if (input.files) {
+                    Array.from(input.files).forEach(file => {
+                        const reader = new FileReader();
+
+                        reader.onload = function(e) {
+                            const previewWrapper = document.createElement('div');
+                            previewWrapper.className = 'preview-item';
+
+                            if (file.type.startsWith('image/')) {
+                                const img = document.createElement('img');
+                                img.src = e.target.result;
+                                previewWrapper.appendChild(img);
+                            } else if (file.type.startsWith('video/')) {
+                                const video = document.createElement('video');
+                                video.src = e.target.result;
+                                video.controls = true;
+                                previewWrapper.appendChild(video);
+                            } else {
+                                const placeholder = document.createElement('div');
+                                placeholder.className = 'file-placeholder';
+                                let iconClass = 'fas fa-file';
+                                if (file.type === 'application/pdf') iconClass = 'fas fa-file-pdf';
+                                if (file.type.includes('word')) iconClass = 'fas fa-file-word';
+                                if (file.type.includes('zip') || file.type.includes('archive')) iconClass = 'fas fa-file-archive';
+
+                                placeholder.innerHTML = `<i class="${iconClass}"></i><span>${escapeHtml(file.name)}</span>`;
+                                previewWrapper.appendChild(placeholder);
+                            }
+                            previewContainer.appendChild(previewWrapper);
+                        }
+                        reader.readAsDataURL(file);
+                    });
+                }
+            }
+
+            function escapeHtml(unsafe) {
+                return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+            }
+        </script>
     </body>
 </html>

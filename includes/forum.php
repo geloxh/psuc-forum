@@ -134,7 +134,7 @@ class Forum {
 
             // Handle attachments for the post
             if (isset($_FILES['attachments'])) {
-                $this->handleAttachments($post_id, $_FILES['attachments']);
+                $this->handleAttachments($post_id, $user_id, $_FILES['attachments']);
             }
 
             $this -> updateForumStats($forum_id);
@@ -207,7 +207,7 @@ class Forum {
 
             // Handle file uploads
             if (isset($_FILES['attachments'])) {
-                $this -> handleAttachments($post_id, $_FILES['attachments']);
+                $this -> handleAttachments($post_id, $user_id, $_FILES['attachments']);
             }
 
             $this -> updateTopicStats($topic_id);
@@ -266,7 +266,7 @@ class Forum {
         return false;
     }
 
-    public function handleAttachments($post_id, $files) {
+    public function handleAttachments($post_id, $user_id, $files) {
         $target_dir = __DIR__ . "/../uploads/";
         if (!file_exists($target_dir)) {
             mkdir($target_dir, 0777, true);
@@ -299,10 +299,11 @@ class Forum {
 
                 if (move_uploaded_file($file_tmp, $target_path)) {
                     // Save attachment info to the database
-                    $query = "INSERT INTO attachments (post_id, file_name, file_path, file_type, file_size) VALUES (?, ?, ?, ?, ?)";
+                    $query = "INSERT INTO attachments (post_id, user_id, file_name, file_path, file_type, file_size) VALUES (?, ?, ?, ?, ?, ?)";
                     $stmt = $this -> conn -> prepare($query);
                     $stmt -> execute([
                         $post_id,
+                        $user_id,
                         $file_name, // Original filename for display
                         'uploads/' . $unique_filename, // Stored filename
                         $file_type,
