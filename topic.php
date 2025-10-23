@@ -55,11 +55,237 @@
     <link rel="stylesheet" href="assets/stylesheets/main.css">
     <link rel="stylesheet" href="assets/stylesheets/media-preview.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .topic-header-enhanced {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(245, 158, 11, 0.05));
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .topic-header-enhanced::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gold-gradient);
+        }
+        .breadcrumb-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .breadcrumb-nav a {
+            color: var(--secondary-blue);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .breadcrumb-nav a:hover {
+            color: var(--primary-blue);
+        }
+        .topic-title-enhanced {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+        .topic-meta-enhanced {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: white;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .meta-item i {
+            color: var(--secondary-blue);
+        }
+        .topic-stats-bar {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        .stat-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--primary-gradient);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .floating-actions {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            z-index: 100;
+        }
+        .floating-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .floating-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+        .floating-btn.reply-btn {
+            background: var(--success-color);
+        }
+        .floating-btn.back-btn {
+            background: var(--text-secondary);
+        }
+        .posts-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .reply-form-enhanced {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            position: relative;
+            overflow: hidden;
+            margin-top: 2rem;
+        }
+        .reply-form-enhanced::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--success-color);
+        }
+        .form-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .form-header i {
+            width: 40px;
+            height: 40px;
+            background: var(--success-color);
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+        .form-header h3 {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        @media (max-width: 768px) {
+            .floating-actions {
+                bottom: 1rem;
+                right: 1rem;
+            }
+            .floating-btn {
+                width: 48px;
+                height: 48px;
+                font-size: 1rem;
+            }
+            .topic-title-enhanced {
+                font-size: 1.5rem;
+            }
+            .topic-meta-enhanced {
+                gap: 1rem;
+            }
+            .meta-item {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.8rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <?php include 'includes/header.php'; ?>
 
     <main class="container">
+        <!-- Enhanced Topic Header -->
+        <div class="topic-header-enhanced">
+            <nav class="breadcrumb-nav">
+                <a href="index.php"><i class="fas fa-home"></i> Forum</a>
+                <i class="fas fa-chevron-right"></i>
+                <a href="forum.php?id=<?php echo $topic['forum_id']; ?>"><?php echo htmlspecialchars($topic['forum_name']); ?></a>
+                <i class="fas fa-chevron-right"></i>
+                <span><?php echo htmlspecialchars($topic['title']); ?></span>
+            </nav>
+            
+            <h1 class="topic-title-enhanced"><?php echo htmlspecialchars($topic['title']); ?></h1>
+            
+            <div class="topic-meta-enhanced">
+                <div class="meta-item">
+                    <i class="fas fa-user"></i>
+                    <span>Started by <strong><?php echo htmlspecialchars($topic['username']); ?></strong></span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-calendar"></i>
+                    <span><?php echo date('M j, Y g:i A', strtotime($topic['created_at'])); ?></span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-eye"></i>
+                    <span><?php echo number_format($topic['views']); ?> views</span>
+                </div>
+            </div>
+            
+            <div class="topic-stats-bar">
+                <div class="stat-badge">
+                    <i class="fas fa-reply"></i>
+                    <span><?php echo $total_posts; ?> replies</span>
+                </div>
+                <?php if($topic['votes_up'] > 0 || $topic['votes_down'] > 0): ?>
+                <div class="stat-badge">
+                    <i class="fas fa-thumbs-up"></i>
+                    <span><?php echo $topic['votes_up']; ?> up, <?php echo $topic['votes_down']; ?> down</span>
+                </div>
+                <?php endif; ?>
+            </div>
+        </div>
+
         <div class="topic-layout">
             <aside class="left-sidebar">
                 <div class="widget">
@@ -122,41 +348,33 @@
                         There was an error deleting the item. Please try again.
                     </div>
                 <?php endif; ?>
-                <div class="p-3" style="border-bottom: 1px solid var(--border-color);">
-                    <nav style="margin-bottom: 1rem;">
-                        <a href="index.php">Forum</a> > 
-                        <a href="forum.php?id=<?php echo $topic['forum_id']; ?>"><?php echo htmlspecialchars($topic['forum_name']); ?></a> > 
-                        <strong><?php echo htmlspecialchars($topic['title']); ?></strong>
-                    </nav>
-                    
-                    <h1><?php echo htmlspecialchars($topic['title']); ?></h1>
-                    <div class="topic-meta">
-                        Started by <strong><?php echo htmlspecialchars($topic['username']); ?></strong> • 
-                        <?php echo date('M j, Y g:i A', strtotime($topic['created_at'])); ?> • 
-                        <?php echo $topic['views']; ?> views
-                    </div>
-                </div>
+                <div class="posts-container">
 
-                <!-- Original Topic Post -->
-                <div class="post">
-                    <div class="post-author">
-                        <img src="assets/avatars/<?php echo $topic['avatar']; ?>" alt="Avatar" onerror="this.src='assets/avatars/default.png'">
-                        <h5><?php echo htmlspecialchars($topic['username']); ?></h5>
-                        <div class="role"><?php echo ucfirst($topic['role'] ?? 'Member'); ?></div>
-                        <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">
-                            Reputation: <?php echo $topic['reputation'] ?? 0; ?>
-                        </div>
-                    </div>
-
-                    <div class="post-content">
-                        <div class="post-header">
-                            <div class="post-date">
-                                <?php echo date('M j, Y g:i A', strtotime($topic['created_at'])); ?>
+                    <!-- Original Topic Post -->
+                    <div class="post" id="original-post">
+                        <div class="post-author">
+                            <img src="assets/avatars/<?php echo $topic['avatar']; ?>" alt="Avatar" onerror="this.src='assets/avatars/default.png'">
+                            <h5><?php echo htmlspecialchars($topic['username']); ?></h5>
+                            <div class="role"><?php echo ucfirst($topic['role'] ?? 'Member'); ?></div>
+                            <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">
+                                <i class="fas fa-star"></i> Reputation: <?php echo $topic['reputation'] ?? 0; ?>
                             </div>
                         </div>
-                        <div class="post-body">
-                            <?php echo nl2br(htmlspecialchars($topic['content'])); // Security: Escape output ?>
-                        </div>
+
+                        <div class="post-content">
+                            <div class="post-header">
+                                <div class="post-date">
+                                    <?php echo date('M j, Y g:i A', strtotime($topic['created_at'])); ?>
+                                </div>
+                                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                    <span class="badge" style="background: var(--accent-gold); color: white; padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.75rem;">
+                                        <i class="fas fa-crown"></i> Original Post
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="post-body">
+                                <?php echo nl2br(htmlspecialchars($topic['content'])); ?>
+                            </div>
 
                         <?php
                             $topic_attachments = $forum->getAttachments($posts[0]['id'] ?? 0); // The first post is the topic content
@@ -207,25 +425,41 @@
                     </div>
 
                     <!-- Replies -->
-                    <?php foreach($posts as $post): ?>
+                    <?php if(!empty($posts)): ?>
+                        <div style="margin: 2rem 0; padding: 1rem; background: rgba(59, 130, 246, 0.05); border-radius: 12px; text-align: center;">
+                            <h3 style="margin: 0; color: var(--primary-blue); font-size: 1.2rem;">
+                                <i class="fas fa-comments"></i> Replies (<?php echo count($posts); ?>)
+                            </h3>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <?php foreach($posts as $index => $post): ?>
                         <div class="post" id="post-<?php echo $post['id']; ?>">
                             <div class="post-author">
                                 <img src="assets/avatars/<?php echo $post['avatar']; ?>" alt="Avatar" onerror="this.src='assets/avatars/default.png'">
                                 <h5><?php echo htmlspecialchars($post['username']); ?></h5>
                                 <div class="role"><?php echo ucfirst($post['role']); ?></div>
-                                    <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">
-                                        Reputation: <?php echo $post['reputation'] ?? 0; ?>
+                                <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">
+                                    <i class="fas fa-star"></i> Reputation: <?php echo $post['reputation'] ?? 0; ?>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <div class="post-header">
+                                    <div class="post-date">
+                                        <?php echo date('M j, Y g:i A', strtotime($post['created_at'])); ?>
+                                    </div>
+                                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                        <span class="badge" style="background: var(--secondary-blue); color: white; padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.75rem;">
+                                            #<?php echo $index + 1; ?>
+                                        </span>
+                                        <button class="btn btn-secondary" onclick="copyPostLink(<?php echo $post['id']; ?>)" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">
+                                            <i class="fas fa-link"></i>
+                                        </button>
                                     </div>
                                 </div>
-                                <div class="post-content">
-                                    <div class="post-header">
-                                        <div class="post-date">
-                                            <?php echo date('M j, Y g:i A', strtotime($post['created_at'])); ?>
-                                        </div>
-                                    </div>
-                                    <div class="post-body">
-                                        <?php echo nl2br(htmlspecialchars($post['content'])); ?>
-                                    </div>
+                                <div class="post-body">
+                                    <?php echo nl2br(htmlspecialchars($post['content'])); ?>
+                                </div>
 
                                     <?php
                                         $attachments = $post['attachments']; // Attachments are already fetched in getPosts()
@@ -289,35 +523,74 @@
                         </div>
                     <?php endforeach; ?>
 
-                    <!-- Reply Form -->
-                    <?php if($topic['is_locked']): ?>
-                    <div class="p-3 text-center" style="border-top: 1px solid var(--border-color);">
-                        <i class="fas fa-lock" style="font-size: 2rem; color: var(--danger-color); margin-bottom: 1rem;"></i>
+                </div>
+                
+                <!-- Reply Form -->
+                <?php if($topic['is_locked']): ?>
+                <div class="reply-form-enhanced text-center">
+                    <div class="form-header" style="justify-content: center;">
+                        <i class="fas fa-lock" style="background: var(--danger-color);"></i>
                         <h3>Topic Locked</h3>
-                        <p class="text-secondary">This topic has been locked and no new replies can be posted.</p>
                     </div>
-                    <?php elseif(!$user): ?>
-                    <div class="p-3 text-center" style="border-top: 1px solid var(--border-color);">
-                        <p>Please <a href="login.php">login</a> to post a reply.</p>
+                    <p class="text-secondary">This topic has been locked and no new replies can be posted.</p>
+                </div>
+                <?php elseif(!$user): ?>
+                <div class="reply-form-enhanced text-center">
+                    <div class="form-header" style="justify-content: center;">
+                        <i class="fas fa-sign-in-alt" style="background: var(--secondary-blue);"></i>
+                        <h3>Join the Discussion</h3>
                     </div>
-                    <?php else: // User is logged in and topic is not locked ?>
-                        <div class="p-3" style="border-top: 1px solid var(--border-color);">
-                            <h3>Post a Reply</h3>
-                            <?php if ($error): ?>
-                                <div class="alert alert-danger"><?php echo $error; ?></div>
-                            <?php endif; ?>
-                            <form method="POST" enctype="multipart/form-data" class="reply-form">
-                                <input type="hidden" name="action" value="create_post">
-                                <div class="form-group">
-                                    <textarea name="content" class="form-control" rows="5" required placeholder="Write your reply..."></textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label for="attachments">Attach Files</label>
-                                    <input type="file" id="attachments" name="attachments[]" class="form-control-file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt,.zip,.rar">
-                                </div>
-                                <button type="submit" class="btn btn-primary"><i class="fas fa-reply"></i> Post Reply</button>
-                            </form>
+                    <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">Please login to participate in this discussion</p>
+                    <div style="display: flex; gap: 1rem; justify-content: center;">
+                        <a href="login.php" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </a>
+                        <a href="register.php" class="btn btn-secondary">
+                            <i class="fas fa-user-plus"></i> Register
+                        </a>
+                    </div>
+                </div>
+                <?php else: ?>
+                <div class="reply-form-enhanced" id="reply-form">
+                    <div class="form-header">
+                        <i class="fas fa-reply"></i>
+                        <h3>Post a Reply</h3>
+                    </div>
+                    <?php if ($error): ?>
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle"></i> <?php echo $error; ?>
                         </div>
+                    <?php endif; ?>
+                    <form method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="action" value="create_post">
+                        <div class="form-group">
+                            <label for="content">
+                                <i class="fas fa-edit"></i> Your Reply
+                            </label>
+                            <textarea name="content" id="content" class="form-control" rows="6" required placeholder="Share your thoughts, ask questions, or provide helpful information..."></textarea>
+                            <div class="form-text">
+                                Be respectful and constructive in your response
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="attachments">
+                                <i class="fas fa-paperclip"></i> Attach Files (Optional)
+                            </label>
+                            <input type="file" id="attachments" name="attachments[]" class="form-control" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt,.zip,.rar">
+                            <div class="form-text">
+                                Supported formats: Images, Videos, Documents (Max 10MB each)
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-reply"></i> Post Reply
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="document.getElementById('content').value = '';">
+                                <i class="fas fa-eraser"></i> Clear
+                            </button>
+                        </div>
+                    </form>
+                </div>
                 <?php endif; ?>
             </div>
             
@@ -395,6 +668,21 @@
                 <?php endif; ?>
             </aside>
         </div>
+        
+        <!-- Floating Action Buttons -->
+        <div class="floating-actions">
+            <?php if($user && !$topic['is_locked']): ?>
+            <a href="#reply-form" class="floating-btn reply-btn" title="Reply to Topic">
+                <i class="fas fa-reply"></i>
+            </a>
+            <?php endif; ?>
+            <a href="forum.php?id=<?php echo $topic['forum_id']; ?>" class="floating-btn back-btn" title="Back to Forum">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <button onclick="scrollToTop()" class="floating-btn" title="Scroll to Top">
+                <i class="fas fa-arrow-up"></i>
+            </button>
+        </div>
     </main>
 
     <script src="assets/scripts/main.js"></script>
@@ -408,17 +696,16 @@
                     url: window.location.href
                 }).catch(console.error);
             } else {
-                // Fallback for browsers that don't support the Web Share API
                 navigator.clipboard.writeText(window.location.href).then(function() {
-                    alert('Topic URL copied to clipboard!');
+                    showNotification('Topic URL copied to clipboard!', 'success');
                 }, function(err) {
-                    alert('Could not copy URL.');
+                    showNotification('Could not copy URL.', 'error');
                 });
             }
         }
 
         function sharePost(postId) {
-            const url = window.location.href + '#post-' + postId;
+            const url = window.location.href.split('#')[0] + '#post-' + postId;
             if (navigator.share) {
                 navigator.share({
                     title: document.title,
@@ -427,12 +714,93 @@
                 }).catch(console.error);
             } else {
                 navigator.clipboard.writeText(url).then(function() {
-                    alert('Post URL copied to clipboard!');
+                    showNotification('Post URL copied to clipboard!', 'success');
                 }, function(err) {
-                    alert('Could not copy URL.');
+                    showNotification('Could not copy URL.', 'error');
                 });
             }
         }
+        
+        function copyPostLink(postId) {
+            const url = window.location.href.split('#')[0] + '#post-' + postId;
+            navigator.clipboard.writeText(url).then(function() {
+                showNotification('Post link copied!', 'success');
+            }, function(err) {
+                showNotification('Could not copy link.', 'error');
+            });
+        }
+        
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+        
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'}`;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 1000;
+                min-width: 300px;
+                padding: 1rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                animation: slideIn 0.3s ease;
+            `;
+            notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i> ${message}`;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+        
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Smooth scroll to anchors
+        document.addEventListener('DOMContentLoaded', function() {
+            const hash = window.location.hash;
+            if (hash) {
+                setTimeout(() => {
+                    const element = document.querySelector(hash);
+                    if (element) {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        element.style.animation = 'highlight 2s ease';
+                    }
+                }, 100);
+            }
+        });
+        
+        // Add highlight animation
+        const highlightStyle = document.createElement('style');
+        highlightStyle.textContent = `
+            @keyframes highlight {
+                0% { background-color: rgba(59, 130, 246, 0.2); }
+                50% { background-color: rgba(59, 130, 246, 0.1); }
+                100% { background-color: transparent; }
+            }
+        `;
+        document.head.appendChild(highlightStyle);
     </script>
 </body>
 </html>

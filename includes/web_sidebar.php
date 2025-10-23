@@ -11,7 +11,7 @@ function renderDropdownSidebar() {
     }
 ?>
 
-<div class="dropdown-sidebar open" id="dropdownSidebar">
+<div class="dropdown-sidebar" id="dropdownSidebar">
     <div class="category-dropdown">
         <?php foreach($categories as $category): ?>
             <div class="category-item-dropdown">

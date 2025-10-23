@@ -22,14 +22,52 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
-<?php include 'includes/web_sidebar.php'; ?>
 <body>
 
     <?php include 'includes/header.php'; ?>
-    <?php renderDropdownSidebar(); ?>
 
     <main class="container">
         <div class="main-content">
+            <aside class="sidebar">
+                <!-- Categories Widget -->
+                <div class="widget">
+                    <div class="widget-header">
+                        <div class="widget-icon">
+                            <i class="fas fa-list"></i>
+                        </div>
+                        <h3>Categories</h3>
+                    </div>
+                    <div class="category-list">
+                        <?php
+                        $database = new Database();
+                        $conn = $database->getConnection();
+                        foreach($categories as $category):
+                            $forums_query = "SELECT id, name, description FROM forums WHERE category_id = ? ORDER BY position, name";
+                            $stmt = $conn->prepare($forums_query);
+                            $stmt->execute([$category['id']]);
+                            $forums = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                        ?>
+                            <div class="category-item">
+                                <div class="category-header">
+                                    <div class="category-icon" style="color: <?php echo $category['color']; ?>">
+                                        <i class="<?php echo $category['icon']; ?>"></i>
+                                    </div>
+                                    <h4><?php echo htmlspecialchars($category['name']); ?></h4>
+                                </div>
+                                <div class="forum-list">
+                                    <?php foreach($forums as $forum_item): ?>
+                                        <a href="forum.php?id=<?php echo $forum_item['id']; ?>" class="forum-link">
+                                            <i class="fas fa-chevron-right"></i>
+                                            <?php echo htmlspecialchars($forum_item['name']); ?>
+                                        </a>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </aside>
+
             <div class="forum-content">
                 <div class="p-3">
                     <h1><i class="fas fa-comments"></i>Welcome to Philippines State Universities and Colleges Forum</h1>
@@ -146,9 +184,8 @@
                 </div>
             </div>
 
-        <aside class="sidebar">
-
-            <!-- Forum Statistics Widget -->
+            <aside class="sidebar-right">
+                <!-- Forum Statistics Widget -->
             <div class="widget">
                 <div class="widget-header">
                     <div class="widget-icon">
@@ -306,8 +343,7 @@
                 <p class="text-secondary">No users online</p>
                 <?php endif; ?>
             </div>
-        </div>
-        </aside>
+            </aside>
 
         </div>
     </main>
