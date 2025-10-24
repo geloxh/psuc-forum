@@ -12,7 +12,7 @@ if (!isset($auth)) {
     <div class="container">
         <div class="header-content">
             <a href="index.php" class="logo">
-                <img src="assets/imgs/suc-logo.jpg" alt="SUC Forum Logo" style="height: 40px;">
+                <img src="assets/imgs/suc-logo.jpg" alt="SUC Forum Logo" style="height: 60px;">
             </a>
             <button class="nav-toggle" aria-label="toggle navigation">
                 <i class="fas fa-bars"></i>

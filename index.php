@@ -219,7 +219,7 @@
                         <span>Posts</span>
                     </div>
                     <div class="stat-item">
-                        <strong><?php echo htmlspecialchars($stats['newest_user'] ?? 'None'); ?></strong>
+                        <strong style="margin-right: 1rem;"><?php echo htmlspecialchars($stats['newest_user'] ?? 'None'); ?></strong>
                         <span>Newest Member</span>
                     </div>
                 </div>
