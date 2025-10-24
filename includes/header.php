@@ -21,7 +21,7 @@ if (!isset($auth)) {
                 <ul class="nav-menu">
                     <li><a href="index.php"><i class="fas fa-home"></i>Home</a></li>
                     <li class="user-menu">
-                        <a href="#" onclick="toggleDropdown(event)"><i class="fas fa-graduation-cap"></i>Academic <i class="fas fa-chevron-down"></i></a>
+                        <a href="#" class="dropdown-toggle"><i class="fas fa-graduation-cap"></i>Academic <i class="fas fa-chevron-down"></i></a>
                         <div class="dropdown">
                             <a href="academic_calendar.php"><i class="fas fa-calendar-alt"></i>Academic Calendar</a>
                             <a href="document_library.php"><i class="fas fa-file-alt"></i>Document Library</a>
@@ -29,7 +29,7 @@ if (!isset($auth)) {
                         </div>
                     </li>
                     <li class="user-menu">
-                        <a href="#" onclick="toggleDropdown(event)"><i class="fas fa-users"></i>Community <i class="fas fa-chevron-down"></i></a>
+                        <a href="#" class="dropdown-toggle"><i class="fas fa-users"></i>Community <i class="fas fa-chevron-down"></i></a>
                         <div class="dropdown">
                             <a href="events.php"><i class="fas fa-calendar"></i>Events</a>
                             <a href="job_board.php"><i class="fas fa-briefcase"></i>Job Board</a>
@@ -42,7 +42,7 @@ if (!isset($auth)) {
                         <li><a href="messages.php"><i class="fas fa-envelope"></i>Messages</a></li>
                         <li><a href="notifications.php"><i class="fas fa-bell"></i>Notifications</a></li>
                         <li class="user-menu"> 
-                            <a href="#" onclick="toggleDropdown(event)">
+                            <a href="#" class="dropdown-toggle">
                                 <i class="fas fa-user"></i> <?php echo htmlspecialchars($user['username']); ?>
                                 <i class="fas fa-chevron-down"></i>
                             </a>
@@ -64,3 +64,4 @@ if (!isset($auth)) {
         </div>
     </div>
 </header>
+<script src="assets/scripts/main.js"></script>

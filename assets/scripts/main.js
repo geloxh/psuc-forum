@@ -1,3 +1,25 @@
+// Improved dropdown functionality with error handling
+function toggleDropdown(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const dropdown = event.currentTarget.nextElementSibling;
+    if (!dropdown || !dropdown.classList.contains('dropdown')) {
+        return; // Exit if dropdown element not found
+    }
+    
+    const isOpen = dropdown.classList.contains('show');
+    
+    // Close all dropdowns
+    document.querySelectorAll('.dropdown.show').forEach(d => d.classList.remove('show'));
+    
+    // Toggle current dropdown
+    if (!isOpen) {
+        dropdown.classList.add('show');
+    }
+}
+
+
 // Apply theme on initial load to prevent FOUC (Flash of Unstyled Content)
 document.addEventListener('DOMContentLoaded', function() {
     // Responsive navigation toggle
@@ -7,24 +29,28 @@ document.addEventListener('DOMContentLoaded', function() {
     navToggle?.addEventListener('click', () => {
         nav?.classList.toggle('nav--visible');
     });
+    
+    // Event delegation for dropdown toggles
+    document.addEventListener('click', function(event) {
+        const dropdownToggle = event.target.closest('.dropdown-toggle');
+        if (dropdownToggle) {
+            // Create a new event object with the correct currentTarget
+            const newEvent = {
+                preventDefault: () => event.preventDefault(),
+                stopPropagation: () => event.stopPropagation(),
+                currentTarget: dropdownToggle
+            };
+            toggleDropdown(newEvent);
+        }
+    });
 });
 
-// Consolidated Dropdown Logic
+// Global click handler to close dropdowns
 document.addEventListener('click', function(event) {
-    const dropdownToggle = event.target.closest('.user-menu > a');
-    const clickedDropdownMenu = dropdownToggle?.nextElementSibling;
-    const isAlreadyOpen = clickedDropdownMenu?.classList.contains('show');
-
-    // Always close all open dropdowns first
-    document.querySelectorAll('.user-menu .dropdown.show').forEach(dropdown => {
-        dropdown.classList.remove('show');
-    });
-
-    // If a dropdown toggle was clicked and it wasn't already open, open it.
-    // This creates the toggle effect because we've already closed it above.
-    if (dropdownToggle && !isAlreadyOpen) {
-        event.preventDefault(); // Prevent navigation only when opening a dropdown
-        clickedDropdownMenu.classList.add('show');
+    if (!event.target.closest('.user-menu')) {
+        document.querySelectorAll('.dropdown.show').forEach(dropdown => {
+            dropdown.classList.remove('show');
+        });
     }
 });
 
