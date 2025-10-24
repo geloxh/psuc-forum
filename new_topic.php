@@ -71,136 +71,107 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <?php include 'includes/header.php'; ?>
 
-    <main class="container">
-        <div class="main-content">
-            <div class="forum-content">
-                <div class="p-3">
-                    <?php if(isset($show_forum_selection)): ?>
-                        <h1><i class="fas fa-plus"></i> Create New Topic</h1>
-                        <p class="text-secondary">Select a forum to start your discussion</p>
-                        
-                        <div style="display: grid; gap: 1.5rem;">
-                            <?php
-                            foreach($categories as $category):
-                                $forums_query = "SELECT id, name, description FROM forums WHERE category_id = ? ORDER BY position, name";
-                                $stmt = $conn->prepare($forums_query);
-                                $stmt->execute([$category['id']]);
-                                $forums = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                            ?>
-                                <div class="widget">
-                                    <div class="widget-header">
-                                        <div class="widget-icon" style="color: <?php echo $category['color']; ?>">
-                                            <i class="<?php echo $category['icon']; ?>"></i>
-                                        </div>
-                                        <h3><?php echo htmlspecialchars($category['name']); ?></h3>
-                                    </div>
-                                    <div style="display: grid; gap: 0.75rem;">
-                                        <?php foreach($forums as $forum): ?>
-                                            <a href="new_topic.php?forum_id=<?php echo $forum['id']; ?>" class="forum-selection-item">
-                                                <div class="forum-selection-content">
-                                                    <h4><?php echo htmlspecialchars($forum['name']); ?></h4>
-                                                    <p><?php echo htmlspecialchars($forum['description']); ?></p>
-                                                </div>
-                                                <i class="fas fa-chevron-right"></i>
-                                            </a>
-                                        <?php endforeach; ?>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                    <?php else: ?>
-                        <nav style="margin-bottom: 1rem;">
-                            <a href="index.php">Forum</a> >
-                            <a href="forum.php?id=<?php echo $forum_id; ?>"><?php echo htmlspecialchars($forum_info['name']); ?></a> >
-                            <strong>New Topic</strong>
-                        </nav>
+    <main class="new-topic-page">
+        <div class="topic-container">
+            <?php if(isset($show_forum_selection)): ?>
+                <!-- Forum Selection -->
+                <header class="page-header">
+                    <h1>Create New Topic</h1>
+                    <p>Choose a forum to start your discussion</p>
+                </header>
 
-                        <h1><i class="fas fa-plus"></i> Create New Topic</h1>
-                        <p class="text-secondary">Start a new discussion in <?php echo htmlspecialchars($forum_info['name']); ?></p>
-                    <?php endif; ?>
-
-                    <?php if(!isset($show_forum_selection)): ?>
-                        <?php if ($error): ?>
-                            <div class="alert alert-danger"><?php echo $error; ?></div>
-                        <?php endif; ?>
-
-                        <div class="topic-creation-form">
-                            <form method="POST" enctype="multipart/form-data">
-                                <input type="hidden" name="forum_id" value="<?php echo $forum_id; ?>">
-                                
-                                <div class="form-group">
-                                    <label for="title"><i class="fas fa-heading"></i> Topic Title</label>
-                                    <input type="text" id="title" name="title" class="form-control" 
-                                           placeholder="Enter a descriptive title for your topic" 
-                                           required maxlength="255" 
-                                           value="<?php echo htmlspecialchars($_POST['title'] ?? ''); ?>">
-                                    <small class="form-text">Choose a clear, descriptive title that summarizes your topic</small>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="content"><i class="fas fa-edit"></i> Content</label>
-                                    <textarea id="content" name="content" class="form-control" rows="12" 
-                                              placeholder="Write your topic content here..." required><?php echo htmlspecialchars($_POST['content'] ?? ''); ?></textarea>
-                                    <small class="form-text">Provide detailed information about your topic. You can format text using line breaks.</small>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="attachments"><i class="fas fa-paperclip"></i> Attachments (Optional)</label>
-                                    <input type="file" id="attachments" name="attachments[]" class="form-control-file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt,.zip,.rar">
-                                    <small class="form-text">Supported formats: JPG, PNG, PDF, DOC, TXT, ZIP (Max 5MB each)</small>
-                                </div>
-                                
-                                <div class="form-actions">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-paper-plane"></i> Create Topic
-                                    </button>
-                                    <a href="forum.php?id=<?php echo $forum_id; ?>" class="btn btn-secondary">
-                                        <i class="fas fa-arrow-left"></i> Back to Forum
+                <div class="forum-selection">
+                    <?php
+                    foreach($categories as $category):
+                        $forums_query = "SELECT id, name, description FROM forums WHERE category_id = ? ORDER BY position, name";
+                        $stmt = $conn->prepare($forums_query);
+                        $stmt->execute([$category['id']]);
+                        $forums = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    ?>
+                        <div class="category-section">
+                            <h2 class="category-title">
+                                <i class="<?php echo $category['icon']; ?>" style="color: <?php echo $category['color']; ?>"></i>
+                                <?php echo htmlspecialchars($category['name']); ?>
+                            </h2>
+                            <div class="forums-grid">
+                                <?php foreach($forums as $forum): ?>
+                                    <a href="new_topic.php?forum_id=<?php echo $forum['id']; ?>" class="forum-card">
+                                        <h3><?php echo htmlspecialchars($forum['name']); ?></h3>
+                                        <p><?php echo htmlspecialchars($forum['description']); ?></p>
+                                        <i class="fas fa-arrow-right"></i>
                                     </a>
-                                </div>
-                            </form>
+                                <?php endforeach; ?>
+                            </div>
                         </div>
-                    <?php endif; ?>
+                    <?php endforeach; ?>
                 </div>
-            </div>
+            <?php else: ?>
+                <!-- Topic Creation Form -->
+                <header class="page-header">
+                    <nav class="breadcrumb">
+                        <a href="index.php">Forum</a>
+                        <span>/</span>
+                        <a href="forum.php?id=<?php echo $forum_id; ?>"><?php echo htmlspecialchars($forum_info['name']); ?></a>
+                        <span>/</span>
+                        <span>New Topic</span>
+                    </nav>
+                    <h1>Create New Topic</h1>
+                    <p>Start a new discussion in <?php echo htmlspecialchars($forum_info['name']); ?></p>
+                </header>
 
-            <aside class="sidebar">
-                <?php if(!isset($show_forum_selection)): ?>
-                    <div class="widget">
-                        <h3><i class="fas fa-info-circle"></i> Posting Guidelines</h3>
-                        <ul style="padding-left: 1.5rem; line-height: 1.8;">
-                            <li>Use a clear, descriptive title</li>
-                            <li>Provide detailed information</li>
-                            <li>Be respectful and constructive</li>
-                            <li>Search before posting duplicates</li>
-                            <li>Stay on topic for the forum</li>
-                        </ul>
-                    </div>
-
-                    <div class="widget">
-                        <h3><i class="fas fa-lightbulb"></i> Tips for Success</h3>
-                        <div style="font-size: 0.9rem; line-height: 1.6;">
-                            <p><strong>Good titles:</strong> "Need help with PHP database connection" or "Research collaboration opportunity in AI"</p>
-                            <p><strong>Avoid:</strong> "Help!" or "Question" - be specific!</p>
-                        </div>
-                    </div>
-                <?php else: ?>
-                    <div class="widget">
-                        <h3><i class="fas fa-compass"></i> Choose Your Forum</h3>
-                        <p>Select the most appropriate forum for your topic to ensure it reaches the right audience.</p>
-                    </div>
-
-                    <div class="widget">
-                        <h3><i class="fas fa-users"></i> Community Guidelines</h3>
-                        <ul style="padding-left: 1.5rem; line-height: 1.8; font-size: 0.9rem;">
-                            <li>Respect all community members</li>
-                            <li>Post in the appropriate forum</li>
-                            <li>Use clear, descriptive titles</li>
-                            <li>No spam or duplicate posts</li>
-                        </ul>
+                <?php if ($error): ?>
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <?php echo $error; ?>
                     </div>
                 <?php endif; ?>
-            </aside>
+
+                <form method="POST" enctype="multipart/form-data" class="topic-form">
+                    <input type="hidden" name="forum_id" value="<?php echo $forum_id; ?>">
+                    
+                    <div class="form-field">
+                        <label for="title">Topic Title</label>
+                        <input type="text" id="title" name="title" 
+                               placeholder="Enter a clear, descriptive title" 
+                               required maxlength="255" 
+                               value="<?php echo htmlspecialchars($_POST['title'] ?? ''); ?>">
+                    </div>
+                    
+                    <div class="form-field">
+                        <label for="content">Content</label>
+                        <textarea id="content" name="content" rows="12" 
+                                  placeholder="Write your topic content here..." 
+                                  required><?php echo htmlspecialchars($_POST['content'] ?? ''); ?></textarea>
+                    </div>
+                    
+                    <div class="form-field">
+                        <label for="attachments">Attachments (Optional)</label>
+                        <input type="file" id="attachments" name="attachments[]" 
+                               multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt,.zip,.rar">
+                        <small>Supported: JPG, PNG, PDF, DOC, TXT, ZIP (Max 5MB each)</small>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="submit-btn">
+                            <i class="fas fa-paper-plane"></i>
+                            Create Topic
+                        </button>
+                        <a href="forum.php?id=<?php echo $forum_id; ?>" class="cancel-btn">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+
+                <div class="guidelines">
+                    <h3>Posting Guidelines</h3>
+                    <ul>
+                        <li>Use a clear, descriptive title</li>
+                        <li>Provide detailed information</li>
+                        <li>Be respectful and constructive</li>
+                        <li>Search before posting duplicates</li>
+                    </ul>
+                </div>
+            <?php endif; ?>
         </div>
     </main>
 

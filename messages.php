@@ -53,125 +53,132 @@
 <body>
     <?php include 'includes/header.php'; ?>
 
-    <main class="container">
-        <div class="main-content">
-            <div class="forum-content">
-                <div class="p-3">
-                    <h1><i class="fas fa-envelope"></i> Private Messages</h1>
-                    
-                    <?php if(isset($success)): ?>
-                        <div class="alert alert-success"><?php echo $success; ?></div>
+    <main class="messages-page">
+        <div class="messages-container">
+            <!-- Header -->
+            <header class="messages-header">
+                <h1>Messages</h1>
+                <?php
+                $unread_query = "SELECT COUNT(*) as count FROM messages WHERE receiver_id = ? AND is_read = 0";
+                $stmt = $conn->prepare($unread_query);
+                $stmt->execute([$user['id']]);
+                $unread_count = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
+                ?>
+                <div class="message-stats">
+                    <span><?php echo count($messages); ?> total</span>
+                    <?php if($unread_count > 0): ?>
+                        <span class="unread-badge"><?php echo $unread_count; ?> unread</span>
                     <?php endif; ?>
+                </div>
+            </header>
+
+            <?php if(isset($success)): ?>
+                <div class="success-message">
+                    <i class="fas fa-check-circle"></i>
+                    <?php echo $success; ?>
+                </div>
+            <?php endif; ?>
+
+            <div class="messages-layout">
+                <!-- Messages List -->
+                <div class="messages-list">
+                    <div class="messages-list-header">
+                        <h2>Your Messages</h2>
+                        <button class="compose-btn" onclick="toggleCompose()">
+                            <i class="fas fa-plus"></i>
+                            New Message
+                        </button>
+                    </div>
                     
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
-                        <!-- Send Message -->
-                        <div>
-                            <h3>Send New Message</h3>
-                            <form method="POST">
-                                <div class="form-group">
-                                    <label>To</label>
-                                    <select name="receiver_id" class="form-control" required>
-                                        <option value="">Select recipient</option>
-                                        <?php foreach($users as $u): ?>
-                                            <option value="<?php echo $u['id']; ?>"><?php echo htmlspecialchars($u['username']); ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
+                    <?php if(count($messages) > 0): ?>
+                        <div class="messages-scroll">
+                            <?php foreach($messages as $message): ?>
+                                <div class="message-item <?php echo !$message['is_read'] && $message['receiver_id'] == $user['id'] ? 'unread' : ''; ?>">
+                                    <div class="message-header">
+                                        <h3><?php echo htmlspecialchars($message['subject']); ?></h3>
+                                        <?php if(!$message['is_read'] && $message['receiver_id'] == $user['id']): ?>
+                                            <span class="new-badge">New</span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="message-meta">
+                                        <?php if($message['sender_id'] == $user['id']): ?>
+                                            <span>To: <strong><?php echo htmlspecialchars($message['receiver_name']); ?></strong></span>
+                                        <?php else: ?>
+                                            <span>From: <strong><?php echo htmlspecialchars($message['sender_name']); ?></strong></span>
+                                        <?php endif; ?>
+                                        <time><?php echo date('M j, Y', strtotime($message['created_at'])); ?></time>
+                                    </div>
+                                    <p class="message-preview">
+                                        <?php echo substr(htmlspecialchars($message['content']), 0, 120) . '...'; ?>
+                                    </p>
                                 </div>
-                                <div class="form-group">
-                                    <label>Subject</label>
-                                    <input type="text" name="subject" class="form-control" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Message</label>
-                                    <textarea name="content" class="form-control" rows="6" required></textarea>
-                                </div>
-                                <button type="submit" name="send_message" class="btn btn-primary">
-                                    <i class="fas fa-paper-plane"></i> Send Message
-                                </button>
-                            </form>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php else: ?>
+                        <div class="empty-messages">
+                            <i class="fas fa-inbox"></i>
+                            <h3>No messages yet</h3>
+                            <p>Start a conversation with other members!</p>
+                            <button class="compose-btn" onclick="toggleCompose()">
+                                <i class="fas fa-plus"></i>
+                                Send First Message
+                            </button>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Compose Form -->
+                <div class="compose-form" id="compose-form">
+                    <div class="compose-header">
+                        <h2>New Message</h2>
+                        <button class="close-btn" onclick="toggleCompose()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <form method="POST" class="message-form">
+                        <div class="form-field">
+                            <label for="receiver_id">To</label>
+                            <select name="receiver_id" id="receiver_id" required>
+                                <option value="">Select recipient</option>
+                                <?php foreach($users as $u): ?>
+                                    <option value="<?php echo $u['id']; ?>"><?php echo htmlspecialchars($u['username']); ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                         
-                        <!-- Message List -->
-                        <div>
-                            <h3>Your Messages</h3>
-                            <?php if(count($messages) > 0): ?>
-                                <div style="max-height: 500px; overflow-y: auto;">
-                                    <?php foreach($messages as $message): ?>
-                                        <div class="message-item" style="padding: 1rem; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 1rem; <?php echo !$message['is_read'] && $message['receiver_id'] == $user['id'] ? 'background: rgba(59, 130, 246, 0.1);' : ''; ?>">
-                                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
-                                                <strong><?php echo htmlspecialchars($message['subject']); ?></strong>
-                                                <?php if(!$message['is_read'] && $message['receiver_id'] == $user['id']): ?>
-                                                    <span class="badge" style="background: var(--primary-color);">New</span>
-                                                <?php endif; ?>
-                                            </div>
-                                            <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
-                                                <?php if($message['sender_id'] == $user['id']): ?>
-                                                    To: <?php echo htmlspecialchars($message['receiver_name']); ?>
-                                                <?php else: ?>
-                                                    From: <?php echo htmlspecialchars($message['sender_name']); ?>
-                                                <?php endif; ?>
-                                                • <?php echo date('M j, Y g:i A', strtotime($message['created_at'])); ?>
-                                            </div>
-                                            <p style="margin: 0; font-size: 0.9rem;">
-                                                <?php echo substr(htmlspecialchars($message['content']), 0, 100) . '...'; ?>
-                                            </p>
-                                        </div>
-                                    <?php endforeach; ?>
-                                </div>
-                            <?php else: ?>
-                                <div class="text-center" style="padding: 2rem;">
-                                    <i class="fas fa-inbox" style="font-size: 3rem; color: var(--text-secondary); margin-bottom: 1rem;"></i>
-                                    <h4>No messages yet</h4>
-                                    <p class="text-secondary">Start a conversation with other members!</p>
-                                </div>
-                            <?php endif; ?>
+                        <div class="form-field">
+                            <label for="subject">Subject</label>
+                            <input type="text" name="subject" id="subject" placeholder="Enter message subject" required>
                         </div>
-                    </div>
+                        
+                        <div class="form-field">
+                            <label for="content">Message</label>
+                            <textarea name="content" id="content" rows="8" placeholder="Write your message here..." required></textarea>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" name="send_message" class="send-btn">
+                                <i class="fas fa-paper-plane"></i>
+                                Send Message
+                            </button>
+                            <button type="button" class="cancel-btn" onclick="toggleCompose()">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
-
-            <aside class="sidebar">
-                <div class="widget">
-                    <h3><i class="fas fa-info-circle"></i> Message Info</h3>
-                    <?php
-                    $unread_query = "SELECT COUNT(*) as count FROM messages WHERE receiver_id = ? AND is_read = 0";
-                    $stmt = $conn->prepare($unread_query);
-                    $stmt->execute([$user['id']]);
-                    $unread_count = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
-                    ?>
-                    <div class="stats-grid">
-                        <div class="stat-item">
-                            <strong><?php echo count($messages); ?></strong>
-                            <span>Total Messages</span>
-                        </div>
-                        <div class="stat-item">
-                            <strong><?php echo $unread_count; ?></strong>
-                            <span>Unread</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="widget">
-                    <h3><i class="fas fa-users"></i> Active Members</h3>
-                    <?php
-                    $active_query = "SELECT username FROM users WHERE last_active > DATE_SUB(NOW(), INTERVAL 1 HOUR) AND id != ? ORDER BY last_active DESC LIMIT 5";
-                    $stmt = $conn->prepare($active_query);
-                    $stmt->execute([$user['id']]);
-                    $active_users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                    ?>
-                    <?php foreach($active_users as $active_user): ?>
-                        <div class="mb-1">
-                            <span class="badge" style="background: var(--success-color);">●</span>
-                            <?php echo htmlspecialchars($active_user['username']); ?>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </aside>
         </div>
     </main>
 
-    <!-- ===== MAIN JS ===== -->
     <script src="assets/scripts/main.js"></script>
+    <script>
+        function toggleCompose() {
+            const form = document.getElementById('compose-form');
+            form.classList.toggle('active');
+        }
+    </script>
     
 </body>
 </html>

@@ -2,6 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
+
 if (!isset($auth)) {
     require_once __DIR__ . '/auth.php';
     $auth = new Auth();
@@ -41,7 +42,7 @@ if (!isset($auth)) {
                     <?php if($user): ?>
                         <li><a href="messages.php"><i class="fas fa-envelope"></i>Messages</a></li>
                         <li><a href="notifications.php"><i class="fas fa-bell"></i>Notifications</a></li>
-                        <li class="user-menu"> 
+                        <li class="user-menu">
                             <a href="#" class="dropdown-toggle">
                                 <i class="fas fa-user"></i> <?php echo htmlspecialchars($user['username']); ?>
                                 <i class="fas fa-chevron-down"></i>
@@ -64,4 +65,3 @@ if (!isset($auth)) {
         </div>
     </div>
 </header>
-<script src="assets/scripts/main.js"></script>

@@ -244,100 +244,30 @@
 <body>
     <?php include 'includes/header.php'; ?>
 
-    <main class="container">
-        <!-- Enhanced Topic Header -->
-        <div class="topic-header-enhanced">
-            <nav class="breadcrumb-nav">
-                <a href="index.php"><i class="fas fa-home"></i> Forum</a>
-                <i class="fas fa-chevron-right"></i>
-                <a href="forum.php?id=<?php echo $topic['forum_id']; ?>"><?php echo htmlspecialchars($topic['forum_name']); ?></a>
-                <i class="fas fa-chevron-right"></i>
-                <span><?php echo htmlspecialchars($topic['title']); ?></span>
-            </nav>
-            
-            <h1 class="topic-title-enhanced"><?php echo htmlspecialchars($topic['title']); ?></h1>
-            
-            <div class="topic-meta-enhanced">
-                <div class="meta-item">
-                    <i class="fas fa-user"></i>
-                    <span>Started by <strong><?php echo htmlspecialchars($topic['username']); ?></strong></span>
-                </div>
-                <div class="meta-item">
-                    <i class="fas fa-calendar"></i>
-                    <span><?php echo date('M j, Y g:i A', strtotime($topic['created_at'])); ?></span>
-                </div>
-                <div class="meta-item">
-                    <i class="fas fa-eye"></i>
+    <main class="topic-page">
+        <div class="topic-container">
+            <!-- Topic Header -->
+            <header class="topic-header">
+                <nav class="breadcrumb">
+                    <a href="index.php">Forum</a>
+                    <span>/</span>
+                    <a href="forum.php?id=<?php echo $topic['forum_id']; ?>"><?php echo htmlspecialchars($topic['forum_name']); ?></a>
+                    <span>/</span>
+                    <span><?php echo htmlspecialchars($topic['title']); ?></span>
+                </nav>
+                
+                <h1><?php echo htmlspecialchars($topic['title']); ?></h1>
+                
+                <div class="topic-meta">
+                    <span>by <strong><?php echo htmlspecialchars($topic['username']); ?></strong></span>
+                    <span><?php echo date('M j, Y', strtotime($topic['created_at'])); ?></span>
                     <span><?php echo number_format($topic['views']); ?> views</span>
-                </div>
-            </div>
-            
-            <div class="topic-stats-bar">
-                <div class="stat-badge">
-                    <i class="fas fa-reply"></i>
                     <span><?php echo $total_posts; ?> replies</span>
                 </div>
-                <?php if($topic['votes_up'] > 0 || $topic['votes_down'] > 0): ?>
-                <div class="stat-badge">
-                    <i class="fas fa-thumbs-up"></i>
-                    <span><?php echo $topic['votes_up']; ?> up, <?php echo $topic['votes_down']; ?> down</span>
-                </div>
-                <?php endif; ?>
-            </div>
-        </div>
+            </header>
 
-        <div class="topic-layout">
-            <aside class="left-sidebar">
-                <div class="widget">
-                    <div class="widget-header">
-                        <div class="widget-icon">
-                            <i class="fas fa-info-circle"></i>
-                        </div>
-                        <h3>Topic Info</h3>
-                    </div>
-                    <div class="topic-info-details">
-                        <div class="info-item">
-                            <div class="info-icon"><i class="fas fa-user"></i></div>
-                            <div class="info-content">
-                                <span class="info-label">Started by</span>
-                                <span class="info-value"><?php echo htmlspecialchars($topic['username']); ?></span>
-                            </div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-icon"><i class="fas fa-calendar"></i></div>
-                            <div class="info-content">
-                                <span class="info-label">Created</span>
-                                <span class="info-value"><?php echo date('M j, Y', strtotime($topic['created_at'])); ?></span>
-                            </div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-icon"><i class="fas fa-reply"></i></div>
-                            <div class="info-content">
-                                <span class="info-label">Replies</span>
-                                <span class="info-value"><?php echo $total_posts; ?></span>
-                            </div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-icon"><i class="fas fa-eye"></i></div>
-                            <div class="info-content">
-                                <span class="info-label">Views</span>
-                                <span class="info-value"><?php echo number_format($topic['views']); ?></span>
-                            </div>
-                        </div>
-                        <?php if($topic['votes_up'] > 0 || $topic['votes_down'] > 0): ?>
-                        <div class="info-item">
-                            <div class="info-icon"><i class="fas fa-thumbs-up"></i></div>
-                            <div class="info-content">
-                                <span class="info-label">Votes</span>
-                                <span class="info-value"><?php echo $topic['votes_up']; ?> up, <?php echo $topic['votes_down']; ?> down</span>
-                            </div>
-                        </div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </aside>
-            
-            <div class="forum-content">
+            <!-- Posts Section -->
+            <div class="posts-section">
                 <?php if(isset($_GET['status']) && $_GET['status'] == 'post_deleted'): ?>
                     <div class="alert alert-success">
                         The post has been successfully deleted.
@@ -348,29 +278,21 @@
                         There was an error deleting the item. Please try again.
                     </div>
                 <?php endif; ?>
-                <div class="posts-container">
+                <div class="posts-list">
 
                     <!-- Original Topic Post -->
-                    <div class="post" id="original-post">
+                    <article class="post original-post" id="original-post">
                         <div class="post-author">
                             <img src="assets/avatars/<?php echo $topic['avatar']; ?>" alt="Avatar" onerror="this.src='assets/avatars/default.png'">
-                            <h5><?php echo htmlspecialchars($topic['username']); ?></h5>
-                            <div class="role"><?php echo ucfirst($topic['role'] ?? 'Member'); ?></div>
-                            <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">
-                                <i class="fas fa-star"></i> Reputation: <?php echo $topic['reputation'] ?? 0; ?>
+                            <div class="author-info">
+                                <h4><?php echo htmlspecialchars($topic['username']); ?></h4>
+                                <span class="role"><?php echo ucfirst($topic['role'] ?? 'Member'); ?></span>
                             </div>
                         </div>
-
                         <div class="post-content">
                             <div class="post-header">
-                                <div class="post-date">
-                                    <?php echo date('M j, Y g:i A', strtotime($topic['created_at'])); ?>
-                                </div>
-                                <div style="display: flex; gap: 0.5rem; align-items: center;">
-                                    <span class="badge" style="background: var(--accent-gold); color: white; padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.75rem;">
-                                        <i class="fas fa-crown"></i> Original Post
-                                    </span>
-                                </div>
+                                <span class="post-badge original">Original Post</span>
+                                <time><?php echo date('M j, Y g:i A', strtotime($topic['created_at'])); ?></time>
                             </div>
                             <div class="post-body">
                                 <?php echo nl2br(htmlspecialchars($topic['content'])); ?>
@@ -395,67 +317,50 @@
                             </div>
                         <?php endif; ?>
 
-                        <div class="post-actions">
                             <?php if($user): ?>
-                                <div class="vote-buttons">
-                                    <a href="?id=<?php echo $topic_id; ?>&action=vote&type=topic&target_id=<?php echo $topic['id']; ?>&vote=up" 
-                                       class="vote-btn">
-                                        <i class="fas fa-thumbs-up"></i> <?php echo $topic['votes_up']; ?>
-                                    </a>
-                                    <a href="?id=<?php echo $topic_id; ?>&action=vote&type=topic&target_id=<?php echo $topic['id']; ?>&vote=down" 
-                                       class="vote-btn">
-                                        <i class="fas fa-thumbs-down"></i> <?php echo $topic['votes_down']; ?>
-                                    </a>
-                                </div>
-                                <div class="post-actions-buttons">
-                                    <button class="btn btn-secondary" onclick="shareTopic()">
-                                        <i class="fas fa-share-alt"></i>Share
-                                    </button>
-                                    <?php if ($user['id'] == $topic['user_id'] || $auth -> isAdmin()): ?>
-                                        <a href="edit_topic.php?id=<?php echo $topic['id']; ?>" class="btn btn-secondary">
-                                            <i class="fas fa-edit"></i>Edit
+                                <div class="post-actions">
+                                    <div class="vote-buttons">
+                                        <a href="?id=<?php echo $topic_id; ?>&action=vote&type=topic&target_id=<?php echo $topic['id']; ?>&vote=up" class="vote-btn">
+                                            <i class="fas fa-thumbs-up"></i> <?php echo $topic['votes_up']; ?>
                                         </a>
-                                        <a href="delete_topic.php?id=<?php echo $topic['id']; ?>" class="btn btn-danger">
-                                            <i class="fas fa-trash"></i>Delete
+                                        <a href="?id=<?php echo $topic_id; ?>&action=vote&type=topic&target_id=<?php echo $topic['id']; ?>&vote=down" class="vote-btn">
+                                            <i class="fas fa-thumbs-down"></i> <?php echo $topic['votes_down']; ?>
                                         </a>
-                                    <?php endif; ?>
+                                    </div>
+                                    <div class="action-buttons">
+                                        <button onclick="shareTopic()" class="action-btn">
+                                            <i class="fas fa-share-alt"></i> Share
+                                        </button>
+                                        <?php if ($user['id'] == $topic['user_id'] || $auth -> isAdmin()): ?>
+                                            <a href="edit_topic.php?id=<?php echo $topic['id']; ?>" class="action-btn">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
                             <?php endif; ?>
                         </div>
-                    </div>
+                    </article>
 
-                    <!-- Replies -->
                     <?php if(!empty($posts)): ?>
-                        <div style="margin: 2rem 0; padding: 1rem; background: rgba(59, 130, 246, 0.05); border-radius: 12px; text-align: center;">
-                            <h3 style="margin: 0; color: var(--primary-blue); font-size: 1.2rem;">
-                                <i class="fas fa-comments"></i> Replies (<?php echo count($posts); ?>)
-                            </h3>
+                        <div class="replies-header">
+                            <h3>Replies (<?php echo count($posts); ?>)</h3>
                         </div>
                     <?php endif; ?>
                     
                     <?php foreach($posts as $index => $post): ?>
-                        <div class="post" id="post-<?php echo $post['id']; ?>">
+                        <article class="post" id="post-<?php echo $post['id']; ?>">
                             <div class="post-author">
                                 <img src="assets/avatars/<?php echo $post['avatar']; ?>" alt="Avatar" onerror="this.src='assets/avatars/default.png'">
-                                <h5><?php echo htmlspecialchars($post['username']); ?></h5>
-                                <div class="role"><?php echo ucfirst($post['role']); ?></div>
-                                <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">
-                                    <i class="fas fa-star"></i> Reputation: <?php echo $post['reputation'] ?? 0; ?>
+                                <div class="author-info">
+                                    <h4><?php echo htmlspecialchars($post['username']); ?></h4>
+                                    <span class="role"><?php echo ucfirst($post['role']); ?></span>
                                 </div>
                             </div>
                             <div class="post-content">
                                 <div class="post-header">
-                                    <div class="post-date">
-                                        <?php echo date('M j, Y g:i A', strtotime($post['created_at'])); ?>
-                                    </div>
-                                    <div style="display: flex; gap: 0.5rem; align-items: center;">
-                                        <span class="badge" style="background: var(--secondary-blue); color: white; padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.75rem;">
-                                            #<?php echo $index + 1; ?>
-                                        </span>
-                                        <button class="btn btn-secondary" onclick="copyPostLink(<?php echo $post['id']; ?>)" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">
-                                            <i class="fas fa-link"></i>
-                                        </button>
-                                    </div>
+                                    <span class="post-badge reply">#<?php echo $index + 1; ?></span>
+                                    <time><?php echo date('M j, Y g:i A', strtotime($post['created_at'])); ?></time>
                                 </div>
                                 <div class="post-body">
                                     <?php echo nl2br(htmlspecialchars($post['content'])); ?>
@@ -492,196 +397,107 @@
                                         </div>
                                     <?php endif; ?>
 
+                                <?php if($user): ?>
                                     <div class="post-actions">
-                                        <?php if($user): ?>
-                                            <div class="vote-buttons">
-                                                <a href="?id=<?php echo $topic_id; ?>&action=vote&type=post&target_id=<?php echo $post['id']; ?>&vote=up" 
-                                                    class="vote-btn">
-                                                    <i class="fas fa-thumbs-up"></i> <?php echo $post['votes_up']; ?>
+                                        <div class="vote-buttons">
+                                            <a href="?id=<?php echo $topic_id; ?>&action=vote&type=post&target_id=<?php echo $post['id']; ?>&vote=up" class="vote-btn">
+                                                <i class="fas fa-thumbs-up"></i> <?php echo $post['votes_up']; ?>
+                                            </a>
+                                            <a href="?id=<?php echo $topic_id; ?>&action=vote&type=post&target_id=<?php echo $post['id']; ?>&vote=down" class="vote-btn">
+                                                <i class="fas fa-thumbs-down"></i> <?php echo $post['votes_down']; ?>
+                                            </a>
+                                        </div>
+                                        <div class="action-buttons">
+                                            <button onclick="sharePost(<?php echo $post['id']; ?>)" class="action-btn">
+                                                <i class="fas fa-share-alt"></i> Share
+                                            </button>
+                                            <?php if ($user['id'] == $post['user_id'] || $auth->isAdmin()): ?>
+                                                <a href="edit_post.php?id=<?php echo $post['id']; ?>" class="action-btn">
+                                                    <i class="fas fa-edit"></i> Edit
                                                 </a>
-                                                <a href="?id=<?php echo $topic_id; ?>&action=vote&type=post&target_id=<?php echo $post['id']; ?>&vote=down" 
-                                                    class="vote-btn">
-                                                    <i class="fas fa-thumbs-down"></i> <?php echo $post['votes_down']; ?>
-                                                </a>
-                                            </div>
-                                            <div class="post-actions-buttons">
-                                                <button class="btn btn-secondary" onclick="sharePost(<?php echo $post['id']; ?>)">
-                                                    <i class="fas fa-share-alt"></i>Share
-                                                </button>
-                                                <?php if ($user['id'] == $post['user_id'] || $auth->isAdmin()): ?>
-                                                    <a href="edit_post.php?id=<?php echo $post['id']; ?>" class="btn btn-secondary">
-                                                        <i class="fas fa-edit"></i>Edit
-                                                    </a>
-                                                    <a href="delete_post.php?id=<?php echo $post['id']; ?>" class="btn btn-danger">
-                                                        <i class="fas fa-trash"></i>Delete
-                                                    </a>
-                                                <?php endif; ?>
-                                            </div>
-                                        <?php endif; ?>
+                                            <?php endif; ?>
+                                        </div>
                                     </div>
-                                </div>
-                        </div>
+                                <?php endif; ?>
+                            </div>
+                        </article>
                     <?php endforeach; ?>
 
                 </div>
                 
+                </div>
+                
                 <!-- Reply Form -->
                 <?php if($topic['is_locked']): ?>
-                <div class="reply-form-enhanced text-center">
-                    <div class="form-header" style="justify-content: center;">
-                        <i class="fas fa-lock" style="background: var(--danger-color);"></i>
-                        <h3>Topic Locked</h3>
+                    <div class="reply-form locked">
+                        <div class="locked-message">
+                            <i class="fas fa-lock"></i>
+                            <h3>Topic Locked</h3>
+                            <p>This topic has been locked and no new replies can be posted.</p>
+                        </div>
                     </div>
-                    <p class="text-secondary">This topic has been locked and no new replies can be posted.</p>
-                </div>
                 <?php elseif(!$user): ?>
-                <div class="reply-form-enhanced text-center">
-                    <div class="form-header" style="justify-content: center;">
-                        <i class="fas fa-sign-in-alt" style="background: var(--secondary-blue);"></i>
-                        <h3>Join the Discussion</h3>
+                    <div class="reply-form login-required">
+                        <div class="login-message">
+                            <h3>Join the Discussion</h3>
+                            <p>Please login to participate in this discussion</p>
+                            <div class="login-buttons">
+                                <a href="login.php" class="login-btn">Login</a>
+                                <a href="register.php" class="register-btn">Register</a>
+                            </div>
+                        </div>
                     </div>
-                    <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">Please login to participate in this discussion</p>
-                    <div style="display: flex; gap: 1rem; justify-content: center;">
-                        <a href="login.php" class="btn btn-primary">
-                            <i class="fas fa-sign-in-alt"></i> Login
-                        </a>
-                        <a href="register.php" class="btn btn-secondary">
-                            <i class="fas fa-user-plus"></i> Register
-                        </a>
-                    </div>
-                </div>
                 <?php else: ?>
-                <div class="reply-form-enhanced" id="reply-form">
-                    <div class="form-header">
-                        <i class="fas fa-reply"></i>
-                        <h3>Post a Reply</h3>
-                    </div>
-                    <?php if ($error): ?>
-                        <div class="alert alert-danger">
-                            <i class="fas fa-exclamation-triangle"></i> <?php echo $error; ?>
-                        </div>
-                    <?php endif; ?>
-                    <form method="POST" enctype="multipart/form-data">
+                    <form method="POST" enctype="multipart/form-data" class="reply-form" id="reply-form">
                         <input type="hidden" name="action" value="create_post">
-                        <div class="form-group">
-                            <label for="content">
-                                <i class="fas fa-edit"></i> Your Reply
-                            </label>
-                            <textarea name="content" id="content" class="form-control" rows="6" required placeholder="Share your thoughts, ask questions, or provide helpful information..."></textarea>
-                            <div class="form-text">
-                                Be respectful and constructive in your response
+                        <h3>Post a Reply</h3>
+                        <?php if ($error): ?>
+                            <div class="error-message">
+                                <i class="fas fa-exclamation-triangle"></i> <?php echo $error; ?>
                             </div>
+                        <?php endif; ?>
+                        <div class="form-field">
+                            <textarea name="content" id="content" rows="6" required placeholder="Share your thoughts, ask questions, or provide helpful information..."></textarea>
                         </div>
-                        <div class="form-group">
-                            <label for="attachments">
-                                <i class="fas fa-paperclip"></i> Attach Files (Optional)
-                            </label>
-                            <input type="file" id="attachments" name="attachments[]" class="form-control" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt,.zip,.rar">
-                            <div class="form-text">
-                                Supported formats: Images, Videos, Documents (Max 10MB each)
-                            </div>
+                        <div class="form-field">
+                            <input type="file" id="attachments" name="attachments[]" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt,.zip,.rar">
+                            <small>Attach files (optional): Images, Videos, Documents (Max 10MB each)</small>
                         </div>
                         <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="submit-btn">
                                 <i class="fas fa-reply"></i> Post Reply
                             </button>
-                            <button type="button" class="btn btn-secondary" onclick="document.getElementById('content').value = '';">
-                                <i class="fas fa-eraser"></i> Clear
+                            <button type="button" class="clear-btn" onclick="document.getElementById('content').value = '';">
+                                Clear
                             </button>
                         </div>
                     </form>
-                </div>
                 <?php endif; ?>
             </div>
             
-            <aside class="right-sidebar">
-                <?php $total_pages = ceil($total_posts / $limit); ?>
-                <?php if ($total_pages > 1): ?>
-                <div class="pagination">
+            <!-- Pagination -->
+            <?php $total_pages = ceil($total_posts / $limit); ?>
+            <?php if ($total_pages > 1): ?>
+                <nav class="pagination">
                     <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                    <a href="?id=<?php echo $topic_id; ?>&page=<?php echo $i; ?>" class="<?php echo $i == $page ? 'active' : ''; ?>">
-                        <?php echo $i; ?>
-                    </a>
+                        <a href="?id=<?php echo $topic_id; ?>&page=<?php echo $i; ?>" class="page-number <?php echo $i == $page ? 'active' : ''; ?>">
+                            <?php echo $i; ?>
+                        </a>
                     <?php endfor; ?>
-                </div>
-                <?php endif; ?>
-
-                <?php if($user): ?>
-                    <div class="widget">
-                        <div class="widget-header">
-                            <div class="widget-icon">
-                                <i class="fas fa-bolt"></i>
-                            </div>
-                            <h3>Quick Actions</h3>
-                        </div>
-                        <div class="quick-actions-list">
-                            <a href="new_topic.php?forum_id=<?php echo $topic['forum_id']; ?>" class="action-item">
-                                <div class="action-icon"><i class="fas fa-plus"></i></div>
-                                <div class="action-content">
-                                    <span class="action-title">New Topic</span>
-                                    <span class="action-desc">Start a new discussion</span>
-                                </div>
-                            </a>
-                            <a href="forum.php?id=<?php echo $topic['forum_id']; ?>" class="action-item">
-                                <div class="action-icon"><i class="fas fa-arrow-left"></i></div>
-                                <div class="action-content">
-                                    <span class="action-title">Back to Forum</span>
-                                    <span class="action-desc">Return to <?php echo htmlspecialchars($topic['forum_name']); ?></span>
-                                </div>
-                            </a>
-                            <button onclick="shareTopic()" class="action-item">
-                                <div class="action-icon"><i class="fas fa-share-alt"></i></div>
-                                <div class="action-content">
-                                    <span class="action-title">Share Topic</span>
-                                    <span class="action-desc">Share this discussion</span>
-                                </div>
-                            </button>
-                            <?php if($user['id'] == $topic['user_id'] || $auth->isAdmin()): ?>
-                            <a href="edit_topic.php?id=<?php echo $topic_id; ?>" class="action-item">
-                                <div class="action-icon"><i class="fas fa-edit"></i></div>
-                                <div class="action-content">
-                                    <span class="action-title">Edit Topic</span>
-                                    <span class="action-desc">Modify this topic</span>
-                                </div>
-                            </a>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                <?php else: ?>
-                    <div class="widget">
-                        <div class="widget-header">
-                            <div class="widget-icon">
-                                <i class="fas fa-sign-in-alt"></i>
-                            </div>
-                            <h3>Join Discussion</h3>
-                        </div>
-                        <div style="text-align: center; padding: 1rem 0;">
-                            <p style="margin-bottom: 1rem; color: var(--text-secondary);">Login to participate in this discussion</p>
-                            <a href="login.php" class="btn btn-primary" style="width: 100%; margin-bottom: 0.5rem;">
-                                <i class="fas fa-sign-in-alt"></i> Login
-                            </a>
-                            <a href="register.php" class="btn btn-secondary" style="width: 100%;">
-                                <i class="fas fa-user-plus"></i> Register
-                            </a>
-                        </div>
-                    </div>
-                <?php endif; ?>
-            </aside>
+                </nav>
+            <?php endif; ?>
         </div>
         
-        <!-- Floating Action Buttons -->
-        <div class="floating-actions">
+        <!-- Quick Actions -->
+        <div class="quick-actions">
             <?php if($user && !$topic['is_locked']): ?>
-            <a href="#reply-form" class="floating-btn reply-btn" title="Reply to Topic">
-                <i class="fas fa-reply"></i>
-            </a>
+                <a href="#reply-form" class="quick-btn reply">
+                    <i class="fas fa-reply"></i>
+                </a>
             <?php endif; ?>
-            <a href="forum.php?id=<?php echo $topic['forum_id']; ?>" class="floating-btn back-btn" title="Back to Forum">
+            <a href="forum.php?id=<?php echo $topic['forum_id']; ?>" class="quick-btn back">
                 <i class="fas fa-arrow-left"></i>
             </a>
-            <button onclick="scrollToTop()" class="floating-btn" title="Scroll to Top">
-                <i class="fas fa-arrow-up"></i>
-            </button>
         </div>
     </main>
 
