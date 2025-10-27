@@ -1,96 +1,41 @@
-// Improved dropdown functionality with error handling
-function toggleDropdown(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    
-    const dropdown = event.currentTarget.nextElementSibling;
-    if (!dropdown || !dropdown.classList.contains('dropdown')) {
-        return; // Exit if dropdown element not found
-    }
-    
-    const isOpen = dropdown.classList.contains('show');
-    
-    // Close all dropdowns
-    document.querySelectorAll('.dropdown.show').forEach(d => d.classList.remove('show'));
-    
-    // Toggle current dropdown
-    if (!isOpen) {
-        dropdown.classList.add('show');
-    }
-}
-
-
-// Apply theme on initial load to prevent FOUC (Flash of Unstyled Content)
 document.addEventListener('DOMContentLoaded', function() {
-    // Responsive navigation toggle
+    // Dropdown Toggles
+    const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+
+    dropdownToggles.forEach(toggle => {
+        toggle.addEventListener('click', function(event) {
+            event.preventDefault();
+            event.stopPropagation(); // Prevent the window click listener from firing immediately
+            const dropdown = this.querySelector('.dropdown');
+            
+            // Close other open dropdowns
+            document.querySelectorAll('.dropdown.show').forEach(openDropdown => {
+                if (openDropdown !== dropdown) {
+                    openDropdown.classList.remove('show');
+                }
+            });
+
+            dropdown.classList.toggle('show');
+        });
+    });
+
+    // Close dropdowns when clicking outside
+    window.addEventListener('click', function(event) {
+        // Check if the click is outside of a user-menu
+        if (!event.target.closest('.user-menu')) {
+            document.querySelectorAll('.dropdown.show').forEach(dropdown => {
+                dropdown.classList.remove('show');
+            });
+        }
+    });
+
+    // Nav Toggle for mobile
     const navToggle = document.querySelector('.nav-toggle');
-    const nav = document.querySelector('.nav');
+    const navMenu = document.querySelector('.nav');
 
-    navToggle?.addEventListener('click', () => {
-        nav?.classList.toggle('nav--visible');
-    });
-    
-    // Event delegation for dropdown toggles
-    document.addEventListener('click', function(event) {
-        const dropdownToggle = event.target.closest('.dropdown-toggle');
-        if (dropdownToggle) {
-            // Create a new event object with the correct currentTarget
-            const newEvent = {
-                preventDefault: () => event.preventDefault(),
-                stopPropagation: () => event.stopPropagation(),
-                currentTarget: dropdownToggle
-            };
-            toggleDropdown(newEvent);
-        }
-    });
-});
-
-// Global click handler to close dropdowns
-document.addEventListener('click', function(event) {
-    if (!event.target.closest('.user-menu')) {
-        document.querySelectorAll('.dropdown.show').forEach(dropdown => {
-            dropdown.classList.remove('show');
+    if (navToggle && navMenu) {
+        navToggle.addEventListener('click', function() {
+            navMenu.classList.toggle('show');
         });
     }
 });
-
-// Category Sidebar Functionality
-function toggleCategory(categoryId) {
-    const forums = document.getElementById('forums-' + categoryId);
-    const arrow = document.getElementById('arrow-' + categoryId);
-    
-    if (forums && arrow) {
-        forums.classList.toggle('open');
-        arrow.classList.toggle('rotated');
-        
-        // Close other open categories for accordion effect
-        document.querySelectorAll('.forums-dropdown.open').forEach(dropdown => {
-            if (dropdown.id !== 'forums-' + categoryId) {
-                dropdown.classList.remove('open');
-                const otherArrow = document.getElementById(dropdown.id.replace('forums-', 'arrow-'));
-                if (otherArrow) otherArrow.classList.remove('rotated');
-            }
-        });
-    }
-}
-
-function navigateToForum(forumId) {
-    window.location.href = 'forum.php?id=' + forumId;
-}
-
-// Password Confirmation
-const password = document.getElementById('password');
-const confirmPassword = document.getElementById('confirm_password');
-
-if (password && confirmPassword) {
-    function validatePassword() {
-        if (password.value !== confirmPassword.value) {
-        confirmPassword.setCustomValidity("Passwords do not match.");
-        } else {
-            confirmPassword.setCustomValidity('');
-        }
-    }
-
-    password.onchange = validatePassword;
-    confirmPassword.onkeyup = validatePassword;
-}

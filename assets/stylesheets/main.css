@@ -33,7 +33,7 @@
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    background: #fafbfc;
     line-height: 1.6;
     color: var(--text-primary);
 }
@@ -118,7 +118,7 @@ body {
 }
 
 .nav-menu {
-    display: flex;
+display: flex;
     list-style: none;
     gap: 0.5rem;
     align-items: center;
@@ -217,19 +217,24 @@ body {
     top: 100px;
     height: fit-content;
     min-width: 250px;
+    max-width: 300px;
+    width: 100%;
 }
 
-.forum-content, .widget {
+.widget {
     background: white;
     border-radius: 12px;
     box-shadow: var(--card-shadow);
     overflow: hidden;
     transition: all 0.3s ease;
+    padding: 1.25rem;
+    border: 1px solid rgba(229, 231, 235, 0.4);
 }
 
-.forum-content:hover, .widget:hover {
+.widget:hover {
     box-shadow: var(--hover-shadow);
     transform: translateY(-2px);
+    border-color: rgba(59, 130, 246, 0.2);
 }
 
 /* Utilized by index.php */
@@ -243,27 +248,27 @@ body {
 
 .topic-card {
     background: white;
-    border: 1px solid rgba(229, 231, 235, 0.4);
-    border-radius: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s ease;
+    border: 1px solid #f1f3f4;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
     position: relative;
     overflow: hidden;
-    min-height: 180px;
+    margin-bottom: 1rem;
 }
 
 .topic-card:hover {
-    border-color: rgba(59, 130, 246, 0.2);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-color: #e5e7eb;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transform: translateY(-1px);
 }
 
 .topic-card-header {
     display: flex;
     align-items: flex-start;
-    gap: 1.25rem;
-    padding: 1.5rem 2rem 1.25rem;
-    border-bottom: 1px solid rgba(229, 231, 235, 0.3);
+    gap: 1rem;
+    padding: 1.25rem 1.5rem 1rem;
+    border-bottom: 1px solid #f8f9fa;
 }
 
 .topic-card-header .avatar {
@@ -324,20 +329,20 @@ body {
 }
 
 .topic-content {
-    padding: 1.25rem 2rem;
-    font-size: 1rem;
-    line-height: 1.7;
-    color: var(--text-primary);
-    min-height: 80px;
+    padding: 1rem 1.5rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #4a5568;
+    min-height: 60px;
 }
 
 .topic-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.25rem 2rem;
-    background: rgba(248, 250, 252, 0.4);
-    border-top: 1px solid rgba(229, 231, 235, 0.3);
+    padding: 1rem 1.5rem;
+    background: #fafbfc;
+    border-top: 1px solid #f1f3f4;
 }
 
 .topic-stat {
@@ -358,18 +363,21 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    background: var(--secondary-blue);
-    color: white;
+    background: #f8f9fa;
+    color: #4a5568;
     padding: 0.5rem 1rem;
     border-radius: 6px;
     text-decoration: none;
     font-weight: 500;
     font-size: 0.8rem;
     transition: all 0.2s ease;
+    border: 1px solid #e5e7eb;
 }
 
 .read-more-btn:hover {
-    background: var(--primary-blue);
+    background: var(--secondary-blue);
+    color: white;
+    border-color: var(--secondary-blue);
     transform: translateY(-1px);
 }
 
@@ -450,20 +458,6 @@ body {
     height: fit-content;
 }
 
-.widget {
-    background: white;
-    border-radius: 12px;
-    padding: 1.25rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    border: 1px solid rgba(229, 231, 235, 0.4);
-    transition: all 0.2s ease;
-}
-
-.widget:hover {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    border-color: rgba(59, 130, 246, 0.2);
-}
-
 .widget-header {
     display: flex;
     align-items: center;
@@ -536,86 +530,82 @@ body {
     font-weight: 500;
 }
 
-/* Utilized by index.php */
-/* Enhanced Activity Items */
-.activity-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+/* General Widget Styling */
+.widget {
+    background-color: white;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--card-shadow);
 }
 
-.activity-item {
-    padding: 0.75rem;
-    background: rgba(248, 250, 252, 0.4);
-    border-radius: 6px;
-    border: 1px solid rgba(229, 231, 235, 0.3);
-    transition: all 0.2s ease;
-}
-
-.activity-item:hover {
-    background: rgba(248, 250, 252, 0.8);
-    border-color: rgba(59, 130, 246, 0.2);
-}
-
-.activity-title {
-    font-weight: 500;
-    color: var(--text-primary);
-    margin-bottom: 0.25rem;
-    display: block;
-    font-size: 0.9rem;
-    line-height: 1.3;
-}
-
-.activity-meta {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    line-height: 1.2;
-}
-
-.activity-time {
-    color: var(--secondary-blue);
-    font-weight: 500;
-}
-
-/* Utilized by index.php */
-/* Quick Actions Widget */
-.quick-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.action-btn {
+.widget-header {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    background: rgba(248, 250, 252, 0.6);
-    border: 1px solid rgba(229, 231, 235, 0.4);
-    border-radius: 8px;
-    text-decoration: none;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.widget-header .widget-icon {
+    font-size: 1.2rem;
+    margin-right: 0.75rem;
     color: var(--text-secondary);
-    transition: all 0.2s ease;
-    font-size: 0.9rem;
-    font-weight: 500;
 }
 
-.action-btn:hover {
-    background: white;
-    color: var(--primary-blue);
-    border-color: rgba(59, 130, 246, 0.2);
-    transform: translateX(2px);
+.widget-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
 }
 
-.action-btn i {
-    font-size: 1rem;
-    color: var(--secondary-blue);
-    width: 16px;
-    text-align: center;
+/* Padding for widget content areas */
+.category-list,
+.stats-grid,
+.quick-actions,
+.activity-list,
+.trending-list,
+.online-users {
+    padding: 1.5rem;
 }
 
-.action-btn:hover i {
-    color: var(--primary-blue);
+
+/* Quick Actions Widget Specifics */
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+.action-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: var(--light-color);
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.action-item:hover {
+    background-color: var(--primary-blue);
+    color: white;
+}
+
+.action-item i {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.action-item:hover i {
+    color: white;
+    transform: scale(1.1);
+}
+
+.action-item span {
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1.2;
 }
 
 /* Utilized by index.php */
@@ -867,7 +857,6 @@ body {
         height: 40px;
     }
 }
-
 /* Tablets */
 @media (max-width: 768px) {
     .header {
@@ -1151,22 +1140,24 @@ body {
 /* Responsive */
 @media (max-width: 900px) {
     .main-content {
-        grid-template-columns: 220px 1fr;
+        grid-template-columns: 220px 1fr 200px;
         gap: 1rem;
     }
     
     .sidebar-right {
-        display: none;
+        display: flex;
+        min-width: 200px;
     }
 }
 
 @media (max-width: 768px) {
     .main-content {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 180px;
         max-width: none;
         padding: 1rem 0;
         margin-left: min(max(250px, 35vw), 280px);
         width: calc(100% - min(max(250px, 35vw), 280px));
+        gap: 0.75rem;
     }
     
     .dropdown-sidebar {
@@ -1174,14 +1165,14 @@ body {
     }
     
     .sidebar {
-        position: static;
-        order: 2;
+        display: none;
     }
     
     .sidebar-right {
         display: flex;
-        order: 3;
+        order: 2;
         position: static;
+        min-width: 180px;
     }
     
     .stats-grid {
@@ -1189,9 +1180,15 @@ body {
     }
     
     .quick-actions {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0.5rem;
+        grid-template-columns: 1fr;
+        gap: 0.4rem;
+    }
+    
+    .action-item {
+        flex-direction: row;
+        justify-content: flex-start;
+        padding: 0.75rem;
+        text-align: left;
     }
     
     .action-btn {
@@ -1241,6 +1238,7 @@ body {
 
 @media (max-width: 480px) {
     .main-content {
+        grid-template-columns: 1fr;
         padding: 0.5rem 0;
         margin-left: min(max(220px, 40vw), 250px);
         width: calc(100% - min(max(220px, 40vw), 250px));
@@ -1248,6 +1246,12 @@ body {
     
     .dropdown-sidebar {
         width: min(max(220px, 40vw), 250px);
+    }
+    
+    .sidebar-right {
+        display: flex;
+        order: 2;
+        position: static;
     }
     
     .sidebar-right .widget {
@@ -1259,8 +1263,19 @@ body {
     }
     
     .quick-actions {
-        grid-template-columns: 1fr 1fr;
-        gap: 0.5rem;
+        grid-template-columns: 1fr;
+        gap: 0.4rem;
+    }
+    
+    .action-item {
+        flex-direction: row;
+        justify-content: flex-start;
+        padding: 0.6rem;
+        font-size: 0.75rem;
+    }
+    
+    .action-item i {
+        font-size: 1rem;
     }
     
     .action-btn {
@@ -2431,7 +2446,7 @@ body {
 .forum-selection-item:hover {
     background: white;
     border-color: var(--secondary-blue);
-    transform: translateY(-2px);
+transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
 }
 
@@ -2607,19 +2622,36 @@ body {
 }
 
 /* Right Sidebar Quick Actions Widget Positioning */
-.right-sidebar .widget {
+.sidebar-right .widget {
     width: 100%;
     box-sizing: border-box;
+    flex-shrink: 0;
 }
 
-.right-sidebar .quick-actions-list {
+.sidebar-right .quick-actions-list {
     width: 100%;
 }
 
-.right-sidebar .action-item {
+.sidebar-right .action-item {
     width: 100%;
     box-sizing: border-box;
     min-height: 60px;
+}
+
+/* Ensure widgets don't overflow */
+.sidebar-right .widget-header h3 {
+    font-size: 0.9rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sidebar-right .trending-title,
+.sidebar-right .activity-title {
+    font-size: 0.8rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* Topic Layout with Left and Right Sidebars */
@@ -3013,9 +3045,44 @@ body {
         padding: 0.4rem 0.6rem;
     }
     .topic-stats-bar {
-        justify-content: center;
-        gap: 0.75rem;
-    }
+
+/* Widget Styling */
+.widget {
+    background-color: var(--background-secondary);
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.widget-header {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.widget-header .widget-icon {
+    font-size: 1.2rem;
+    margin-right: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.widget-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+/* This is the class for the content inside the widget */
+.quick-actions,
+.stats-grid,
+.activity-list,
+.trending-list,
+.online-users,
+.category-list {
+    padding: 1.5rem;
+}
+
     .stat-badge {
         font-size: 0.75rem;
         padding: 0.4rem 0.8rem;
@@ -3457,56 +3524,57 @@ table {
         font-size: 0.9rem;
     }
 }
-/* Category List Styles for Right Sidebar */
+/* Category List Styles - Minimalistic */
 .category-list {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.75rem;
 }
 
 .category-item {
-    border-radius: 8px;
+    border-radius: 6px;
     overflow: hidden;
-    border: 1px solid var(--border-color);
-    transition: all 0.3s ease;
+    border: 1px solid #f1f3f4;
+    transition: all 0.2s ease;
+    background: white;
 }
 
 .category-item:hover {
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+    border-color: #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .category-header {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 1rem;
-    background: var(--light-color);
-    border-bottom: 1px solid var(--border-color);
+    padding: 0.875rem 1rem;
+    background: #fafbfc;
+    border-bottom: 1px solid #f1f3f4;
 }
 
 .category-icon {
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.8);
-    font-size: 1rem;
+    font-size: 0.875rem;
+    opacity: 0.7;
 }
 
 .category-header h4 {
     margin: 0;
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 600;
-    color: var(--text-primary);
+    color: #374151;
 }
 
 .forum-list {
     padding: 0.5rem;
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.125rem;
 }
 
 .forum-link {
@@ -3515,21 +3583,21 @@ table {
     gap: 0.5rem;
     padding: 0.5rem 0.75rem;
     text-decoration: none;
-    color: var(--text-secondary);
+    color: #6b7280;
     border-radius: 4px;
-    font-size: 0.875rem;
-    transition: all 0.3s ease;
+    font-size: 0.825rem;
+    transition: all 0.2s ease;
 }
 
 .forum-link:hover {
-    background: rgba(59, 130, 246, 0.1);
+    background: #f8f9fa;
     color: var(--secondary-blue);
-    transform: translateX(3px);
+    transform: translateX(2px);
 }
 
 .forum-link i {
-    font-size: 0.75rem;
-    opacity: 0.6;
+    font-size: 0.7rem;
+    opacity: 0.5;
 }
 
 /* Minimalist Forum Page Styles */
@@ -3790,7 +3858,7 @@ table {
     border-radius: 50%;
     display: flex;
     align-items: center;
-    justify-content: center;
+justify-content: center;
     margin: 0 auto 1.5rem;
 }
 
@@ -3923,7 +3991,6 @@ table {
     transform: translateY(-2px);
     box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
 }
-
 /* Responsive Design for Minimalist Forum */
 @media (max-width: 768px) {
     .forum-header-minimal {
@@ -4052,6 +4119,70 @@ table {
     border-radius: 12px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+}
+
+/* Header Navigation Menu */
+.nav-menu {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.nav-menu a {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nav-menu a:hover {
+    color: var(--primary-blue);
+}
+
+.dropdown {
+    display: none; /* Hide dropdowns by default */
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: white;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: var(--card-shadow);
+    min-width: 220px;
+    z-index: 1000;
+    padding: 0.5rem;
+}
+
+.dropdown.show {
+    display: block; /* Show dropdown when .show class is added */
+}
+
+.user-menu {
+    position: relative;
+}
+
+.dropdown a {
+    display: flex;
+    padding: 0.75rem 1.5rem;
+    white-space: nowrap;
+}
+
+.dropdown a:hover {
+    background-color: var(--light-color);
+}
+
+.dropdown-toggle .fa-chevron-down {
+    font-size: 0.8em;
+    margin-left: 0.25rem;
+    transition: transform 0.3s ease;
+}
+
+.user-menu:hover .dropdown-toggle .fa-chevron-down {
+    transform: rotate(180deg);
 }
 
 /* Header */
@@ -5077,7 +5208,7 @@ table {
     color: #6b7280;
     text-decoration: none;
     border-radius: 6px;
-    font-weight: 500;
+font-weight: 500;
     transition: all 0.2s;
     border: 1px solid #e5e7eb;
 }
@@ -5673,4 +5804,177 @@ table {
     border-color: #d1d5db !important;
     color: #374151 !important;
     transform: none !important;
+}
+
+/* Utilized by index.php, forum.php, topic.php */
+/* Main Content with Left and Right Sidebars */
+.timeline-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Utilized by index.php */
+/* Timeline Feed Styles */
+.timeline-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+}
+.read-more-btn::after {
+    content: '→';
+    font-size: 0.7rem;
+}
+
+
+
+@media (max-width: 768px) {
+    .topic-meta {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .timeline-feed {
+        gap: 1.5rem;
+        padding: 1rem 0;
+    }
+    
+    .topic-card {
+        border-radius: 16px;
+        margin: 0 -0.5rem;
+    }
+    
+    .topic-stats {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+    
+    .topic-stat {
+        font-size: 0.8rem;
+        padding: 0.375rem 0.75rem;
+    }
+}
+/* Utilized by index.php, forum.php */
+/* Enhanced Sidebar */
+.widget-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.widget-header h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.widget-icon {
+    color: var(--text-secondary);
+}
+
+/* Stats Widget */
+.stats-grid {
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.stat-item strong {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Category Widget */
+.category-list {
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.category-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text-primary);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.category-link:hover {
+    background-color: #f8fafc;
+    color: var(--primary-blue);
+}
+
+/* Trending Widget */
+.trending-list {
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.trending-item {
+    display: block;
+    padding: 0.6rem 0.75rem;
+    border-radius: 8px;
+    text-decoration: none;
+}
+
+.trending-item:hover {
+    background-color: #f8fafc;
+}
+
+.trending-title {
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    margin-bottom: 0.1rem;
+    display: block;
+}
+
+.trending-meta {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .main-layout {
+        grid-template-columns: 1fr;
+    }
+    .sidebar-right {
+        position: static;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+    .container {
+        width: 100%;
+        margin-left: 0;
+        padding: 0 0.5rem;
+    }
+}
 }

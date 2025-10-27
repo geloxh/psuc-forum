@@ -234,19 +234,19 @@
                     <h3>Quick Actions</h3>
                 </div>
                 <div class="quick-actions">
-                    <a href="new_topic.php" class="action-btn">
+                    <a href="new_topic.php" class="action-item">
                         <i class="fas fa-plus"></i>
                         <span>New Topic</span>
                     </a>
-                    <a href="search.php" class="action-btn">
+                    <a href="search.php" class="action-item">
                         <i class="fas fa-search"></i>
                         <span>Search</span>
                     </a>
-                    <a href="messages.php" class="action-btn">
+                    <a href="messages.php" class="action-item">
                         <i class="fas fa-envelope"></i>
                         <span>Messages</span>
                     </a>
-                    <a href="profile.php" class="action-btn">
+                    <a href="profile.php" class="action-item">
                         <i class="fas fa-user"></i>
                         <span>Profile</span>
                     </a>
