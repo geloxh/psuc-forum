@@ -9,6 +9,19 @@ if (!isset($auth)) {
     $user = $auth->getCurrentUser();
 }
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSUC Forum</title>
+    <link rel="stylesheet" href="assets/stylesheets/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="assets/scripts/main.js" defer></script>
+</head>
+<body>
+    
 <header class="header">
     <div class="container">
         <div class="header-content">

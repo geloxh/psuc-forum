@@ -7,6 +7,13 @@
     $user = $auth -> getCurrentUser();
 
     $forum_id = $_GET['id'] ?? 0;
+    
+    // Redirect if no forum ID provided
+    if(!$forum_id || !is_numeric($forum_id)) {
+        header('Location: index.php');
+        exit;
+    }
+    
     $page = $_GET['page'] ?? 1;
     $limit = 20;
     $offset = ($page - 1) * $limit;
@@ -52,10 +59,10 @@
             <!-- Header Section -->
             <header class="forum-header">
                 <nav class="breadcrumb">
-                    <a href="index.php">Forum</a>
-                    <span>/</span>
+                    <a href="index.php"><i class="fas fa-home"></i> Forum</a>
+                    <i class="fas fa-chevron-right"></i>
                     <span><?php echo htmlspecialchars($forum_info['category_name']); ?></span>
-                    <span>/</span>
+                    <i class="fas fa-chevron-right"></i>
                     <span><?php echo htmlspecialchars($forum_info['name']); ?></span>
                 </nav>
                 
@@ -64,8 +71,8 @@
                         <h1><?php echo htmlspecialchars($forum_info['name']); ?></h1>
                         <p><?php echo htmlspecialchars($forum_info['description']); ?></p>
                         <div class="forum-stats">
-                            <span><?php echo $total_topics; ?> topics</span>
-                            <span><?php echo $forum_info['posts_count']; ?> posts</span>
+                            <span><i class="fas fa-comments"></i> <?php echo $total_topics; ?> topics</span>
+                            <span><i class="fas fa-reply"></i> <?php echo $forum_info['posts_count']; ?> posts</span>
                         </div>
                     </div>
                     <?php if($user): ?>
@@ -88,10 +95,10 @@
                                 <div class="topic-info">
                                     <div class="topic-badges">
                                         <?php if($topic['is_pinned']): ?>
-                                            <span class="badge pinned">Pinned</span>
+                                            <span class="badge pinned"><i class="fas fa-thumbtack"></i> Pinned</span>
                                         <?php endif; ?>
                                         <?php if($topic['is_locked']): ?>
-                                            <span class="badge locked">Locked</span>
+                                            <span class="badge locked"><i class="fas fa-lock"></i> Locked</span>
                                         <?php endif; ?>
                                     </div>
                                     <h3 class="topic-title">
@@ -100,8 +107,8 @@
                                         </a>
                                     </h3>
                                     <div class="topic-meta">
-                                        <span>by <?php echo htmlspecialchars($topic['username']); ?></span>
-                                        <span><?php echo date('M j, Y', strtotime($topic['created_at'])); ?></span>
+                                        <span><i class="fas fa-user"></i> by <strong><?php echo htmlspecialchars($topic['username']); ?></strong></span>
+                                        <span><i class="fas fa-calendar"></i> <?php echo date('M j, Y', strtotime($topic['created_at'])); ?></span>
                                     </div>
                                 </div>
                                 <div class="topic-stats">
@@ -115,6 +122,7 @@
                                     </div>
                                     <?php if($last_reply): ?>
                                         <div class="last-reply">
+                                            <i class="fas fa-clock"></i>
                                             <span><?php echo date('M j', strtotime($last_reply[1])); ?></span>
                                         </div>
                                     <?php endif; ?>
@@ -126,11 +134,13 @@
                     <div class="empty-state">
                         <i class="fas fa-comments"></i>
                         <h3>No topics yet</h3>
-                        <p>Be the first to start a discussion!</p>
+                        <p>This forum is waiting for its first discussion. Start the conversation and help build this community!</p>
                         <?php if($user): ?>
                             <a href="new_topic.php?forum_id=<?php echo $forum_id; ?>" class="new-topic-button">
                                 <i class="fas fa-plus"></i> Create First Topic
                             </a>
+                        <?php else: ?>
+                            <p><a href="login.php" style="color: #3b82f6; text-decoration: none;">Login</a> to start the first discussion</p>
                         <?php endif; ?>
                     </div>
                 <?php endif; ?>

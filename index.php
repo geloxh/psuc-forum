@@ -33,9 +33,11 @@
 
 
             <div class="forum-content">
-                <div class="p-3">
-                    <h1><i class="fas fa-graduation-cap"></i> Welcome to PSUC Forum</h1>
-                    <p class="text-secondary mb-3">Connect, collaborate, and share knowledge with fellow students and faculty from Philippine State Universities and Colleges.</p>
+                <div class="hero-section">
+                    <div class="hero-content">
+                        <h1 class="hero-title"><i class="fas fa-graduation-cap"></i> Welcome to PSUC Forum</h1>
+                        <p class="hero-subtitle">Connect, collaborate, and share knowledge with fellow students and faculty from Philippine State Universities and Colleges.</p>
+                    </div>
                 </div>
 
                 <div class="timeline-feed">
@@ -183,7 +185,7 @@
             </div>
 
             <aside class="sidebar-right">
-                <!-- Forum Statistics Widget -->
+            <!-- Forum Statistics Widget -->
             <div class="widget">
                 <div class="widget-header">
                     <div class="widget-icon">
@@ -357,6 +359,8 @@
 
         </div>
     </main>
+    <?php require_once 'includes/footer.php'; ?>
+    
     <!-- ===== MAIN JS ===== -->
     <script src="assets/scripts/main.js"></script>
     <script>
