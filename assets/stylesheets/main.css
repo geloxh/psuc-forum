@@ -660,6 +660,13 @@ display: flex;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    text-decoration: none;
+    display: block;
+}
+
+.trending-title:hover {
+    color: var(--secondary-blue);
+    text-decoration: underline;
 }
 
 .trending-meta {
@@ -5977,4 +5984,57 @@ font-weight: 500;
         padding: 0 0.5rem;
     }
 }
+}
+/* Activity Title Link Styles */
+.activity-title {
+    text-decoration: none;
+    display: block;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.activity-title:hover {
+    color: var(--secondary-blue);
+    text-decoration: underline;
+}
+
+/* Avatar Fallback Styles */
+.avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(229, 231, 235, 0.2);
+    flex-shrink: 0;
+}
+
+/* Ensure proper spacing in timeline feed */
+.timeline-feed {
+    min-height: 400px;
+}
+
+.timeline-feed:empty::after {
+    content: "No topics to display. Be the first to start a discussion!";
+    display: block;
+    text-align: center;
+    color: var(--text-secondary);
+    font-style: italic;
+    padding: 2rem;
+}
+
+/* Responsive fixes for home page */
+@media (max-width: 768px) {
+    .main-content {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .sidebar {
+        display: none;
+    }
+    
+    .sidebar-right {
+        order: 2;
+        position: static;
+    }
 }

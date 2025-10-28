@@ -1,12 +1,13 @@
 <?php
     require_once 'includes/auth.php';
     require_once 'includes/forum.php';
+    require_once 'includes/web_sidebar.php';
     require_once 'config/database.php';
 
     $auth = new Auth();
     $forum = new Forum();
-    $user = $auth -> getCurrentUser();
-    $categories = $forum -> getCategories();
+    $user = $auth->getCurrentUser();
+    $categories = $forum->getCategories();
 ?>
 
 <!DOCTYPE html>
@@ -25,59 +26,27 @@
 <body>
 
     <?php include 'includes/header.php'; ?>
+    <?php renderDropdownSidebar(); ?>
 
     <main class="container">
-        <div class="main-content">
-            <aside class="sidebar">
-                <!-- Categories Widget -->
-                <div class="widget">
-                    <div class="widget-header">
-                        <div class="widget-icon">
-                            <i class="fas fa-list"></i>
-                        </div>
-                        <h3>Categories</h3>
-                    </div>
-                    <div class="category-list">
-                        <?php
-                        $database = new Database();
-                        $conn = $database->getConnection();
-                        foreach($categories as $category):
-                            $forums_query = "SELECT id, name, description FROM forums WHERE category_id = ? ORDER BY position, name";
-                            $stmt = $conn->prepare($forums_query);
-                            $stmt->execute([$category['id']]);
-                            $forums = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                        ?>
-                            <div class="category-item">
-                                <div class="category-header">
-                                    <div class="category-icon" style="color: <?php echo $category['color']; ?>">
-                                        <i class="<?php echo $category['icon']; ?>"></i>
-                                    </div>
-                                    <h4><?php echo htmlspecialchars($category['name']); ?></h4>
-                                </div>
-                                <div class="forum-list">
-                                    <?php foreach($forums as $forum_item): ?>
-                                        <a href="forum.php?id=<?php echo $forum_item['id']; ?>" class="forum-link">
-                                            <i class="fas fa-chevron-right"></i>
-                                            <?php echo htmlspecialchars($forum_item['name']); ?>
-                                        </a>
-                                    <?php endforeach; ?>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-            </aside>
+        <div class="main-content" style="grid-template-columns: 1fr 250px;">
+
 
             <div class="forum-content">
                 <div class="p-3">
-                    <h1><i class="fas fa-comments"></i>Welcome to Philippines State Universities and Colleges Forum</h1>
+                    <h1><i class="fas fa-graduation-cap"></i> Welcome to PSUC Forum</h1>
                     <p class="text-secondary mb-3">Connect, collaborate, and share knowledge with fellow students and faculty from Philippine State Universities and Colleges.</p>
                 </div>
 
                 <div class="timeline-feed">
                     <?php
-                    $database = new Database();
-                    $conn = $database->getConnection();
+                    try {
+                        $database = new Database();
+                        $conn = $database->getConnection();
+                        
+                        if (!$conn) {
+                            throw new Exception('Database connection failed');
+                        }
                     $topics_query = "SELECT 
                                         t.id,
                                         t.title,
@@ -95,7 +64,8 @@
                                     JOIN 
                                         forums f ON t.forum_id = f.id
                                     ORDER BY 
-                                        t.created_at DESC";
+                                        t.created_at DESC
+                                    LIMIT 10";
                     $stmt = $conn->prepare($topics_query);
                     $stmt->execute();
                     $topics = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -112,11 +82,31 @@
                         $topics[$key]['attachments'] = $attachment_stmt->fetchAll(PDO::FETCH_ASSOC);
                     }
 
-                    foreach($topics as $topic):
+                    if (empty($topics)):
+                    ?>
+                        <div class="empty-state" style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+                            <i class="fas fa-comments" style="font-size: 3rem; margin-bottom: 1rem; color: var(--border-color);"></i>
+                            <h3>No Topics Yet</h3>
+                            <p>Be the first to start a discussion in our community!</p>
+                            <?php if ($user): ?>
+                                <a href="new_topic.php" class="btn btn-primary">Create First Topic</a>
+                            <?php else: ?>
+                                <a href="login.php" class="btn btn-primary">Login to Post</a>
+                            <?php endif; ?>
+                        </div>
+                    <?php
+                    else:
+                        foreach($topics as $topic):
                     ?>
                         <div class="topic-card">
                             <div class="topic-card-header">
-                                <img src="assets/avatars/<?php echo htmlspecialchars($topic['avatar']); ?>" alt="<?php echo htmlspecialchars($topic['username']); ?>'s avatar" class="avatar">
+                                <?php if (!empty($topic['avatar'])): ?>
+                                    <img src="assets/avatars/<?php echo htmlspecialchars($topic['avatar']); ?>" alt="<?php echo htmlspecialchars($topic['username']); ?>'s avatar" class="avatar">
+                                <?php else: ?>
+                                    <div class="avatar" style="background: #e5e7eb; display: flex; align-items: center; justify-content: center; color: #6b7280; font-weight: 600;">
+                                        <?php echo strtoupper(substr($topic['username'], 0, 1)); ?>
+                                    </div>
+                                <?php endif; ?>
                                 <div class="topic-info">
                                     <h3 class="topic-title"><a href="topic.php?id=<?php echo $topic['id']; ?>"><?php echo htmlspecialchars($topic['title']); ?></a></h3>
                                     <p class="topic-meta">
@@ -180,8 +170,16 @@
                                 <a href="topic.php?id=<?php echo $topic['id']; ?>" class="read-more-btn">Read More</a>
                             </div>
                         </div>
-                    <?php endforeach; ?>
+                    <?php 
+                        endforeach;
+                    endif;
+                    ?>
                 </div>
+                <?php
+                    } catch (Exception $e) {
+                        echo '<div class="alert alert-danger">Error loading topics: ' . htmlspecialchars($e->getMessage()) . '</div>';
+                    }
+                ?>
             </div>
 
             <aside class="sidebar-right">
@@ -194,16 +192,21 @@
                     <h3>Forum Statistics</h3>
                 </div>
                 <?php
-                    $database = new Database();
-                    $conn = $database -> getConnection();
+                    try {
+                        $database = new Database();
+                        $conn = $database->getConnection();
+                        
+                        if (!$conn) {
+                            throw new Exception('Database connection failed');
+                        }
                     $stats_query = "SELECT 
-                        (SELECT COUNT(*) FROM users) as total_users,
+                        (SELECT COUNT(*) FROM users WHERE status = 'active') as total_users,
                         (SELECT COUNT(*) FROM topics) as total_topics,
                         (SELECT COUNT(*) FROM posts) as total_posts,
-                        (SELECT username FROM users ORDER BY created_at DESC LIMIT 1) as newest_user";
-                    $stmt = $conn -> prepare($stats_query);
-                    $stmt -> execute();
-                    $stats = $stmt -> fetch(PDO::FETCH_ASSOC);
+                        (SELECT username FROM users WHERE status = 'active' ORDER BY created_at DESC LIMIT 1) as newest_user";
+                    $stmt = $conn->prepare($stats_query);
+                    $stmt->execute();
+                    $stats = $stmt->fetch(PDO::FETCH_ASSOC);
                 ?>
                 <div class="stats-grid">
                     <div class="stat-item">
@@ -222,6 +225,11 @@
                         <strong style="margin-right: 1rem;"><?php echo htmlspecialchars($stats['newest_user'] ?? 'None'); ?></strong>
                         <span>Newest Member</span>
                     </div>
+                <?php
+                    } catch (Exception $e) {
+                        echo '<div class="stat-item"><strong>Error</strong><span>Unable to load stats</span></div>';
+                    }
+                ?>
                 </div>
             </div>
 
@@ -262,20 +270,21 @@
                     <h3>Recent Activity</h3>
                 </div>
                 <?php
-                    $recent_query = "SELECT t.title, t.created_at, u.username, f.name as forum_name 
+                    $recent_query = "SELECT t.id, t.title, t.created_at, u.username, f.name as forum_name 
                        FROM topics t 
                        JOIN users u ON t.user_id = u.id 
                        JOIN forums f ON t.forum_id = f.id 
+                       WHERE u.status = 'active'
                        ORDER BY t.created_at DESC LIMIT 5";
                     
-                    $stmt = $conn -> prepare($recent_query);
-                    $stmt -> execute();
-                    $recent_topics = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+                    $stmt = $conn->prepare($recent_query);
+                    $stmt->execute();
+                    $recent_topics = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 ?>
                 <div class="activity-list">
                     <?php foreach($recent_topics as $topic): ?>
                     <div class="activity-item">
-                        <span class="activity-title"><?php echo htmlspecialchars($topic['title']); ?></span>
+                        <a href="topic.php?id=<?php echo $topic['id']; ?>" class="activity-title"><?php echo htmlspecialchars($topic['title']); ?></a>
                         <div class="activity-meta">
                             <span>by <?php echo htmlspecialchars($topic['username']); ?> in <?php echo htmlspecialchars($topic['forum_name']); ?></span>
                             <span class="activity-time"><?php echo date('M j, g:i A', strtotime($topic['created_at'])); ?></span>
@@ -294,22 +303,23 @@
                     <h3>Trending Topics</h3>
                 </div>
                 <?php
-                    $trending_query = "SELECT t.title, t.views, u.username, 
+                    $trending_query = "SELECT t.id, t.title, t.views, u.username, 
                     (SELECT COUNT(*) FROM posts p WHERE p.topic_id = t.id) as reply_count
                     FROM topics t 
                     JOIN users u ON t.user_id = u.id 
+                    WHERE u.status = 'active'
                     ORDER BY t.views DESC, reply_count DESC LIMIT 5";
                         
-                    $stmt = $conn -> prepare($trending_query);
-                    $stmt -> execute();
-                    $trending_topics = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+                    $stmt = $conn->prepare($trending_query);
+                    $stmt->execute();
+                    $trending_topics = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 ?>
                 <div class="trending-list">
                     <?php foreach($trending_topics as $index => $topic): ?>
                     <div class="trending-item">
                         <div class="trending-rank"><?php echo $index + 1; ?></div>
                             <div class="trending-content">
-                                <div class="trending-title"><?php echo htmlspecialchars($topic['title']); ?></div>
+                                <a href="topic.php?id=<?php echo $topic['id']; ?>" class="trending-title"><?php echo htmlspecialchars($topic['title']); ?></a>
                                 <div class="trending-meta"><?php echo $topic['views']; ?> views • <?php echo $topic['reply_count']; ?> replies</div>
                             </div>
                     </div>
@@ -326,10 +336,10 @@
                     <h3>Online Users</h3>
                 </div>
                 <?php
-                    $online_query = "SELECT username FROM users WHERE last_active > DATE_SUB(NOW(), INTERVAL 15 MINUTE) ORDER BY last_active DESC LIMIT 10";
-                    $stmt = $conn -> prepare($online_query);
-                    $stmt -> execute();
-                    $online_users = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+                    $online_query = "SELECT username FROM users WHERE last_active > DATE_SUB(NOW(), INTERVAL 15 MINUTE) AND status = 'active' ORDER BY last_active DESC LIMIT 10";
+                    $stmt = $conn->prepare($online_query);
+                    $stmt->execute();
+                    $online_users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 ?>
                 <div class="online-users">
                 <?php if(count($online_users) > 0): ?>
@@ -349,5 +359,49 @@
     </main>
     <!-- ===== MAIN JS ===== -->
     <script src="assets/scripts/main.js"></script>
+    <script>
+        // Home page enhancements
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add loading states
+            const topicCards = document.querySelectorAll('.topic-card');
+            topicCards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    if (e.target.tagName === 'A') {
+                        e.target.style.opacity = '0.7';
+                    }
+                });
+            });
+            
+            // Smooth scroll for anchor links
+            const anchorLinks = document.querySelectorAll('a[href^="#"]');
+            anchorLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+            
+            // Auto-refresh stats every 5 minutes
+            setInterval(function() {
+                const statsSection = document.querySelector('.stats-grid');
+                if (statsSection) {
+                    fetch(window.location.href)
+                        .then(response => response.text())
+                        .then(html => {
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(html, 'text/html');
+                            const newStats = doc.querySelector('.stats-grid');
+                            if (newStats) {
+                                statsSection.innerHTML = newStats.innerHTML;
+                            }
+                        })
+                        .catch(error => console.log('Stats refresh failed:', error));
+                }
+            }, 300000); // 5 minutes
+        });
+    </script>
 </body>
 </html>
