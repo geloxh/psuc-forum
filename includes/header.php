@@ -21,16 +21,20 @@ if (!isset($auth)) {
     <script src="assets/scripts/main.js" defer></script>
 </head>
 <body>
-    
+
 <header class="header">
     <div class="container">
         <div class="header-content">
             <a href="index.php" class="logo">
                 <img src="assets/imgs/suc-logo.jpg" alt="SUC Forum Logo" style="height: 60px;">
             </a>
-            <button class="nav-toggle" aria-label="toggle navigation">
-                <i class="fas fa-bars"></i>
+
+            <button class="mobile-nav-toggle" aria-controls="nav-menu" aria-expanded="false">
+                <span class="sr-only">Menu</span>
+                <i class="fas fa-bars open"></i>
+                <i class="fas fa-times close"></i>
             </button>
+
             <nav class="nav">
                 <ul class="nav-menu">
                     <li><a href="index.php"><i class="fas fa-home"></i>Home</a></li>

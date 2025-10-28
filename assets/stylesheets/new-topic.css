@@ -1,0 +1,492 @@
+/* New Topic Page Styles */
+.new-topic-page {
+    min-height: calc(100vh - 80px);
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    padding: 2rem 0;
+}
+
+.new-topic-page .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Page Header */
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem 0;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.page-header h1 i {
+    color: var(--secondary-blue);
+    font-size: 2rem;
+}
+
+.page-header p {
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.breadcrumb a {
+    color: var(--secondary-blue);
+    text-decoration: none;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.breadcrumb a:hover {
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.breadcrumb i {
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+}
+
+.breadcrumb span {
+    color: var(--text-secondary);
+}
+
+/* Forum Selection */
+.forum-selection {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.category-section {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(229, 231, 235, 0.3);
+}
+
+.category-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+}
+
+.category-title i {
+    font-size: 1.1rem;
+}
+
+.forums-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.forum-card {
+    display: flex;
+    align-items: center;
+    padding: 1.25rem;
+    background: #f8fafc;
+    border: 1px solid rgba(229, 231, 235, 0.4);
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.forum-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--secondary-blue);
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+}
+
+.forum-card:hover {
+    background: white;
+    border-color: var(--secondary-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+}
+
+.forum-card:hover::before {
+    transform: scaleY(1);
+}
+
+.forum-content {
+    flex: 1;
+}
+
+.forum-card h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    transition: color 0.2s ease;
+}
+
+.forum-card:hover h3 {
+    color: var(--secondary-blue);
+}
+
+.forum-card p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    margin: 0;
+}
+
+.forum-card i {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.forum-card:hover i {
+    color: var(--secondary-blue);
+    transform: translateX(4px);
+}
+
+/* Form Container */
+.form-container {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(229, 231, 235, 0.3);
+    margin-bottom: 2rem;
+}
+
+/* Form Styles */
+.topic-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.optional {
+    font-weight: 400;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.form-input,
+.form-textarea {
+    padding: 1rem;
+    border: 2px solid rgba(229, 231, 235, 0.6);
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: inherit;
+    background: #fafbfc;
+    transition: all 0.3s ease;
+    resize: vertical;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--secondary-blue);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-textarea {
+    min-height: 200px;
+    line-height: 1.6;
+}
+
+/* File Input */
+.file-input-wrapper {
+    position: relative;
+    border: 2px dashed rgba(229, 231, 235, 0.8);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    background: #fafbfc;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.file-input-wrapper:hover {
+    border-color: var(--secondary-blue);
+    background: rgba(59, 130, 246, 0.02);
+}
+
+.file-input-wrapper input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.file-input-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+}
+
+.file-input-text i {
+    font-size: 2rem;
+    color: var(--secondary-blue);
+}
+
+.file-input-text span {
+    font-weight: 500;
+}
+
+.form-hint {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(229, 231, 235, 0.3);
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+    color: white;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+}
+
+.btn-secondary {
+    background: #f1f5f9;
+    color: var(--text-secondary);
+    border: 1px solid rgba(229, 231, 235, 0.6);
+}
+
+.btn-secondary:hover {
+    background: #e2e8f0;
+    color: var(--text-primary);
+    transform: translateY(-1px);
+}
+
+/* Alert */
+.alert {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}
+
+.alert-error {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.alert i {
+    font-size: 1.1rem;
+}
+
+/* Guidelines Card */
+.guidelines-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(229, 231, 235, 0.3);
+}
+
+.guidelines-card h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.guidelines-card h3 i {
+    color: var(--accent-gold);
+}
+
+.guidelines-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.guidelines-card li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    padding: 0.5rem 0;
+}
+
+.guidelines-card li::before {
+    content: '✓';
+    color: var(--success-color);
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+/* Character Counter */
+.char-counter {
+    margin-left: auto;
+    font-weight: 400 !important;
+    font-size: 0.8rem !important;
+}
+
+/* Loading State */
+.btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* File Input Selected State */
+.file-input-wrapper.has-files {
+    border-color: var(--success-color);
+    background: rgba(16, 185, 129, 0.05);
+}
+
+/* Smooth Transitions */
+.form-input,
+.form-textarea {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.form-input:focus,
+.form-textarea:focus {
+    transform: translateY(-1px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .new-topic-page {
+        padding: 1rem 0;
+    }
+    
+    .page-header h1 {
+        font-size: 2rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .forums-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-container {
+        padding: 1.5rem;
+        margin: 0 0.5rem 1.5rem;
+    }
+    
+    .guidelines-card {
+        margin: 0 0.5rem;
+        padding: 1.25rem;
+    }
+    
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+    
+    .btn {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-header h1 {
+        font-size: 1.75rem;
+    }
+    
+    .form-container {
+        padding: 1rem;
+    }
+    
+    .file-input-wrapper {
+        padding: 1.5rem 1rem;
+    }
+    
+    .breadcrumb {
+        font-size: 0.8rem;
+        gap: 0.25rem;
+    }
+}
