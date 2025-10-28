@@ -5,13 +5,17 @@ document.addEventListener('DOMContentLoaded', function() {
     dropdownToggles.forEach(toggle => {
         toggle.addEventListener('click', function(event) {
             event.preventDefault();
+            event.stopPropagation();
+            
             // Close other open dropdowns
             dropdownToggles.forEach(otherToggle => {
-                if (otherToggle !== this) {
+                if (otherToggle !== toggle) {
                     otherToggle.classList.remove('active');
                 }
             });
-            this.classList.toggle('active');
+            
+            // Toggle current dropdown
+            toggle.classList.toggle('active');
         });
     });
 
@@ -26,5 +30,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
     const body = document.querySelector('body');
 
-    mobileNavToggle.addEventListener('click', () => body.classList.toggle('nav-active'));
+    if (mobileNavToggle) {
+        mobileNavToggle.addEventListener('click', () => {
+            body.classList.toggle('nav-active');
+        });
+    }
 });

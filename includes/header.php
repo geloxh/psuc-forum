@@ -82,3 +82,5 @@ if (!isset($auth)) {
         </div>
     </div>
 </header>
+
+<script src="assets/scripts/main.js"></script>
