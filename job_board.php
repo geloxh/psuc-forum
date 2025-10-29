@@ -29,14 +29,7 @@ $user = $auth->getCurrentUser();
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="container">
-            <a href="index.php" class="logo">
-                <img src="suc-logo.jpg" alt="PSUC Logo">
-                <span>PSUC Forum</span>
-            </a>
-        </div>
-    </header>
+    <?php include 'includes/header.php'; ?>
     
     <main class="container">
         <div class="content">

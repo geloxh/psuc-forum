@@ -1,8 +1,68 @@
 <?php
-require_once 'includes/auth.php';
-$auth = new Auth();
-$user = $auth->getCurrentUser();
+
+    require_once 'includes/auth.php';
+    require_once 'config/database.php';
+
+    $auth = new Auth();
+    $user = $auth -> getCurrentUser();
+
+    class Document {
+        private $conn;
+        private $table_name = "documents";
+
+        public function __construct($db) {
+            $this -> conn = $db;
+        }
+
+        public function create($title, $description, $filePath, $userId) {
+            $query = "INSERT INTO " . $this -> table_name . " (title, description, file_path, uploaded_by (?, ?, ?, ?";
+            $stmt = $this -> conn -> prepare($query);
+            return $stmt -> execute([$title, $description, $filePath, $userID]);
+        }
+
+        public function read() {
+            $query = "SELECT d.*, u.username FROM " . $this -> table_name . " d JOIN users u ON d.uploaded_by = u.id ORDER BY d.created_at DESC";
+            $stmt = $this -> conn -> prepare($query);
+            $stmt -> execute();
+            return $stmt;
+        }
+
+        public function update($id, $title, $description) {
+            $query = "UPDATE " . $this -> table_name . " SET title = ?, description = ? WHERE id = ?";
+            $stmt = $this -> conn -> prepare($query);
+            return $stmt -> execute([$title, $description, $id]);
+        }
+
+        public function delete($id) {
+            $query = "DELETE FROM " . $this -> table_name . " WHERE id = ?";
+            $stmt = $this -> conn -> prepare($query);
+            return $stmt -> execute([$id]);
+        }
+    }
+
+    $database = new Database();
+    $db = $database -> getConnection();
+    $document = new Document($db);
+
+    $is_admin = ($user && $user['role'] == 'admin');
+
+    if ($is_admin && $_SERVER['REQUEST_METHOD'] == 'POST') {
+        if (isset($_POST['add_document'])) {
+            $title = $_POST['title'];
+            $description = $_POST['description'];
+
+            // File Upload Handling
+            $target_dir = "uploads/documents/";
+            if (!is_dir($target_dir)) {
+                mkdir;
+            }
+        }
+    }
+
+
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,14 +86,7 @@ $user = $auth->getCurrentUser();
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="container">
-            <a href="index.php" class="logo">
-                <img src="suc-logo.jpg" alt="PSUC Logo">
-                <span>PSUC Forum</span>
-            </a>
-        </div>
-    </header>
+    <?php include 'includes/header.php'; ?>
     
     <main class="container">
         <div class="content">

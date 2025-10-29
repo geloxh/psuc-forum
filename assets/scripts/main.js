@@ -42,3 +42,22 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+
+// for academic_calendar.php
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarE1 = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarE1, {
+        initialView: 'dayGridMonth',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        events: 'api/events.php',
+        eventClick: function(info) {
+            alert('Event: ' + info.event.title + '\\n' + 'Description: ' + info.event.extendedProps.description);
+        }
+    });
+    calendar.render();
+})
