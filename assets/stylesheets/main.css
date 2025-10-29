@@ -97,7 +97,7 @@ body {
     display: none;
     position: absolute;
     top: 100%;
-    right: 0;
+    left: 0;
     background: white;
     min-width: 200px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
@@ -109,6 +109,10 @@ body {
 }
 
 .dropdown-toggle.active .dropdown {
+    display: block;
+}
+
+.dropdown-toggle:hover .dropdown {
     display: block;
 }
 

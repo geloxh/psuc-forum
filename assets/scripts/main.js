@@ -3,19 +3,25 @@ document.addEventListener('DOMContentLoaded', function() {
     const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
 
     dropdownToggles.forEach(toggle => {
-        toggle.addEventListener('click', function(event) {
-            event.preventDefault();
-            event.stopPropagation();
-            
-            // Close other open dropdowns
-            dropdownToggles.forEach(otherToggle => {
-                if (otherToggle !== toggle) {
-                    otherToggle.classList.remove('active');
-                }
-            });
-            
-            // Toggle current dropdown
-            toggle.classList.toggle('active');
+        const toggleLink = toggle.querySelector('a');
+        
+        toggleLink.addEventListener('click', function(event) {
+            if (this.getAttribute('href') === '#') {
+                event.preventDefault();
+                event.stopPropagation();
+
+                const parentToggle = this.parentElement;
+
+                // Close other open dropdowns
+                document.querySelectorAll('.dropdown-toggle').forEach(otherToggle => {
+                    if (otherToggle !== parentToggle) {
+                        otherToggle.classList.remove('active');
+                    }
+                });
+
+                // Toggle current dropdown
+                parentToggle.classList.toggle('active');
+            }
         });
     });
 
