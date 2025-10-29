@@ -93,42 +93,153 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - PSUC Forum</title>
-    <link rel="stylesheet" href="assets/stylesheets/main.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 3rem 2.5rem;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        .logo-img {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            display: block;
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin: 0 0 0.5rem;
+        }
+        .subtitle {
+            color: #718096;
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        input, select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            background: #f7fafc;
+            transition: all 0.2s ease;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4299e1;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+        }
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #4299e1, #3182ce);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 1.5rem 0;
+            transition: all 0.2s ease;
+        }
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px rgba(66, 153, 225, 0.3);
+        }
+        .error {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            border-left: 4px solid #e53e3e;
+        }
+        .success {
+            background: #c6f6d5;
+            color: #2f855a;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            border-left: 4px solid #38a169;
+        }
+        .links {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #718096;
+        }
+        .links a {
+            color: #4299e1;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+        .links a:hover {
+            color: #3182ce;
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 2rem 1.5rem;
+                margin: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container" style="max-width: 500px; margin-top: 3rem;">
-        <div class="forum-content">
-            <div class="p-3">
-                <div class="text-center mb-3">
-                    <h1><i class="fas fa-graduation-cap"></i> PSUC Forum</h1>
-                    <p>Join the community</p>
-                </div>
+    <div class="container">
+        <div class="logo">
+            <img src="assets/imgs/suc-logo.jpg" alt="PSUC Logo" class="logo-img">
+            <h1>PSUC Forum</h1>
+            <p class="subtitle">Join the community</p>
+        </div>
                 
-                <?php if($error): ?>
-                    <div class="alert alert-danger"><?php echo $error; ?></div>
-                <?php endif; ?>
+        <?php if($error): ?>
+            <div class="error"><?php echo $error; ?></div>
+        <?php endif; ?>
+        
+        <?php if($success): ?>
+            <div class="success"><?php echo $success; ?></div>
+        <?php endif; ?>
                 
-                <?php if($success): ?>
-                    <div class="alert alert-success"><?php echo $success; ?></div>
-                <?php endif; ?>
-                
-                <form method="POST">
-                    <div class="form-group">
-                        <label>Full Name</label>
-                        <input type="text" name="full_name" class="form-control" required value="<?php echo htmlspecialchars($_POST['full_name'] ?? ''); ?>">
-                    </div>
-                    <div class="form-group">
-                        <label>Username</label>
-                        <input type="text" name="username" class="form-control" required value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>">
-                    </div>
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" name="email" class="form-control" required value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>">
-                    </div>
-                    <div class="form-group">
-                        <label>University/College</label>
-                        <select name="university" class="form-control" required>
+        <form method="POST">
+            <div class="form-group">
+                <input type="text" name="full_name" placeholder="Full Name" required value="<?php echo htmlspecialchars($_POST['full_name'] ?? ''); ?>">
+            </div>
+            <div class="form-group">
+                <input type="text" name="username" placeholder="Username" required value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>">
+            </div>
+            <div class="form-group">
+                <input type="email" name="email" placeholder="Email" required value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>">
+            </div>
+            <div class="form-group">
+                <select name="university" required>
                             <option value="">Select your institution</option>
                             <?php foreach($universities as $group => $unis): ?>
                                 <optgroup label="<?php echo htmlspecialchars($group); ?>">
@@ -137,35 +248,27 @@
                                     <?php endforeach; ?>
                                 </optgroup>
                             <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Role</label>
-                        <select name="role" class="form-control" required>
+                </select>
+            </div>
+            <div class="form-group">
+                <select name="role" required>
                             <option value="college student" <?php echo (isset($_POST['role']) && $_POST['role'] == 'college student') ? 'selected' : ''; ?>>College Student</option>
                             <option value="faculty" <?php echo (isset($_POST['role']) && $_POST['role'] == 'faculty') ? 'selected' : ''; ?>>Faculty</option>
                             <option value="other" <?php echo (isset($_POST['role']) && $_POST['role'] == 'other') ? 'selected' : ''; ?>>Other</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input type="password" name="password" class="form-control" required minlength="6">
-                    </div>
-                    <div class="form-group">
-                        <label>Confirm Password</label>
-                        <input type="password" name="confirm_password" id="confirm_password" class="form-control" required minlength="6">
-                    </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">Register</button>
-                </form>
-                
-                <div class="text-center mt-2">
-                    <p>Already have an account? <a href="login.php">Login here</a></p>
-                    <p><a href="index.php">Back to Forum</a></p>
-                </div>
+                </select>
             </div>
+            <div class="form-group">
+                <input type="password" name="password" placeholder="Password" required minlength="6">
+            </div>
+            <div class="form-group">
+                <input type="password" name="confirm_password" placeholder="Confirm Password" required minlength="6">
+            </div>
+            <button type="submit">Register</button>
+        </form>
+        
+        <div class="links">
+            <a href="login.php">Already have an account?</a> • <a href="index.php">Back to forum</a>
         </div>
     </div>
-
-    <script src="assets/scripts/main.js"></script>
 </body>
 </html>
