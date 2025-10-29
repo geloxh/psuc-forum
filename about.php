@@ -28,6 +28,14 @@ $user = $auth->getCurrentUser();
             padding: 3rem 2rem;
             text-align: center;
         }
+        .header-logo {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 2rem;
+            display: block;
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
         .paper-title {
             font-size: 2.2rem;
             font-weight: 700;
@@ -117,6 +125,7 @@ $user = $auth->getCurrentUser();
     <main class="container">
         <div class="paper-container">
             <div class="paper-header">
+                <img src="assets/imgs/suc-logo.jpg" alt="PSUC Logo" class="header-logo">
                 <h1 class="paper-title">Strategic Collaboration and Partnership of State Universities and Colleges in the Philippines</h1>
             </div>
             
