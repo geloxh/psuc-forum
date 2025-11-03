@@ -8,6 +8,10 @@
             $database = new Database();
             $this -> conn = $database -> getConnection();
         }
+
+        public function prepareQuery($query) {
+            return $this -> conn -> prepare($query);
+        }
     
         public function getCategories() {
             $query = "SELECT * FROM categories ORDER BY position, name";

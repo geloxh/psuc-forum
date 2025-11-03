@@ -25,7 +25,7 @@
 
     // Get the first post ID for the topic (original post)
     $first_post_query = "SELECT id FROM posts WHERE topic_id = ? ORDER BY created_at ASC LIMIT 1";
-    $stmt = $forum -> conn -> prepare($first_post_query);
+    $stmt = $forum -> prepareQuery($first_post_query);
     $stmt -> execute([$topic_id]);
     $first_post = $stmt -> fetch(PDO::FETCH_ASSOC);
     $original_post_id = $first_post['id'] ?? 0;
