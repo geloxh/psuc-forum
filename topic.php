@@ -50,6 +50,21 @@
         header("Location: topic.php?id=$topic_id&page=$page");
         exit;
     }
+
+    // Handle delete action
+    if (isset($_GET['action']) && $_GET['action'] == 'delete' && $user) {
+        if (isset($_GET['type']) && isset($_GET['target_id'])) {
+            if ($_GET['type'] == 'topic' && ($user['id'] == $topic['user_id'] || $auth -> isAdmin())) {
+                if ($forum -> deleteTopic($_GET['target_id'])) {
+                    header("Location: forum.php?id=" . $topic['forum_id']);
+                    exit;
+                } elseif ($_GET['type'] == 'post' && ($user['id'] == $_GET['owner_id'] || $auth -> isAdmin())) {
+                    header("Location: topic.php?id=$topic_id&page=$page");
+                    exit;
+                }
+            }
+        }
+    }
 ?>
 
 <!DOCTYPE html>
@@ -471,8 +486,8 @@
             <div class="topic-meta">
                 <span>by <strong><?php echo htmlspecialchars($topic['username']); ?></strong></span>
                 <span><?php echo date('M j, Y', strtotime($topic['created_at'])); ?></span>
-                <span><?php echo number_format($topic['views']); ?> views</span>
-                <span><?php echo $total_posts; ?> replies</span>
+                <span><?php echo number_format($topic['views']); ?>views</span>
+                <span><?php echo $total_posts; ?>replies</span>
             </div>
         </header>
 
@@ -562,6 +577,10 @@
                                     <a href="edit_topic.php?id=<?php echo $topic['id']; ?>" class="action-btn">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>
+                                    <a href="?id=<?php echo $topic_id; ?>&action=delete&type=post&target_id=<?php echo $post['id']; ?>&owner_id=<?php echo $post['user_id']; ?>" 
+                                        class="action-btn" onclick="return confirm('Delete this post? This cannot be undone.')">
+                                            <i class="fas fa-trash"></i> Delete
+                                    </a>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -570,7 +589,7 @@
             </article>
 
             <!-- Replies -->
-            <?php foreach($posts as $index => $post): ?>
+            <?php foreach(array_slice($posts, 1) as $index => $post): ?>
                 <article class="post" id="post-<?php echo $post['id']; ?>">
                     <div class="post-author">
                         <img src="assets/avatars/<?php echo $post['avatar']; ?>" alt="Avatar" onerror="this.src='assets/avatars/default.png'">
@@ -639,6 +658,10 @@
                                     <?php if ($user['id'] == $post['user_id'] || $auth->isAdmin()): ?>
                                         <a href="edit_post.php?id=<?php echo $post['id']; ?>" class="action-btn">
                                             <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        <a href="?id=<?php echo $topic_id; ?>&action=delete&type=topic&target_id=<?php echo $topic['id']; ?>"
+                                            class="action-btn" onclick="return confirm('Delete this topic? This cannot be undone.')">
+                                                <i class="fas fa-trash"></i>Delete
                                         </a>
                                     <?php endif; ?>
                                 </div>

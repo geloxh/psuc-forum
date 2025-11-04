@@ -90,7 +90,7 @@
 
             // Fetch attachments for each post
             foreach ($posts as $key => $post) {
-                $attachment_query = "SELECT * FROM post_attachments WHERE post_id = ?";
+                $attachment_query = "SELECT * FROM attachments WHERE post_id = ?";
                 $attachment_stmt = $this -> conn -> prepare($attachment_query);
                 $attachment_stmt -> execute([$post['id']]);
                 $posts[$key]['attachments'] = $attachment_stmt -> fetchAll(PDO::FETCH_ASSOC);
