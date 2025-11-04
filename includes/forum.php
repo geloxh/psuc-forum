@@ -319,6 +319,96 @@
                 }
             }
         }
+
+        public function getTopicAttachments($topic_id) {
+            $query = "SELECT * FROM attachments WHERE topic_id = ? ORDER BY uploaded_at DESC";
+            $stmt = $this -> conn -> prepare($query);
+            $stmt -> execute([$topic_id]);
+            return $stmt -> fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        public function deleteAttachment($attachment_id, $user_id) {
+            // Get attachment info first
+            $query = "SELECT * FROM attachments WHERE id = ? AND user_id = ?";
+            $stmt = $this -> conn -> prepare($query);
+            $stmt -> execute([$attachment_id, $user_id]);
+            $attachment = $stmt -> fetch(PDO::FETCH_ASSOC);
+
+            if(!$attachment) {
+                return false;
+            }
+
+            // Delete file from database
+            $query = "DELETE FROM attachments WHERE id = ? AND user_id = ?";
+            $stmt = $this -> conn -> prepare($query);
+            return $stmt -> execute([$attachment_id, $user_id]);
+        }
+
+        public function updateTopicWithAttachments($topic_id, $title, $content, $user_id) {
+            $this -> conn -> beginTransaction();
+
+            try {
+                // Update topic
+                $this -> updateTopic($topic_id, $title, $content);
+
+                // Handle attachments
+                if(isset($_FILES['attachments']) && !empty($_FILES['attachments']['name'][0])) {
+                    $this -> handleTopicAttachments($topic_id, $user_id, $_FILES['attachments']);
+                }
+
+                $this -> conn -> commit();
+                return true; 
+            } catch(Exception $e) {
+                $this -> conn -> rollBack();
+                throw $e;
+            }
+        }
+
+        public function handleTopicAttachments($topic_id, $user_id, $files) {
+            $target_dir = __DIR__ . "/../uploads/";
+            if (!file_exists($target_dir)) {
+                mkdir($target_dir, 0777, true);
+            }
+
+            foreach($files['name'] as $key => $name) {
+                if ($files['error'][$key] === UPLOAD_ERR_OK) {
+                    $file_name = htmlspecialchars(basename($name));
+                    $file_tmp = $files['tmp_name'][$key];
+                    $file_size = $files['size'][$key];
+                    $file_type = $files['type'][$key];
+
+                    if($file_size > 5000000) {
+                        throw new Exception("File '$file_name' is too large.");
+                    }
+
+                    $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+                    $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf', 'docx', 'txt', 'zip', 'rar'];
+
+                    if(!in_array($file_extension, $allowed_extensions)) {
+                        throw new Exception("File type for '$file_name' is not allowed.");
+                    }
+
+                    $safe_filename = preg_replace('/[^A-Za-z0-9.\-_]/', '', pathinfo($file_name, PATHINFO_FILENAME));
+                    $unique_filename = $safe_filename . '_' . uniqid() . '.' . $file_extension;
+                    $target_path = $target_dir . $unique_filename;
+
+                    if (move_uploaded_file($file_tmp, $target_path)) {
+                        $query = "INSERT INTO attachments (topic_id, user_id, file_name, file_path, file_type, file_size) VALUES (?, ?, ?, ?, ?, ?)";
+                        $stmt = $this -> conn -> prepare($query);
+                        $stmt -> execute([
+                        $topic_id,
+                        $user_id,
+                        $file_name,
+                        'uploads/' . $unique_filename,
+                        $file_type,
+                        $file_size
+                    ]);
+                    } else {
+                        throw new Exception("Failed to upload file '$file_name'.");
+                    }
+                }
+            }
+        }
     
         public function vote($user_id, $target_type, $target_id, $vote_type) {
             $check_query = "SELECT vote_type FROM votes WHERE user_id = ? AND target_type = ? AND target_id = ?";
@@ -389,6 +479,9 @@
             $stmt = $this -> conn -> prepare($query);
             return $stmt -> execute([$notification_id, $user_id]);
         }
+
+
+
     
         private function handleAttachmentUpload($attachment, $user_id, $post_id = null, $topic_id = null) {
             $upload_dir = __DIR__ . '/../uploads/';
