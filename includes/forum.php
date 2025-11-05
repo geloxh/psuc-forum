@@ -75,11 +75,11 @@
     
         public function getPosts($topic_id, $limit = 10, $offset = 0) {
             $query = "SELECT p.*, u.username, u.avatar, u.reputation, u.role 
-                  FROM posts p 
-                  JOIN users u ON p.user_id = u.id 
-                  WHERE topic_id = ? 
-                  ORDER BY created_at ASC 
-                  LIMIT ? OFFSET ?";
+                      FROM posts p 
+                      JOIN users u ON p.user_id = u.id 
+                      WHERE topic_id = ? 
+                      ORDER BY created_at ASC 
+                      LIMIT ? OFFSET ?";
             $stmt = $this -> conn -> prepare($query);
             $stmt -> bindValue(1, $topic_id, PDO::PARAM_INT);
             $stmt -> bindValue(2, $limit, PDO::PARAM_INT);
@@ -110,7 +110,7 @@
             $content = trim($content);
 
             if (empty($title)) {
-            throw new Exception('Topic title cannot be empty.');
+                throw new Exception('Topic title cannot be empty.');
             }
 
             if (strlen($title) > 255) {
@@ -124,26 +124,20 @@
             $this -> conn -> beginTransaction();
 
             try {
-                // First, create the topic
+                // Create  topic
                 $query = "INSERT INTO topics (forum_id, user_id, title, content) VALUES (?, ?, ?, ?)";
                 $stmt = $this -> conn -> prepare($query);
                 $stmt -> execute([$forum_id, $user_id, $title, $content]);
                 $topic_id = $this -> conn -> lastInsertId();
 
-                // Now, create the first post for this topic, which mirrors the topic content
-                $post_query = "INSERT INTO posts (topic_id, user_id, content) VALUES (?, ?, ?)";
-                $post_stmt = $this->conn->prepare($post_query);
-                $post_stmt->execute([$topic_id, $user_id, $content]);
-                $post_id = $this->conn->lastInsertId();
-
-                // Handle attachments for the post
+                // Handle attachments directly for the topic
                 if (isset($_FILES['attachments'])) {
-                    $this -> handleAttachments($post_id, $user_id, $_FILES['attachments']);
+                    $this -> handleTopicAttachments($topic_id, $user_id, $_FILES['attachments']);
                 }
 
                 $this -> updateForumStats($forum_id);
                 $this -> createNotification($user_id, 'topic_created', 'Topic Created', "Your topic '$title' has been posted.", "topic.php?id=$topic_id");
-            
+
                 $this -> conn -> commit();
                 return $topic_id;
 

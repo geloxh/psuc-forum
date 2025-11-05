@@ -1,4 +1,5 @@
 <?php
+
     require_once 'includes/auth.php';
     require_once 'includes/forum.php';
 
@@ -512,17 +513,12 @@
                     </div>
 
                     <?php
-                        // Get attachments for the original topic post 
-                        $topic_attachments = [];
-                        if ($page == 1 && !empty($posts)) {
-                            // Get attachments from the first post
-                            $topic_attachments = $posts[0]['attachments'] ?? [];
-                        } else if ($page > 1) {
-                            $first_posts = $forum -> getPosts($topic_id, 1, 0);
-                            if (!empty($first_posts)) {
-                                $topic_attachments = $first_posts[0]['attachments'] ?? [];
-                            }
-                        }
+                    
+                        // Get attachments directly from the topic
+                        $topic_attachments_query = "SELECT * FROM attachments WHERE topic_id = ? ORDER BY uploaded_at DESC";
+                        $topic_attachments_stmt = $forum -> prepareQuery($topic_attachments_query);
+                        $topic_attachments_stmt -> execute([$topic_id]);
+                        $topic_attachments = $topic_attachments_stmt -> fetchAll(PDO::FETCH_ASSOC);
 
                     ?>
                     <?php if (!empty($topic_attachments)): ?>
