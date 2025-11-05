@@ -21,6 +21,38 @@
     <link rel="stylesheet" href="assets/stylesheets/media-preview.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+    .timeline-feed { max-width: 680px; margin: 0 auto; padding: 0 16px; }
+    .empty-feed { text-align: center; padding: 60px 20px; color: #65676b; }
+    .empty-feed i { font-size: 48px; color: #e4e6ea; margin-bottom: 16px; }
+    .empty-feed h3 { font-size: 20px; font-weight: 600; margin: 0 0 8px 0; color: #1c1e21; }
+    .empty-feed p { margin: 0 0 24px 0; font-size: 15px; }
+    .btn-create { background: #1877f2; color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 15px; transition: background 0.2s; }
+    .btn-create:hover { background: #166fe5; }
+    .post { background: white; border-radius: 8px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); margin-bottom: 16px; border: 1px solid #e4e6ea; }
+    .post-header { padding: 12px 16px 0; }
+    .user-info { display: flex; align-items: center; gap: 8px; }
+    .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: #e4e6ea; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #65676b; font-size: 16px; }
+    .user-details { flex: 1; }
+    .username { font-weight: 600; color: #1c1e21; text-decoration: none; font-size: 15px; line-height: 1.2; }
+    .username:hover { text-decoration: underline; }
+    .post-meta { font-size: 13px; color: #65676b; margin-top: 2px; }
+    .post-meta a { color: #65676b; text-decoration: none; }
+    .post-meta a:hover { text-decoration: underline; }
+    .post-content { padding: 12px 16px 0; }
+    .post-title { margin: 0 0 8px 0; font-size: 16px; font-weight: 600; line-height: 1.3; }
+    .post-title a { color: #1c1e21; text-decoration: none; }
+    .post-title a:hover { color: #1877f2; }
+    .post-text { color: #1c1e21; font-size: 15px; line-height: 1.33; margin-bottom: 12px; }
+    .post-media { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2px; border-radius: 8px; overflow: hidden; margin-bottom: 12px; }
+    .post-media img { width: 100%; height: 200px; object-fit: cover; display: block; }
+    .post-footer { border-top: 1px solid #e4e6ea; padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; }
+    .post-stats { font-size: 13px; color: #65676b; display: flex; gap: 16px; }
+    .post-actions { display: flex; gap: 8px; }
+    .action-btn { color: #65676b; text-decoration: none; padding: 8px 12px; border-radius: 6px; font-size: 15px; font-weight: 600; transition: background 0.2s; display: flex; align-items: center; gap: 6px; }
+    .action-btn:hover { background: #f2f3f5; }
+    @media (max-width: 768px) { .timeline-feed { padding: 0 8px; } .post { border-radius: 0; border-left: none; border-right: none; margin-bottom: 8px; } .post-media img { height: 150px; } }
+    </style>
 </head>
 
 <body>
@@ -49,129 +81,112 @@
                         if (!$conn) {
                             throw new Exception('Database connection failed');
                         }
-                    $topics_query = "SELECT 
-                                        t.id,
-                                        t.title,
-                                        t.content,
-                                        t.created_at,
-                                        t.views,
-                                        u.username,
-                                        u.avatar,
-                                        f.name as forum_name,
-                                        (SELECT COUNT(*) FROM posts p WHERE p.topic_id = t.id) as reply_count
-                                    FROM 
-                                        topics t
-                                    JOIN 
-                                        users u ON t.user_id = u.id
-                                    JOIN 
-                                        forums f ON t.forum_id = f.id
-                                    ORDER BY 
-                                        t.created_at DESC
-                                    LIMIT 10";
-                    $stmt = $conn->prepare($topics_query);
-                    $stmt->execute();
-                    $topics = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                    
-                    // Fetch attachments for each topic (only from original topic post, not replies)
-                    foreach($topics as $key => $topic) {
-                        $attachment_query = "SELECT a.* FROM attachments a 
-                                           JOIN posts p ON a.post_id = p.id 
-                                           WHERE p.topic_id = ? 
-                                           AND p.id = (SELECT MIN(id) FROM posts WHERE topic_id = ?) 
-                                           LIMIT 3";
-                        $attachment_stmt = $conn->prepare($attachment_query);
-                        $attachment_stmt->execute([$topic['id'], $topic['id']]);
-                        $topics[$key]['attachments'] = $attachment_stmt->fetchAll(PDO::FETCH_ASSOC);
-                    }
+                        
+                        $topics_query = "SELECT 
+                                            t.id,
+                                            t.title,
+                                            t.content,
+                                            t.created_at,
+                                            t.views,
+                                            u.username,
+                                            u.avatar,
+                                            f.name as forum_name,
+                                            (SELECT COUNT(*) FROM posts p WHERE p.topic_id = t.id) as reply_count
+                                        FROM 
+                                            topics t
+                                        JOIN 
+                                            users u ON t.user_id = u.id
+                                        JOIN 
+                                            forums f ON t.forum_id = f.id
+                                        ORDER BY 
+                                            t.created_at DESC
+                                        LIMIT 10";
+                        $stmt = $conn->prepare($topics_query);
+                        $stmt->execute();
+                        $topics = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                        
+                        foreach($topics as $key => $topic) {
+                            $attachment_query = "SELECT a.* FROM attachments a 
+                                               JOIN posts p ON a.post_id = p.id 
+                                               WHERE p.topic_id = ? 
+                                               AND p.id = (SELECT MIN(id) FROM posts WHERE topic_id = ?) 
+                                               LIMIT 3";
+                            $attachment_stmt = $conn->prepare($attachment_query);
+                            $attachment_stmt->execute([$topic['id'], $topic['id']]);
+                            $topics[$key]['attachments'] = $attachment_stmt->fetchAll(PDO::FETCH_ASSOC);
+                        }
 
-                    if (empty($topics)):
+                        if (empty($topics)):
                     ?>
-                        <div class="empty-state" style="text-align: center; padding: 3rem; color: var(--text-secondary);">
-                            <i class="fas fa-comments" style="font-size: 3rem; margin-bottom: 1rem; color: var(--border-color);"></i>
-                            <h3>No Topics Yet</h3>
-                            <p>Be the first to start a discussion in our community!</p>
+                        <div class="empty-feed">
+                            <i class="fas fa-comments"></i>
+                            <h3>No posts yet</h3>
+                            <p>Be the first to share something with the community</p>
                             <?php if ($user): ?>
-                                <a href="new_topic.php" class="btn btn-primary">Create First Topic</a>
+                                <a href="new_topic.php" class="btn-create">Create Post</a>
                             <?php else: ?>
-                                <a href="login.php" class="btn btn-primary">Login to Post</a>
+                                <a href="login.php" class="btn-create">Sign In</a>
                             <?php endif; ?>
                         </div>
                     <?php
                     else:
                         foreach($topics as $topic):
                     ?>
-                        <div class="topic-card">
-                            <div class="topic-card-header">
-                                <?php if (!empty($topic['avatar'])): ?>
-                                    <img src="assets/avatars/<?php echo htmlspecialchars($topic['avatar']); ?>" alt="<?php echo htmlspecialchars($topic['username']); ?>'s avatar" class="avatar">
-                                <?php else: ?>
-                                    <div class="avatar" style="background: #e5e7eb; display: flex; align-items: center; justify-content: center; color: #6b7280; font-weight: 600;">
-                                        <?php echo strtoupper(substr($topic['username'], 0, 1)); ?>
+                        <article class="post">
+                            <header class="post-header">
+                                <div class="user-info">
+                                    <?php if (!empty($topic['avatar'])): ?>
+                                        <img src="assets/avatars/<?php echo htmlspecialchars($topic['avatar']); ?>" alt="" class="user-avatar">
+                                    <?php else: ?>
+                                        <div class="user-avatar">
+                                            <?php echo strtoupper(substr($topic['username'], 0, 1)); ?>
+                                        </div>
+                                    <?php endif; ?>
+                                    <div class="user-details">
+                                        <a href="profile.php?username=<?php echo htmlspecialchars($topic['username']); ?>" class="username"><?php echo htmlspecialchars($topic['username']); ?></a>
+                                        <div class="post-meta">
+                                            <span><?php echo date('M j \a\t g:i A', strtotime($topic['created_at'])); ?></span>
+                                            <span>•</span>
+                                            <a href="forum.php?name=<?php echo urlencode($topic['forum_name']); ?>"><?php echo htmlspecialchars($topic['forum_name']); ?></a>
+                                        </div>
                                     </div>
-                                <?php endif; ?>
-                                <div class="topic-info">
-                                    <h3 class="topic-title"><a href="topic.php?id=<?php echo $topic['id']; ?>"><?php echo htmlspecialchars($topic['title']); ?></a></h3>
-                                    <p class="topic-meta">
-                                        Posted by <a href="profile.php?username=<?php echo htmlspecialchars($topic['username']); ?>"><?php echo htmlspecialchars($topic['username']); ?></a>
-                                        in <a href="forum.php?name=<?php echo urlencode($topic['forum_name']); ?>"><?php echo htmlspecialchars($topic['forum_name']); ?></a>
-                                        - <span class="topic-time"><?php echo date('M j, Y g:i A', strtotime($topic['created_at'])); ?></span>
-                                    </p>
                                 </div>
-                            </div>
-                            <div class="topic-content">
-                                <?php
-                                $content_snippet = strip_tags($topic['content']);
-                                if (strlen($content_snippet) > 200) {
-                                    $content_snippet = substr($content_snippet, 0, 200) . '...';
-                                }
-                                echo $content_snippet;
-                                ?>
+                            </header>
+                            
+                            <div class="post-content">
+                                <h2 class="post-title">
+                                    <a href="topic.php?id=<?php echo $topic['id']; ?>"><?php echo htmlspecialchars($topic['title']); ?></a>
+                                </h2>
+                                <div class="post-text">
+                                    <?php
+                                    $content = strip_tags($topic['content']);
+                                    echo strlen($content) > 200 ? substr($content, 0, 200) . '...' : $content;
+                                    ?>
+                                </div>
                                 
                                 <?php if (!empty($topic['attachments'])): ?>
-                                    <div class="media-preview-container" style="margin-top: 1rem;">
+                                    <div class="post-media">
                                         <?php foreach (array_slice($topic['attachments'], 0, 3) as $attachment): ?>
                                             <?php if (strpos($attachment['file_type'], 'image/') === 0): ?>
-                                                <div class="media-preview-item">
-                                                    <img src="<?php echo htmlspecialchars($attachment['file_path']); ?>" alt="<?php echo htmlspecialchars($attachment['file_name']); ?>">
-                                                </div>
-                                            <?php elseif (strpos($attachment['file_type'], 'video/') === 0): ?>
-                                                <div class="media-preview-item">
-                                                    <video controls>
-                                                        <source src="<?php echo htmlspecialchars($attachment['file_path']); ?>" type="<?php echo htmlspecialchars($attachment['file_type']); ?>">
-                                                    </video>
-                                                </div>
-                                            <?php else: ?>
-                                                <div class="media-preview-item">
-                                                    <div class="pdf-preview">
-                                                        <i class="fas fa-file-pdf"></i>
-                                                        <span><?php echo htmlspecialchars($attachment['file_name']); ?></span>
-                                                    </div>
-                                                </div>
+                                                <img src="<?php echo htmlspecialchars($attachment['file_path']); ?>" alt="">
                                             <?php endif; ?>
                                         <?php endforeach; ?>
-                                        <?php if (count($topic['attachments']) > 3): ?>
-                                            <div class="media-preview-item">
-                                                <div class="pdf-preview">
-                                                    <i class="fas fa-plus"></i>
-                                                    <span>+<?php echo count($topic['attachments']) - 3; ?> more</span>
-                                                </div>
-                                            </div>
-                                        <?php endif; ?>
                                     </div>
                                 <?php endif; ?>
                             </div>
-                            <div class="topic-footer">
-                                <div class="topic-stat">
-                                    <i class="fas fa-eye"></i>
-                                    <span><?php echo $topic['views']; ?></span>
+                            
+                            <footer class="post-footer">
+                                <div class="post-stats">
+                                    <span><?php echo $topic['views']; ?> views</span>
+                                    <span><?php echo $topic['reply_count']; ?> replies</span>
                                 </div>
-                                <div class="topic-stat">
-                                    <i class="fas fa-reply"></i>
-                                    <span><?php echo $topic['reply_count']; ?></span>
+                                <div class="post-actions">
+                                    <a href="topic.php?id=<?php echo $topic['id']; ?>" class="action-btn">
+                                        <i class="far fa-comment"></i> Comment
+                                    </a>
                                 </div>
-                                <a href="topic.php?id=<?php echo $topic['id']; ?>" class="read-more-btn">Read More</a>
-                            </div>
-                        </div>
+                            </footer>
+                        </article>
                     <?php 
                         endforeach;
                     endif;

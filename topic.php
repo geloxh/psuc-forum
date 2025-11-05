@@ -514,10 +514,10 @@
 
                     <?php
                     
-                        // Get attachments directly from the topic
-                        $topic_attachments_query = "SELECT * FROM attachments WHERE topic_id = ? ORDER BY uploaded_at DESC";
+                        // Get attachments for the topic (check both topic_id and first post)
+                        $topic_attachments_query = "SELECT * FROM attachments WHERE (topic_id = ? OR post_id = ?) ORDER BY uploaded_at DESC";
                         $topic_attachments_stmt = $forum -> prepareQuery($topic_attachments_query);
-                        $topic_attachments_stmt -> execute([$topic_id]);
+                        $topic_attachments_stmt -> execute([$topic_id, $original_post_id]);
                         $topic_attachments = $topic_attachments_stmt -> fetchAll(PDO::FETCH_ASSOC);
 
                     ?>
