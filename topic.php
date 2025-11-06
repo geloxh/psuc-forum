@@ -184,6 +184,53 @@
             margin-bottom: 1rem; 
         }
 
+        .post:not(#original-post) {
+            margin-left: 2rem;
+            positionL relative;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .post:not(#original-post)::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background: #e2e8f0;
+        }
+
+        .post:not(#original-post)::after {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 2rem;
+            width: 1rem;
+            height: 2px;
+            background: #e2e8f0;
+        }
+
+        .post:not(#original-post) .post-author {
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+
+        .post:not(#original-post) .post-author img {
+            width: 32px;
+            height: 32px;
+        }
+
+        .post:not(#original-post) .author-info h4 {
+            font-size: 0.85rem;
+        }
+
+        .post:not(#original-post) .post-badge {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.4rem;
+        }
+
+        
         /* File Attachments Styles */
         .attachments { 
             margin: 1rem 0; 
@@ -350,64 +397,88 @@
         .action-btn:hover { background: #f8fafc; color: #3b82f6; }
         
         .reply-form { 
-            background: white; 
-            border-radius: 12px; 
-            padding: 2rem; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            border: 1px solid #f1f5f9;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px; 
+            padding: 1rem; 
+            box-shadow: none;
         }
         
         .reply-form h3 { 
-            margin: 0 0 1.5rem 0; 
-            font-size: 1.1rem; 
-            font-weight: 600; 
-            color: #1e293b; 
+            margin: 0 0 0.75rem; 
+            font-size: 0.09rem; 
+            font-weight: 500; 
+            color: #64748b; 
         }
         
-        .form-field { margin-bottom: 1rem; }
+        .form-field { margin-bottom: 0.75rem; }
         
         .form-field textarea { 
             width: 100%; 
-            padding: 0.75rem; 
+            padding: 0.5rem; 
             border: 1px solid #e2e8f0; 
-            border-radius: 8px; 
-            font-family: inherit; 
+            border-radius: 6px; 
+            font-family: inherit;
+            font-size: 0.9rem;
             resize: vertical; 
-            min-height: 120px; 
+            min-height: 80px;
+            background: white;
         }
         
         .form-field textarea:focus { 
             outline: none; 
             border-color: #3b82f6; 
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); 
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1); 
+        }
+
+        .form-field input[type="file"] {
+            font-size: 0.8rem;
+            padding: 0.25rem;
+        }
+
+        .form-field small {
+            font-size: 0.75rem;
+            color: #64748b;
+            display: block;
+            margin-top: 0.25rem;
         }
         
-        .form-actions { display: flex; gap: 0.75rem; }
+        .form-actions { 
+            display: flex; 
+            gap: 0.5rem;
+            align-items: center;
+        }
         
         .submit-btn { 
             background: #3b82f6; 
             color: white; 
             border: none; 
-            padding: 0.75rem 1.5rem; 
-            border-radius: 8px; 
+            padding: 0.5rem 1rem; 
+            border-radius: 6px;
+            font-size: 0.85rem;
             font-weight: 500; 
             cursor: pointer; 
             transition: all 0.2s; 
         }
         
-        .submit-btn:hover { background: #2563eb; }
+        .submit-btn:hover { 
+            background: #2563eb; 
+        }
         
         .clear-btn { 
             background: transparent; 
             color: #64748b; 
             border: 1px solid #e2e8f0; 
-            padding: 0.75rem 1.5rem; 
-            border-radius: 8px; 
+            padding: 0.5rem 1rem; 
+            border-radius: 6px;
+            font-size: 0.85rem;
             cursor: pointer; 
             transition: all 0.2s; 
         }
         
-        .clear-btn:hover { background: #f8fafc; }
+        .clear-btn:hover { 
+            background: #f1f5f9; 
+        }
         
         .pagination { 
             display: flex; 
