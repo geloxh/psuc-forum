@@ -49,6 +49,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($forum_info['name']); ?> - PSUC Forum</title>
     <link rel="stylesheet" href="assets/stylesheets/main.css">
+    <link rel="stylesheet" href="assets/stylesheets/new-topic.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         .forum-page {
@@ -148,26 +149,32 @@
         }
         
         .new-topic-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.875rem 1.5rem;
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: white;
-            text-decoration: none;
-            border-radius: 12px;
-            font-weight: 500;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+             display: inline-flex;
+             align-items: center;
+             gap: 0.5rem;
+             padding: 0.75rem 1.25rem;
+             background: linear-gradient(135deg, #3b82f6, #2563eb);
+             color: white;
+             text-decoration: none;
+             border-radius: 10px;
+             font-weight: 600;
+             font-size: 0.9rem;
+             transition: all 0.3s ease;
+             box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+             border: none;
+             cursor: pointer;
         }
         
         .new-topic-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
         }
-        
+
+        .new-topic-button i {
+            font-size: 0.85rem;
+        }
+
         .topics-section {
             padding: 0;
         }
@@ -371,6 +378,16 @@
             font-size: 1rem;
             line-height: 1.6;
         }
+
+        .empty-state .new-topic-button {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.75rem;
+            gap: 0.375rem;
+        }
+
+        .empty-state .new-topic-button i {
+            font-size: 0.7rem;
+        }
         
         .pagination {
             display: flex;
@@ -555,7 +572,7 @@
                     </div>
                 <?php else: ?>
                     <div class="empty-state">
-                        <i class="fas fa-comments"></i>
+                        <i class="fas fa-comments empty-state-icon"></i>
                         <h3>No topics yet</h3>
                         <p>This forum is waiting for its first discussion. Start the conversation and help build this community!</p>
                         <?php if($user): ?>
