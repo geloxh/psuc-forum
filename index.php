@@ -101,19 +101,17 @@
                                         ORDER BY 
                                             t.created_at DESC
                                         LIMIT 10";
-                        $stmt = $conn->prepare($topics_query);
-                        $stmt->execute();
-                        $topics = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                        $stmt = $conn -> prepare($topics_query);
+                        $stmt -> execute();
+                        $topics = $stmt -> fetchAll(PDO::FETCH_ASSOC);
                         
                         foreach($topics as $key => $topic) {
-                            $attachment_query = "SELECT a.* FROM attachments a 
-                                               JOIN posts p ON a.post_id = p.id 
-                                               WHERE p.topic_id = ? 
-                                               AND p.id = (SELECT MIN(id) FROM posts WHERE topic_id = ?) 
-                                               LIMIT 3";
-                            $attachment_stmt = $conn->prepare($attachment_query);
-                            $attachment_stmt->execute([$topic['id'], $topic['id']]);
-                            $topics[$key]['attachments'] = $attachment_stmt->fetchAll(PDO::FETCH_ASSOC);
+                            $attachment_query = "SELECT file_path, file_type FROM attachments
+                                                 WHERE topic_id = ?
+                                                 ORDER BY uploaded_at ASC";
+                            $attachment_stmt = $conn -> prepare($attachment_query);
+                            $attachment_stmt -> execute([$topic['id']]);
+                            $topics[$key]['attachments'] = $attachment_stmt -> fetchAll(PDO::FETCH_ASSOC);
                         }
 
                         if (empty($topics)):
@@ -169,6 +167,20 @@
                                         <?php foreach (array_slice($topic['attachments'], 0, 3) as $attachment): ?>
                                             <?php if (strpos($attachment['file_type'], 'image/') === 0): ?>
                                                 <img src="<?php echo htmlspecialchars($attachment['file_path']); ?>" alt="">
+                                            <?php elseif (strpos($attachment['file_type'], 'video/') === 0): ?>
+                                                <video controls>
+                                                    <source src="<?php echo htmlspecialchars($attachment['file_path']); ?>" type="<?php echo htmlspecialchars($attachment['file_type']); ?>">
+                                                </video>
+                                            <?php elseif ($attachment['file_type'] === 'application/pdf'): ?>
+                                                <div class="pdf-preview">
+                                                    <i class="fas fa-file-pdf"></i>
+                                                    <span><?php echo htmlspecialchars(basename($attachment['file_path'])); ?></span>
+                                                </div>
+                                            <?php else: ?>
+                                                <div class="pdf-preview">
+                                                    <i class="fas fa-file"></i>
+                                                    <span><?php echo htmlspecialchars(basename($attachment['file_path'])); ?></span>
+                                                </div>
                                             <?php endif; ?>
                                         <?php endforeach; ?>
                                     </div>
