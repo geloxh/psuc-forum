@@ -44,19 +44,18 @@
     .post-title a { color: #1c1e21; text-decoration: none; }
     .post-title a:hover { color: #1877f2; }
     .post-text { color: #1c1e21; font-size: 15px; line-height: 1.33; margin-bottom: 12px; }
-    .post-media { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2px; border-radius: 8px; overflow: hidden; margin-bottom: 12px; }
-    .post-media img { width: 100%; height: 200px; object-fit: cover; display: block; }
+    .post-media { max-width: 700px; margin: 0 auto 12px; border-radius: 8px; overflow: hidden; }
     .post-footer { border-top: 1px solid #e4e6ea; padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; }
     .post-stats { font-size: 13px; color: #65676b; display: flex; gap: 16px; }
     .post-actions { display: flex; gap: 8px; }
     .action-btn { color: #65676b; text-decoration: none; padding: 8px 12px; border-radius: 6px; font-size: 15px; font-weight: 600; transition: background 0.2s; display: flex; align-items: center; gap: 6px; }
     .action-btn:hover { background: #f2f3f5; }
-    @media (max-width: 768px) { .timeline-feed { padding: 0 8px; } .post { border-radius: 0; border-left: none; border-right: none; margin-bottom: 8px; } .post-media img { height: 150px; } }
+    @media (max-width: 768px) { .timeline-feed { padding: 0 8px; } .post { border-radius: 0; border-left: none; border-right: none; margin-bottom: 8px; } .post-media { max-width: 100%; } }
     
-    .media-item { position: relative; border-radius: 8px; overflow: hidden; }
-    .media-item img, .media-item video { width: 100%; height: 200px; object-fit: cover; }
+    .media-item { position: relative; border-radius: 8px; overflow: hidden; width: 100%; }
+    .media-item img, .media-item video { width: 100%; height: auto; display: block; }
     .media-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.7); color: white; padding: 12px; border-radius: 50%; }
-    .file-preview { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 200px; background: #f8f9fa; color: #6c757d; text-align: center; padding: 20px; }
+    .file-preview { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 200px; background: #f8f9fa; color: #6c757d; text-align: center; padding: 20px; }
     .file-preview i { font-size: 2rem; margin-bottom: 8px; }
     .file-preview span { font-size: 0.85rem; word-break: break-word; }
     </style>
