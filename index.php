@@ -52,6 +52,13 @@
     .action-btn { color: #65676b; text-decoration: none; padding: 8px 12px; border-radius: 6px; font-size: 15px; font-weight: 600; transition: background 0.2s; display: flex; align-items: center; gap: 6px; }
     .action-btn:hover { background: #f2f3f5; }
     @media (max-width: 768px) { .timeline-feed { padding: 0 8px; } .post { border-radius: 0; border-left: none; border-right: none; margin-bottom: 8px; } .post-media img { height: 150px; } }
+    
+    .media-item { position: relative; border-radius: 8px; overflow: hidden; }
+    .media-item img, .media-item video { width: 100%; height: 200px; object-fit: cover; }
+    .media-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.7); color: white; padding: 12px; border-radius: 50%; }
+    .file-preview { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 200px; background: #f8f9fa; color: #6c757d; text-align: center; padding: 20px; }
+    .file-preview i { font-size: 2rem; margin-bottom: 8px; }
+    .file-preview span { font-size: 0.85rem; word-break: break-word; }
     </style>
 </head>
 
@@ -164,22 +171,24 @@
                                 
                                 <?php if (!empty($topic['attachments'])): ?>
                                     <div class="post-media">
-                                        <?php foreach (array_slice($topic['attachments'], 0, 3) as $attachment): ?>
+                                        <?php foreach (array_slice($topic['attachments'], 0, 4) as $attachment): ?>
                                             <?php if (strpos($attachment['file_type'], 'image/') === 0): ?>
-                                                <img src="<?php echo htmlspecialchars($attachment['file_path']); ?>" alt="">
+                                                <div class="media-item">
+                                                    <img src="<?php echo htmlspecialchars($attachment['file_path']); ?>" alt="Image attachment">
+                                                </div>
                                             <?php elseif (strpos($attachment['file_type'], 'video/') === 0): ?>
-                                                <video controls>
-                                                    <source src="<?php echo htmlspecialchars($attachment['file_path']); ?>" type="<?php echo htmlspecialchars($attachment['file_type']); ?>">
-                                                </video>
-                                            <?php elseif ($attachment['file_type'] === 'application/pdf'): ?>
-                                                <div class="pdf-preview">
-                                                    <i class="fas fa-file-pdf"></i>
-                                                    <span><?php echo htmlspecialchars(basename($attachment['file_path'])); ?></span>
+                                                <div class="media-item video-item">
+                                                    <video controls preload="metadata">
+                                                        <source src="<?php echo htmlspecialchars($attachment['file_path']); ?>" type="<?php echo htmlspecialchars($attachment['file_type']); ?>">
+                                                    </video>
+                                                    <div class="media-overlay"><i class="fas fa-play"></i></div>
                                                 </div>
                                             <?php else: ?>
-                                                <div class="pdf-preview">
-                                                    <i class="fas fa-file"></i>
-                                                    <span><?php echo htmlspecialchars(basename($attachment['file_path'])); ?></span>
+                                                <div class="media-item file-item">
+                                                    <div class="file-preview">
+                                                        <i class="fas fa-<?php echo $attachment['file_type'] === 'application/pdf' ? 'file-pdf' : 'file'; ?>"></i>
+                                                        <span><?php echo htmlspecialchars(basename($attachment['file_path'])); ?></span>
+                                                    </div>
                                                 </div>
                                             <?php endif; ?>
                                         <?php endforeach; ?>
