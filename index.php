@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-    .timeline-feed { max-width: 680px; margin: 0 auto; padding: 0 16px; }
+    .timeline-feed { max-width: 100%; padding: 0; }
     .empty-feed { text-align: center; padding: 60px 20px; color: #65676b; }
     .empty-feed i { font-size: 48px; color: #e4e6ea; margin-bottom: 16px; }
     .empty-feed h3 { font-size: 20px; font-weight: 600; margin: 0 0 8px 0; color: #1c1e21; }
