@@ -6,8 +6,8 @@
 
     $auth = new Auth();
     $forum = new Forum();
-    $user = $auth->getCurrentUser();
-    $categories = $forum->getCategories();
+    $user = $auth -> getCurrentUser();
+    $categories = $forum -> getCategories();
 ?>
 
 <!DOCTYPE html>
@@ -50,10 +50,12 @@
     .post-actions { display: flex; gap: 8px; }
     .action-btn { color: #65676b; text-decoration: none; padding: 8px 12px; border-radius: 6px; font-size: 15px; font-weight: 600; transition: background 0.2s; display: flex; align-items: center; gap: 6px; }
     .action-btn:hover { background: #f2f3f5; }
-    @media (max-width: 768px) { .timeline-feed { padding: 0 8px; } .post { border-radius: 0; border-left: none; border-right: none; margin-bottom: 8px; } .post-media { max-width: 100%; } }
     
-    .media-item { position: relative; border-radius: 8px; overflow: hidden; width: 100%; }
-    .media-item img, .media-item video { width: 100%; height: auto; display: block; }
+    @media (max-width: 300px) { .timeline-feed { padding: 0 8px; } .post { border-radius: 0; border-left: none; border-right: none; margin-bottom: 8px; } .post-media { max-width: 100%; } }
+    
+    .media-item { position: relative; border-radius: 8px; overflow: hidden; width: 500px; height: 300px;}
+    .media-item img, .media-item video { width: 100%; height: auto; object-fit: cover; }
+    @media (max-width: 768px) { .media-item { width: 100%; max-width: 500px; height: 300px; } }
     .media-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.7); color: white; padding: 12px; border-radius: 50%; }
     .file-preview { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 200px; background: #f8f9fa; color: #6c757d; text-align: center; padding: 20px; }
     .file-preview i { font-size: 2rem; margin-bottom: 8px; }
@@ -82,7 +84,7 @@
                     <?php
                     try {
                         $database = new Database();
-                        $conn = $database->getConnection();
+                        $conn = $database -> getConnection();
                         
                         if (!$conn) {
                             throw new Exception('Database connection failed');
@@ -197,8 +199,8 @@
                             
                             <footer class="post-footer">
                                 <div class="post-stats">
-                                    <span><?php echo $topic['views']; ?> views</span>
-                                    <span><?php echo $topic['reply_count']; ?> replies</span>
+                                    <span><?php echo $topic['views']; ?>views</span>
+                                    <span><?php echo $topic['reply_count']; ?>replies</span>
                                 </div>
                                 <div class="post-actions">
                                     <a href="topic.php?id=<?php echo $topic['id']; ?>" class="action-btn">
