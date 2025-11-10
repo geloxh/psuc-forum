@@ -36,7 +36,8 @@
         try {
             $post_id = $forum -> createPost($topic_id, $user['id'], $_POST['content']);
             if ($post_id) {
-                $last_page = ceil(($total_posts + 1) / $limit);
+                $new_total_posts  = $forum -> getPostCount($topic_id);
+                $last_page = ceil($new_total_posts / $limit);
                 header("Location: topic.php?id=$topic_id&page=$last_page#post-$post_id");
                 exit;
             }
@@ -656,7 +657,7 @@
             </article>
 
             <!-- Replies -->
-            <?php foreach(array_slice($posts, 1) as $index => $post): ?>
+            <?php foreach($posts as $index => $post): ?>
                 <article class="post" id="post-<?php echo $post['id']; ?>">
                     <div class="post-author">
                         <img src="assets/avatars/<?php echo $post['avatar']; ?>" alt="Avatar" onerror="this.src='assets/avatars/default.png'">
