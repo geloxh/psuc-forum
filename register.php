@@ -20,10 +20,12 @@
             $error = "Password must be at least 6 characters long.";
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $error = "Please enter a valid email address.";
+        } elseif ($auth -> emailExists($email)) {
+            $error = "Existing Email User Account.";
         } elseif (empty($username) || empty($full_name) || empty($university) || empty($role)) {
             $error = "Please fill out all required fields.";
         } else {
-            if($auth->register($username, $email, $password, $full_name, $university, $role)) {
+            if($auth -> register($username, $email, $password, $full_name, $university, $role)) {
                 $success = 'Registration successful! You can now login.';
                 // Clear POST data on success to not repopulate the form
                 $_POST = [];

@@ -100,5 +100,12 @@
             $stmt = $this -> conn -> prepare($query);
             $stmt -> execute([$user_id, $type, $title, $content, $url]);
         }
+
+        public function emailExists($email) {
+            $query = "SELECT id FROM users WHERE email = ?";
+            $stmt = $this -> conn -> prepare($query);
+            $stmt -> execute([$email]);
+            return $stmt -> rowCount() > 0;
+        }
     }
 ?>
