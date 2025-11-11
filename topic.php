@@ -119,7 +119,11 @@
         
         .topic-meta strong { color: #3b82f6; }
         
-        .posts-section { margin-bottom: 2rem; }
+        /* Threading Styles */
+        .posts-section { 
+            margin-bottom: 2rem;
+            position: relative;
+        }
         
         .post { 
             background: white; 
@@ -185,50 +189,177 @@
             margin-bottom: 1rem; 
         }
 
-        .post:not(#original-post) {
-            margin-left: 2rem;
-            positionL relative;
-            padding: 1rem;
-            margin-bottom: 1rem;
+        /* Original Post Styles  */
+        #original-post {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 2px solid #e0f2fe;
+            position: relative;
+        }
+        #original-post::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+            border-radius: 12px 12px 0 0;
         }
 
+        /* Reply Post Styles */
+        .post:not(#original-post) {
+            position: relative;
+            margin-left: 3rem;
+            margin-bottom: 1.5rem;
+            padding: 1.25rem;
+            background: #fafbfc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Threading Connection Lines */
         .post:not(#original-post)::before {
             content: '';
             position: absolute;
-            left: -2rem;
+            left: -3rem;
             top: 0;
-            width: 2px;
+            width: 3px;
             height: 100%;
-            background: #e2e8f0;
+            background: linear-gradient(180deg, #cbd5e1, #e2e8f0);
+            border-radius: 2px;
         }
 
         .post:not(#original-post)::after {
             content: '';
             position: absolute;
-            left: -2rem;
-            top: 2rem;
-            width: 1rem;
-            height: 2px;
-            background: #e2e8f0;
+            left: -3rem;
+            top: 2.5rem;
+            width: .51rem;
+            height: 3px;
+            background: linear-gradient(90deg, #cbd5e1, #e2e8f0);
+            border-radius: 2px;
         }
 
+        /* Reply Indicator */
+        .post:not(#original-post) .post-badge .reply {
+            background(135deg, #10b981, #059669);
+            color: white;
+            font-weight: 600;
+            padding: 0.rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+        }
+
+        /* Author Section for Replies */
         .post:not(#original-post) .post-author {
-            margin-bottom: 0.5rem;
-            padding-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
         }
 
         .post:not(#original-post) .post-author img {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
+            border: 2px solid #e2e8f0;
         }
 
         .post:not(#original-post) .author-info h4 {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
+            color: #1e293b;
         }
 
-        .post:not(#original-post) .post-badge {
+        .post:not(#original-post) .author-info .role {
             font-size: 0.7rem;
-            padding: 0.2rem 0.4rem;
+            color: #64748b;
+            background: #f1f5f9;
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 0.2rem;
+        }
+
+        /* Post Content Styling */
+        .post:not(#original-post) .post-body {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #374151;
+            margin-bottom: 1rem;
+        }
+
+        /* Hover Effects */
+        .post:not(#original-post):hover {
+            background: white;
+            border-color: #3b82f6;
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .post:not(#original-post):hover::before {
+            background: linear-gradient(180deg, #3b82f6, #1d4ed8);
+            width: 4px;
+        }
+
+        .post:not(#original-post):hover::after {
+            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+            height: 4px;
+        }
+
+        /* Post Actions for Replies */
+        .post:not(#original-post) .post-actions {
+            padding-top: 0.75rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .post:not(#original-post) .vote-btn,
+        .post:not(#original-post) .action-btn {
+            font-size: 0.75rem;
+            padding: 0.4rem 0.5rem;
+        }
+
+        /* Mobile Responsive Threading */
+        @media (max-width: 768px) {
+            .post:not(#original-post) {
+                margin-left: 1.5rem;
+                padding: 1rem;
+            }
+
+            .post:not(#original-post)::before {
+                left: -1.5rem;
+                width: 2px;
+            }
+
+            .post:not(3original-post)::after {
+                left: -1.5rem;
+                width: 1rem;
+                height: 2px;
+            }
+
+            .post:not(#original-post):hover {
+                transform: translateY(2px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .post:not(#original-post) {
+                margin-left: 1rem;
+                padding: 0.75rem;
+            }
+
+            .post:not(#original-post)::before {
+                left: -1rem;
+            }
+
+            .post:not(#original-post)::after {
+                left: -1rem;
+                width: 0.75rem;
+            }
         }
 
         
