@@ -237,29 +237,29 @@
 
     <script>
         function toggleCompose() {
-    const overlay = document.getElementById('compose-overlay');
-    const modal = document.getElementById('compose-modal');
+            const overlay = document.getElementById('compose-overlay');
+            const modal = document.getElementById('compose-modal');
     
-    overlay.classList.toggle('active');
-    modal.classList.toggle('active');
-}
+            overlay.classList.toggle('active');
+            modal.classList.toggle('active');
+        }
 
-// Search functionality
-document.getElementById('messageSearch')?.addEventListener('input', function(e) {
-    const searchTerm = e.target.value.toLowerCase();
-    const messages = document.querySelectorAll('.message-item');
+        // Search functionality
+        document.getElementById('messageSearch')?.addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const messages = document.querySelectorAll('.message-item');
     
-    messages.forEach(message => {
-        const text = message.textContent.toLowerCase();
-        message.style.display = text.includes(searchTerm) ? 'block' : 'none';
-    });
-});
+            messages.forEach(message => {
+                const text = message.textContent.toLowerCase();
+                message.style.display = text.includes(searchTerm) ? 'block' : 'none';
+            });
+        });
 
-// Auto-hide success message
-setTimeout(() => {
-    const successMsg = document.querySelector('.success-msg');
-    if (successMsg) successMsg.style.display = 'none';
-}, 3000);
+        // Auto-hide success message
+        setTimeout(() => {
+            const successMsg = document.querySelector('.success-msg');
+            if (successMsg) successMsg.style.display = 'none';
+        }, 3000);
     </script>
 </body>
 </html>
