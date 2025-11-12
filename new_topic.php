@@ -1,60 +1,61 @@
 <?php
-require_once __DIR__ . '/includes/auth.php';
-require_once __DIR__ . '/includes/forum.php';
-require_once __DIR__ . '/config/database.php';
+    require_once __DIR__ . '/includes/auth.php';
+    require_once __DIR__ . '/includes/forum.php';
+    require_once __DIR__ . '/config/database.php';
 
-$auth = new Auth();
-$forum = new Forum();
-$user = $auth->getCurrentUser();
+    $auth = new Auth();
+    $forum = new Forum();
+    $user = $auth->getCurrentUser();
 
-if (!$user) {
-    header('Location: login.php');
-    exit;
-}
-
-// Determine forum_id from GET on page load, or POST on form submission
-$forum_id = $_SERVER['REQUEST_METHOD'] === 'POST' ? ($_POST['forum_id'] ?? 0) : ($_GET['forum_id'] ?? 0);
-$error = '';
-
-$database = new Database();
-$conn = $database->getConnection();
-
-// Get forum info to validate it and for display
-$forum_query = "SELECT name FROM forums WHERE id = ?";
-$stmt = $conn->prepare($forum_query);
-$stmt->execute([$forum_id]);
-$forum_info = $stmt->fetch(PDO::FETCH_ASSOC);
-
-// If no forum_id provided, show forum selection
-if (!$forum_id) {
-    $categories_query = "SELECT c.*, 
-        (SELECT COUNT(*) FROM forums f WHERE f.category_id = c.id) as forum_count 
-        FROM categories c ORDER BY c.position, c.name";
-    $stmt = $conn->prepare($categories_query);
-    $stmt->execute();
-    $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    $show_forum_selection = true;
-} elseif (!$forum_info) {
-    header('Location: index.php');
-    exit;
-}
-
-// Handle new topic creation
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    try {
-        // The $forum_id from POST is already validated by the check above
-        $topic_id = $forum->createTopic($forum_id, $user['id'], $_POST['title'], $_POST['content']);
-        if ($topic_id) {
-            header("Location: topic.php?id=$topic_id");
-            exit;
-        } else {
-            $error = 'Failed to create topic. Please try again.';
-        }
-    } catch (Exception $e) {
-        $error = $e->getMessage();
+    if (!$user) {
+        header('Location: login.php');
+        exit;
     }
-}
+
+    // Determine forum_id from GET on page load, or POST on form submission
+    $forum_id = $_SERVER['REQUEST_METHOD'] === 'POST' ? ($_POST['forum_id'] ?? 0) : ($_GET['forum_id'] ?? 0);
+    $error = '';
+
+    $database = new Database();
+    $conn = $database->getConnection();
+
+    // Get forum info to validate it and for display
+    $forum_query = "SELECT name FROM forums WHERE id = ?";
+    $stmt = $conn -> prepare($forum_query);
+    $stmt -> execute([$forum_id]);
+    $forum_info = $stmt -> fetch(PDO::FETCH_ASSOC);
+
+    // If no forum_id provided, show forum selection
+    if (!$forum_id) {
+        $categories_query = "SELECT c.*, 
+            (SELECT COUNT(*) FROM forums f WHERE f.category_id = c.id) as forum_count 
+            FROM categories c ORDER BY c.position, c.name";
+        $stmt = $conn -> prepare($categories_query);
+        $stmt -> execute();
+        $categories = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+    
+        $show_forum_selection = true;
+
+    } elseif (!$forum_info) {
+        header('Location: index.php');
+        exit;
+    }
+
+    // Handle new topic creation
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        try {
+            // The $forum_id from POST is already validated by the check above
+            $topic_id = $forum->createTopic($forum_id, $user['id'], $_POST['title'], $_POST['content']);
+            if ($topic_id) {
+                header("Location: topic.php?id=$topic_id");
+                exit;
+            } else {
+                $error = 'Failed to create topic. Please try again.';
+            }
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+        }
+    }
 ?>
 
 <!DOCTYPE html>
