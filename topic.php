@@ -56,13 +56,16 @@
     // Handle delete action
     if (isset($_GET['action']) && $_GET['action'] == 'delete' && $user) {
         if (isset($_GET['type']) && isset($_GET['target_id'])) {
-            if ($_GET['type'] == 'topic' && ($user['id'] == $topic['user_id'] || $auth -> isAdmin())) {
-                if ($forum -> deleteTopic($_GET['target_id'])) {
+            if ($_GET['type'] == 'topic' && ($user['id'] == $topic['user_id'] || $auth->isAdmin())) {
+                if ($forum->deleteTopic($_GET['target_id'])) {
                     header("Location: forum.php?id=" . $topic['forum_id']);
                     exit;
-                } elseif ($_GET['type'] == 'post' && ($user['id'] == $_GET['owner_id'] || $auth -> isAdmin())) {
-                    header("Location: topic.php?id=$topic_id&page=$page");
-                    exit;
+                }
+            } elseif ($_GET['type'] == 'post' && isset($_GET['owner_id']) && ($user['id'] == $_GET['owner_id'] || $auth->isAdmin())) {
+                
+                if ($forum->deletePost($_GET['target_id'])) {
+                header("Location: topic.php?id=$topic_id&page=$page");
+                exit;
                 }
             }
         }
@@ -776,7 +779,7 @@
                                     <a href="edit_topic.php?id=<?php echo $topic['id']; ?>" class="action-btn">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>
-                                    <a href="?id=<?php echo $topic_id; ?>&action=delete&type=post&target_id=<?php echo $post['id']; ?>&owner_id=<?php echo $post['user_id']; ?>" 
+                                    <a href="?id=<?php echo $topic_id; ?>&action=delete&type=topic&target_id=<?php echo $topic['id']; ?>"  
                                         class="action-btn" onclick="return confirm('Delete this post? This cannot be undone.')">
                                             <i class="fas fa-trash"></i> Delete
                                     </a>
@@ -858,7 +861,7 @@
                                         <a href="edit_post.php?id=<?php echo $post['id']; ?>" class="action-btn">
                                             <i class="fas fa-edit"></i> Edit
                                         </a>
-                                        <a href="?id=<?php echo $topic_id; ?>&action=delete&type=topic&target_id=<?php echo $topic['id']; ?>"
+                                        <a href="?id=<?php echo $topic_id; ?>&action=delete&type=post&target_id=<?php echo $post['id']; ?>&owner_id=<?php echo $post['user_id']; ?>"
                                             class="action-btn" onclick="return confirm('Delete this topic? This cannot be undone.')">
                                                 <i class="fas fa-trash"></i>Delete
                                         </a>
