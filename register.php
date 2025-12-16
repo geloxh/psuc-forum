@@ -96,9 +96,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - PSUC Forum</title>
     <style>
+        @import url('https://fonts.cdnfonts.com/css/optima');
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Optima', -apple-system, BlinkMacSystemFont, sans-serif;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
             display: flex;

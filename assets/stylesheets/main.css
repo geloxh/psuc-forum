@@ -1,3 +1,5 @@
+@import url('https://fonts.cdnfonts.com/css/optima');
+
 :root {
     --primary-blue: #1e3a8a;
     --secondary-blue: #3b82f6;
@@ -19,7 +21,7 @@
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Optima', -apple-system, BlinkMacSystemFont, sans-serif;
     background: #fafbfc;
     line-height: 1.6;
     color: var(--text-primary);
