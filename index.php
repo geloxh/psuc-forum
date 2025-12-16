@@ -21,45 +21,117 @@
     <link rel="stylesheet" href="assets/stylesheets/media-preview.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
+    /* Mobile-First Responsive Styles */
     .timeline-feed { max-width: 100%; padding: 0; }
-    .empty-feed { text-align: center; padding: 60px 20px; color: #65676b; }
+    .empty-feed { text-align: center; padding: 40px 16px; color: #65676b; }
     .empty-feed i { font-size: 48px; color: #e4e6ea; margin-bottom: 16px; }
-    .empty-feed h3 { font-size: 20px; font-weight: 600; margin: 0 0 8px 0; color: #1c1e21; }
-    .empty-feed p { margin: 0 0 24px 0; font-size: 15px; }
-    .btn-create { background: #1877f2; color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 15px; transition: background 0.2s; }
-    .btn-create:hover { background: #166fe5; }
-    .post { background: white; border-radius: 8px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); margin-bottom: 16px; border: 1px solid #e4e6ea; }
-    .post-header { padding: 12px 16px 0; }
-    .user-info { display: flex; align-items: center; gap: 8px; }
-    .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: #e4e6ea; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #65676b; font-size: 16px; }
-    .user-details { flex: 1; }
+    .empty-feed h3 { font-size: 18px; font-weight: 600; margin: 0 0 8px 0; color: #1c1e21; }
+    .empty-feed p { margin: 0 0 24px 0; font-size: 14px; line-height: 1.4; }
+    .btn-create { background: #1877f2; color: white; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 15px; transition: all 0.2s; display: inline-block; }
+    .btn-create:hover { background: #166fe5; transform: translateY(-1px); }
+    
+    /* Post Cards - Mobile */
+    .post { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); margin-bottom: 16px; border: 1px solid #e4e6ea; overflow: hidden; }
+    .post-header { padding: 16px 16px 0; }
+    .user-info { display: flex; align-items: center; gap: 12px; }
+    .user-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #e4e6ea, #f0f2f5); display: flex; align-items: center; justify-content: center; font-weight: 600; color: #65676b; font-size: 16px; flex-shrink: 0; }
+    .user-details { flex: 1; min-width: 0; }
     .username { font-weight: 600; color: #1c1e21; text-decoration: none; font-size: 15px; line-height: 1.2; }
     .username:hover { text-decoration: underline; }
-    .post-meta { font-size: 13px; color: #65676b; margin-top: 2px; }
-    .post-meta a { color: #65676b; text-decoration: none; }
+    .post-meta { font-size: 13px; color: #65676b; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px; }
+    .post-meta a { color: #1877f2; text-decoration: none; font-weight: 500; }
     .post-meta a:hover { text-decoration: underline; }
-    .post-content { padding: 12px 16px 0; }
-    .post-title { margin: 0 0 8px 0; font-size: 16px; font-weight: 600; line-height: 1.3; }
+    .post-content { padding: 16px; }
+    .post-title { margin: 0 0 12px 0; font-size: 18px; font-weight: 600; line-height: 1.3; }
     .post-title a { color: #1c1e21; text-decoration: none; }
     .post-title a:hover { color: #1877f2; }
-    .post-text { color: #1c1e21; font-size: 15px; line-height: 1.33; margin-bottom: 12px; }
-    .post-media { max-width: 700px; margin: 0 auto 12px; border-radius: 8px; overflow: hidden; }
-    .post-footer { border-top: 1px solid #e4e6ea; padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; }
+    .post-text { color: #1c1e21; font-size: 15px; line-height: 1.4; margin-bottom: 16px; }
+    .post-media { width: 100%; margin-bottom: 16px; border-radius: 8px; overflow: hidden; }
+    .post-footer { border-top: 1px solid #e4e6ea; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; background: #fafbfc; }
     .post-stats { font-size: 13px; color: #65676b; display: flex; gap: 16px; }
     .post-actions { display: flex; gap: 8px; }
-    .action-btn { color: #65676b; text-decoration: none; padding: 8px 12px; border-radius: 6px; font-size: 15px; font-weight: 600; transition: background 0.2s; display: flex; align-items: center; gap: 6px; }
-    .action-btn:hover { background: #f2f3f5; }
+    .action-btn { color: #65676b; text-decoration: none; padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; transition: all 0.2s; display: flex; align-items: center; gap: 6px; min-height: 44px; }
+    .action-btn:hover { background: #f2f3f5; color: #1877f2; }
     
-    @media (max-width: 300px) { .timeline-feed { padding: 0 8px; } .post { border-radius: 0; border-left: none; border-right: none; margin-bottom: 8px; } .post-media { max-width: 100%; } }
-    
-    .media-item { position: relative; border-radius: 8px; overflow: hidden; width: 500px; height: 300px;}
-    .media-item img, .media-item video { width: 100%; height: auto; object-fit: cover; }
-    @media (max-width: 768px) { .media-item { width: 100%; max-width: 500px; height: 300px; } }
-    .media-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.7); color: white; padding: 12px; border-radius: 50%; }
+    /* Media Items - Responsive */
+    .media-item { position: relative; border-radius: 8px; overflow: hidden; width: 100%; max-width: 100%; height: 250px; }
+    .media-item img, .media-item video { width: 100%; height: 100%; object-fit: cover; }
+    .media-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.7); color: white; padding: 16px; border-radius: 50%; }
     .file-preview { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 200px; background: #f8f9fa; color: #6c757d; text-align: center; padding: 20px; }
-    .file-preview i { font-size: 2rem; margin-bottom: 8px; }
-    .file-preview span { font-size: 0.85rem; word-break: break-word; }
+    .file-preview i { font-size: 2.5rem; margin-bottom: 12px; }
+    .file-preview span { font-size: 0.9rem; word-break: break-word; }
+    
+    /* Hero Section - Mobile */
+    .hero-section { 
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(147, 197, 253, 0.05));
+        border-radius: 16px;
+        padding: 24px 16px;
+        margin-bottom: 24px;
+        text-align: center;
+        border: 1px solid rgba(59, 130, 246, 0.1);
+    }
+    .hero-title { font-size: 24px; font-weight: 600; margin: 0 0 12px 0; line-height: 1.2; }
+    .hero-subtitle { font-size: 16px; color: var(--text-secondary); line-height: 1.4; }
+    
+    /* Sidebar - Mobile Handling */
+    .sidebar-right { display: none; }
+    
+    /* Mobile Responsive Breakpoints */
+    @media (min-width: 768px) {
+        .timeline-feed { padding: 0; }
+        .empty-feed { padding: 60px 20px; }
+        .empty-feed h3 { font-size: 20px; }
+        .empty-feed p { font-size: 15px; }
+        .post-header { padding: 16px 20px 0; }
+        .post-content { padding: 16px 20px; }
+        .post-footer { padding: 12px 20px; }
+        .post-title { font-size: 20px; }
+        .hero-section { padding: 40px 32px; }
+        .hero-title { font-size: 32px; }
+        .hero-subtitle { font-size: 18px; }
+        .media-item { height: 300px; }
+        .sidebar-right { display: block; }
+    }
+    
+    @media (min-width: 1024px) {
+        .hero-section { padding: 48px 40px; }
+        .hero-title { font-size: 36px; }
+        .media-item { height: 350px; max-width: 600px; }
+    }
+    
+    /* Touch Improvements */
+    @media (hover: none) and (pointer: coarse) {
+        .action-btn { min-height: 48px; padding: 12px 16px; }
+        .btn-create { padding: 16px 24px; font-size: 16px; }
+        .post { margin-bottom: 20px; }
+        .user-avatar { width: 48px; height: 48px; }
+    }
+    
+    /* Very Small Screens */
+    @media (max-width: 360px) {
+        .timeline-feed { padding: 0 8px; }
+        .post { border-radius: 8px; margin-bottom: 12px; }
+        .post-header { padding: 12px 12px 0; }
+        .post-content { padding: 12px; }
+        .post-footer { padding: 8px 12px; }
+        .hero-section { padding: 20px 12px; margin-bottom: 16px; }
+        .hero-title { font-size: 20px; }
+        .hero-subtitle { font-size: 14px; }
+        .user-info { gap: 8px; }
+        .user-avatar { width: 40px; height: 40px; }
+        .post-stats { gap: 12px; font-size: 12px; }
+        .action-btn { padding: 6px 12px; font-size: 13px; }
+    }
+    
+    /* Activity List Styles for Mobile */
+    .activity-list { display: flex; flex-direction: column; gap: 12px; }
+    .activity-item { padding: 12px; background: rgba(248, 250, 252, 0.6); border-radius: 8px; border: 1px solid rgba(229, 231, 235, 0.3); }
+    .activity-title { font-weight: 500; color: var(--text-primary); font-size: 14px; text-decoration: none; display: block; margin-bottom: 4px; line-height: 1.3; }
+    .activity-title:hover { color: var(--secondary-blue); }
+    .activity-meta { font-size: 12px; color: var(--text-secondary); }
+    .activity-time { display: block; margin-top: 2px; }
     </style>
 </head>
 
@@ -69,8 +141,7 @@
     <?php renderDropdownSidebar(); ?>
 
     <main class="container">
-        <div class="main-content" style="grid-template-columns: 1fr 250px;">
-
+        <div class="main-content" style="grid-template-columns: 1fr;">
 
             <div class="forum-content">
                 <div class="hero-section">
@@ -175,7 +246,7 @@
                                         <?php foreach (array_slice($topic['attachments'], 0, 4) as $attachment): ?>
                                             <?php if (strpos($attachment['file_type'], 'image/') === 0): ?>
                                                 <div class="media-item">
-                                                    <img src="<?php echo htmlspecialchars($attachment['file_path']); ?>" alt="Image attachment">
+                                                    <img src="<?php echo htmlspecialchars($attachment['file_path']); ?>" alt="Image attachment" loading="lazy">
                                                 </div>
                                             <?php elseif (strpos($attachment['file_type'], 'video/') === 0): ?>
                                                 <div class="media-item video-item">
@@ -199,8 +270,8 @@
                             
                             <footer class="post-footer">
                                 <div class="post-stats">
-                                    <span><?php echo $topic['views']; ?>views</span>
-                                    <span><?php echo $topic['reply_count']; ?>replies</span>
+                                    <span><i class="fas fa-eye"></i> <?php echo $topic['views']; ?></span>
+                                    <span><i class="fas fa-comments"></i> <?php echo $topic['reply_count']; ?></span>
                                 </div>
                                 <div class="post-actions">
                                     <a href="topic.php?id=<?php echo $topic['id']; ?>" class="action-btn">
@@ -222,9 +293,6 @@
             </div>
 
             <aside class="sidebar-right">
-
-
-            
             <!-- Forum Statistics Widget -->
             <div class="widget">
                 <div class="widget-header">
@@ -404,17 +472,36 @@
     <!-- ===== MAIN JS ===== -->
     <script src="assets/scripts/main.js"></script>
     <script>
-        // Home page enhancements
+        // mobile interactions
         document.addEventListener('DOMContentLoaded', function() {
-            // Add loading states
-            const topicCards = document.querySelectorAll('.topic-card');
-            topicCards.forEach(card => {
-                card.addEventListener('click', function(e) {
-                    if (e.target.tagName === 'A') {
-                        e.target.style.opacity = '0.7';
-                    }
+            // Touch-friendly post interactions
+            const posts = document.querySelectorAll('.post');
+            posts.forEach(post => {
+                post.addEventListener('touchstart', function() {
+                    this.style.transform = 'scale(0.98)';
+                });
+                
+                post.addEventListener('touchend', function() {
+                    this.style.transform = 'scale(1)';
                 });
             });
+            
+            // Lazy loading for images
+            const images = document.querySelectorAll('img[loading="lazy"]');
+            if ('IntersectionObserver' in window) {
+                const imageObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            img.src = img.dataset.src || img.src;
+                            img.classList.remove('lazy');
+                            observer.unobserve(img);
+                        }
+                    });
+                });
+                
+                images.forEach(img => imageObserver.observe(img));
+            }
             
             // Smooth scroll for anchor links
             const anchorLinks = document.querySelectorAll('a[href^="#"]');
@@ -434,7 +521,7 @@
             // Auto-refresh stats every 5 minutes
             setInterval(function() {
                 const statsSection = document.querySelector('.stats-grid');
-                if (statsSection) {
+                if (statsSection && window.innerWidth >= 768) {
                     fetch(window.location.href)
                         .then(response => response.text())
                         .then(html => {
@@ -447,7 +534,7 @@
                         })
                         .catch(error => console.log('Stats refresh failed:', error));
                 }
-            }, 300000); // 5 minutes
+            }, 300000);
         });
     </script>
 </body>

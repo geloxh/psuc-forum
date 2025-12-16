@@ -221,7 +221,7 @@
         
         @media (max-width: 768px) {
             .edit-page { 
-                padding: 1rem 0.5rem; 
+                padding: 1rem; 
             }
             
             .edit-header, .edit-form { 

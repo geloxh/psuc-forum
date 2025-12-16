@@ -329,13 +329,13 @@
         /* Mobile Responsive Threading */
         @media (max-width: 768px) {
             .post:not(#original-post) {
-                margin-left: 1.5rem;
+                margin-left: 2rem;
                 padding: 1rem;
             }
 
             .post:not(#original-post)::before {
-                left: -1.5rem;
-                width: 2px;
+                left: -2rem;
+                width: 3px;
             }
 
             .post:not(3original-post)::after {
@@ -351,16 +351,16 @@
 
         @media (max-width: 480px) {
             .post:not(#original-post) {
-                margin-left: 1rem;
+                margin-left: 1.5rem;
                 padding: 0.75rem;
             }
 
             .post:not(#original-post)::before {
-                left: -1rem;
+                left: -1.5rem;
             }
 
             .post:not(#original-post)::after {
-                left: -1rem;
+                left: -1.5rem;
                 width: 0.75rem;
             }
         }

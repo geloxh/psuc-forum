@@ -34,7 +34,7 @@ if($_POST) {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-radius: 24px;
-            padding: 3rem 2.5rem;
+            padding: 3rem;
             width: 100%;
             max-width: 400px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
@@ -123,7 +123,7 @@ if($_POST) {
         }
         @media (max-width: 480px) {
             .container {
-                padding: 2rem 1.5rem;
+                padding: 2rem;
                 margin: 1rem;
             }
         }
