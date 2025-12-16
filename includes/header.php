@@ -70,7 +70,6 @@ if (!isset($auth)) {
 </header>
 
 <style>
-/* Mobile Toggle Button */
 .mobile-nav-toggle {
     display: none;
     background: none;
@@ -86,11 +85,6 @@ if (!isset($auth)) {
     transform: scale(1.1);
 }
 
-.mobile-nav-toggle i {
-    transition: transform 0.2s ease;
-}
-
-/* Desktop Dropdown Animations */
 .dropdown {
     opacity: 0;
     visibility: hidden;
@@ -112,7 +106,6 @@ if (!isset($auth)) {
     transform: rotate(180deg);
 }
 
-/* Mobile Styles */
 @media (max-width: 768px) {
     .mobile-nav-toggle {
         display: block;
@@ -126,7 +119,7 @@ if (!isset($auth)) {
         height: 100vh;
         background: white;
         box-shadow: -4px 0 15px rgba(0,0,0,0.1);
-        transition: right 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: right 0.25s ease;
         z-index: 1001;
         padding-top: 70px;
         overflow-y: auto;
@@ -144,23 +137,7 @@ if (!isset($auth)) {
 
     .nav-menu li {
         width: 100%;
-        opacity: 0;
-        transform: translateX(20px);
-        animation: slideIn 0.3s ease forwards;
     }
-
-    .nav.active .nav-menu li {
-        animation-delay: calc(var(--i) * 0.05s);
-    }
-
-    .nav-menu li:nth-child(1) { --i: 1; }
-    .nav-menu li:nth-child(2) { --i: 2; }
-    .nav-menu li:nth-child(3) { --i: 3; }
-    .nav-menu li:nth-child(4) { --i: 4; }
-    .nav-menu li:nth-child(5) { --i: 5; }
-    .nav-menu li:nth-child(6) { --i: 6; }
-    .nav-menu li:nth-child(7) { --i: 7; }
-    .nav-menu li:nth-child(8) { --i: 8; }
 
     .nav-menu > li > a {
         padding: 1rem 1.5rem;
@@ -202,13 +179,6 @@ if (!isset($auth)) {
         background: #e9ecef;
     }
 }
-
-@keyframes slideIn {
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
 </style>
 
 <script>
@@ -216,6 +186,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const toggle = document.getElementById('mobileNavToggle');
     const nav = document.getElementById('navMenu');
 
+    // Mobile menu toggle
     if (toggle && nav) {
         toggle.addEventListener('click', function() {
             nav.classList.toggle('active');
@@ -230,6 +201,36 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Dropdown functionality for both desktop and mobile
+    const dropdowns = document.querySelectorAll('.dropdown-toggle');
+    dropdowns.forEach(dropdown => {
+        const link = dropdown.querySelector('a[href="#"]');
+        if (link) {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Close other dropdowns
+                dropdowns.forEach(other => {
+                    if (other !== dropdown) {
+                        other.classList.remove('active');
+                    }
+                });
+                
+                // Toggle current dropdown
+                dropdown.classList.toggle('active');
+            });
+        }
+    });
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.dropdown-toggle')) {
+            dropdowns.forEach(dropdown => {
+                dropdown.classList.remove('active');
+            });
+        }
+    });
 });
 </script>
 
