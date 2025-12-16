@@ -24,6 +24,7 @@
     
     <style>
     /* Mobile-First Responsive Styles */
+
     .timeline-feed { max-width: 100%; padding: 0; }
     .empty-feed { text-align: center; padding: 40px 16px; color: #65676b; }
     .empty-feed i { font-size: 48px; color: #e4e6ea; margin-bottom: 16px; }
@@ -75,6 +76,14 @@
     .hero-title { font-size: 24px; font-weight: 600; margin: 0 0 12px 0; line-height: 1.2; }
     .hero-subtitle { font-size: 16px; color: var(--text-secondary); line-height: 1.4; }
     
+    .main-content {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 2rem 0;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
     /* Sidebar - Mobile Handling */
     .sidebar-right { display: none; }
     
@@ -92,8 +101,8 @@
         .hero-title { font-size: 32px; }
         .hero-subtitle { font-size: 18px; }
         .media-item { height: 300px; }
-        .sidebar-right { display: block; }
-    }
+        .main-content { grid-template-columns: 1fr 280px; gap: 2rem; }
+        .sidebar-right { display: block; position: sticky; top: 100px; height: fit-content; max-height: calc(100vh - 120px); overflow-y: auto; } }
     
     @media (min-width: 1024px) {
         .hero-section { padding: 48px 40px; }
@@ -141,8 +150,7 @@
     <?php renderDropdownSidebar(); ?>
 
     <main class="container">
-        <div class="main-content" style="grid-template-columns: 1fr;">
-
+        <div class="main-content">
             <div class="forum-content">
                 <div class="hero-section">
                     <div class="hero-content">
@@ -293,178 +301,180 @@
             </div>
 
             <aside class="sidebar-right">
-            <!-- Forum Statistics Widget -->
-            <div class="widget">
-                <div class="widget-header">
-                    <div class="widget-icon">
-                        <i class="fas fa-chart-line"></i>
+                <!-- Forum Statistics Widget -->
+                <div class="widget">
+                    <div class="widget-header">
+                        <div class="widget-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Forum Statistics</h3>
                     </div>
-                    <h3>Forum Statistics</h3>
-                </div>
-                <?php
-                    try {
-                        $database = new Database();
-                        $conn = $database->getConnection();
+                    <?php
+                        try {
+                            $database = new Database();
+                            $conn = $database->getConnection();
                         
-                        if (!$conn) {
-                            throw new Exception('Database connection failed');
-                        }
-                    $stats_query = "SELECT 
+                            if (!$conn) {
+                                throw new Exception('Database connection failed');
+                            }
+
+                        $stats_query = "SELECT 
                         (SELECT COUNT(*) FROM users WHERE status = 'active') as total_users,
                         (SELECT COUNT(*) FROM topics) as total_topics,
                         (SELECT COUNT(*) FROM posts) as total_posts,
                         (SELECT username FROM users WHERE status = 'active' ORDER BY created_at DESC LIMIT 1) as newest_user";
-                    $stmt = $conn->prepare($stats_query);
-                    $stmt->execute();
-                    $stats = $stmt->fetch(PDO::FETCH_ASSOC);
-                ?>
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <strong><?php echo $stats['total_users']; ?></strong>
-                        <span>Members</span>
+                            
+                        $stmt = $conn->prepare($stats_query);
+                        $stmt->execute();
+                        $stats = $stmt->fetch(PDO::FETCH_ASSOC);
+                    ?>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <strong><?php echo $stats['total_users']; ?></strong>
+                            <span>Members</span>
+                        </div>
+                        <div class="stat-item">
+                            <strong><?php echo $stats['total_topics']; ?></strong>
+                            <span>Topics</span>
+                        </div>
+                        <div class="stat-item">
+                            <strong><?php echo $stats['total_posts']; ?></strong>
+                            <span>Posts</span>
+                        </div>
+                        <div class="stat-item">
+                            <strong style="margin-right: 1rem;"><?php echo htmlspecialchars($stats['newest_user'] ?? 'None'); ?></strong>
+                            <span>Newest Member</span>
+                        </div>
+                        <?php
+                            } catch (Exception $e) {
+                                echo '<div class="stat-item"><strong>Error</strong><span>Unable to load stats</span></div>';
+                            }
+                        ?>
                     </div>
-                    <div class="stat-item">
-                        <strong><?php echo $stats['total_topics']; ?></strong>
-                        <span>Topics</span>
-                    </div>
-                    <div class="stat-item">
-                        <strong><?php echo $stats['total_posts']; ?></strong>
-                        <span>Posts</span>
-                    </div>
-                    <div class="stat-item">
-                        <strong style="margin-right: 1rem;"><?php echo htmlspecialchars($stats['newest_user'] ?? 'None'); ?></strong>
-                        <span>Newest Member</span>
-                    </div>
-                <?php
-                    } catch (Exception $e) {
-                        echo '<div class="stat-item"><strong>Error</strong><span>Unable to load stats</span></div>';
-                    }
-                ?>
                 </div>
-            </div>
 
-            <!-- Quick Actions Widget -->
-            <div class="widget">
-                <div class="widget-header">
-                    <div class="widget-icon">
-                        <i class="fas fa-bolt"></i>
+                <!-- Quick Actions Widget -->
+                <div class="widget">
+                    <div class="widget-header">
+                        <div class="widget-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3>Quick Actions</h3>
                     </div>
-                    <h3>Quick Actions</h3>
+                    <div class="quick-actions">
+                        <a href="new_topic.php" class="action-item">
+                            <i class="fas fa-plus"></i>
+                            <span>New Topic</span>
+                        </a>
+                        <a href="search.php" class="action-item">
+                            <i class="fas fa-search"></i>
+                            <span>Search</span>
+                        </a>
+                        <a href="messages.php" class="action-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>Messages</span>
+                        </a>
+                        <a href="profile.php" class="action-item">
+                            <i class="fas fa-user"></i>
+                            <span>Profile</span>
+                        </a>
+                    </div>
                 </div>
-                <div class="quick-actions">
-                    <a href="new_topic.php" class="action-item">
-                        <i class="fas fa-plus"></i>
-                        <span>New Topic</span>
-                    </a>
-                    <a href="search.php" class="action-item">
-                        <i class="fas fa-search"></i>
-                        <span>Search</span>
-                    </a>
-                    <a href="messages.php" class="action-item">
-                        <i class="fas fa-envelope"></i>
-                        <span>Messages</span>
-                    </a>
-                    <a href="profile.php" class="action-item">
-                        <i class="fas fa-user"></i>
-                        <span>Profile</span>
-                    </a>
-                </div>
-            </div>
 
-            <!-- Recent Activity Widget -->
-            <div class="widget">
-                <div class="widget-header">
-                    <div class="widget-icon">
-                        <i class="fas fa-fire"></i>
+                <!-- Recent Activity Widget -->
+                <div class="widget">
+                    <div class="widget-header">
+                        <div class="widget-icon">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <h3>Recent Activity</h3>
                     </div>
-                    <h3>Recent Activity</h3>
-                </div>
-                <?php
-                    $recent_query = "SELECT t.id, t.title, t.created_at, u.username, f.name as forum_name 
-                       FROM topics t 
-                       JOIN users u ON t.user_id = u.id 
-                       JOIN forums f ON t.forum_id = f.id 
-                       WHERE u.status = 'active'
-                       ORDER BY t.created_at DESC LIMIT 5";
+                    <?php
+                        $recent_query = "SELECT t.id, t.title, t.created_at, u.username, f.name as forum_name 
+                            FROM topics t 
+                            JOIN users u ON t.user_id = u.id 
+                            JOIN forums f ON t.forum_id = f.id 
+                            WHERE u.status = 'active'
+                            ORDER BY t.created_at DESC LIMIT 5";
                     
-                    $stmt = $conn->prepare($recent_query);
-                    $stmt->execute();
-                    $recent_topics = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                ?>
-                <div class="activity-list">
-                    <?php foreach($recent_topics as $topic): ?>
-                    <div class="activity-item">
-                        <a href="topic.php?id=<?php echo $topic['id']; ?>" class="activity-title"><?php echo htmlspecialchars($topic['title']); ?></a>
-                        <div class="activity-meta">
-                            <span>by <?php echo htmlspecialchars($topic['username']); ?> in <?php echo htmlspecialchars($topic['forum_name']); ?></span>
-                            <span class="activity-time"><?php echo date('M j, g:i A', strtotime($topic['created_at'])); ?></span>
-                        </div>
-                    </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-
-            <!-- Trending Topics Widget -->
-            <div class="widget">
-                <div class="widget-header">
-                    <div class="widget-icon">
-                        <i class="fas fa-trending-up"></i>
-                    </div>
-                    <h3>Trending Topics</h3>
-                </div>
-                <?php
-                    $trending_query = "SELECT t.id, t.title, t.views, u.username, 
-                    (SELECT COUNT(*) FROM posts p WHERE p.topic_id = t.id) as reply_count
-                    FROM topics t 
-                    JOIN users u ON t.user_id = u.id 
-                    WHERE u.status = 'active'
-                    ORDER BY t.views DESC, reply_count DESC LIMIT 5";
-                        
-                    $stmt = $conn->prepare($trending_query);
-                    $stmt->execute();
-                    $trending_topics = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                ?>
-                <div class="trending-list">
-                    <?php foreach($trending_topics as $index => $topic): ?>
-                    <div class="trending-item">
-                        <div class="trending-rank"><?php echo $index + 1; ?></div>
-                            <div class="trending-content">
-                                <a href="topic.php?id=<?php echo $topic['id']; ?>" class="trending-title"><?php echo htmlspecialchars($topic['title']); ?></a>
-                                <div class="trending-meta"><?php echo $topic['views']; ?> views • <?php echo $topic['reply_count']; ?> replies</div>
+                        $stmt = $conn->prepare($recent_query);
+                        $stmt->execute();
+                        $recent_topics = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    ?>
+                    <div class="activity-list">
+                        <?php foreach($recent_topics as $topic): ?>
+                        <div class="activity-item">
+                            <a href="topic.php?id=<?php echo $topic['id']; ?>" class="activity-title"><?php echo htmlspecialchars($topic['title']); ?></a>
+                            <div class="activity-meta">
+                                <span>by <?php echo htmlspecialchars($topic['username']); ?> in <?php echo htmlspecialchars($topic['forum_name']); ?></span>
+                                <span class="activity-time"><?php echo date('M j, g:i A', strtotime($topic['created_at'])); ?></span>
                             </div>
-                    </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-
-            <!-- Online Users Widget -->
-            <div class="widget">
-                <div class="widget-header">
-                    <div class="widget-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h3>Online Users</h3>
-                </div>
-                <?php
-                    $online_query = "SELECT username FROM users WHERE last_active > DATE_SUB(NOW(), INTERVAL 15 MINUTE) AND status = 'active' ORDER BY last_active DESC LIMIT 10";
-                    $stmt = $conn->prepare($online_query);
-                    $stmt->execute();
-                    $online_users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                ?>
-                <div class="online-users">
-                <?php if(count($online_users) > 0): ?>
-                    <?php foreach($online_users as $online_user): ?>
-                        <div class="user-badge">
-                            <div class="user-avatar"><?php echo strtoupper(substr($online_user['username'], 0, 1)); ?></div>
-                            <span><?php echo htmlspecialchars($online_user['username']); ?></span>
                         </div>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                <p class="text-secondary">No users online</p>
-                <?php endif; ?>
-            </div>
-            </aside>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
 
+                <!-- Trending Topics Widget -->
+                <div class="widget">
+                    <div class="widget-header">
+                        <div class="widget-icon">
+                            <i class="fas fa-trending-up"></i>
+                        </div>
+                        <h3>Trending Topics</h3>
+                    </div>
+                    <?php
+                        $trending_query = "SELECT t.id, t.title, t.views, u.username, 
+                        (SELECT COUNT(*) FROM posts p WHERE p.topic_id = t.id) as reply_count
+                        FROM topics t 
+                        JOIN users u ON t.user_id = u.id 
+                        WHERE u.status = 'active'
+                        ORDER BY t.views DESC, reply_count DESC LIMIT 5";
+                        
+                        $stmt = $conn->prepare($trending_query);
+                        $stmt->execute();
+                        $trending_topics = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    ?>
+                    <div class="trending-list">
+                        <?php foreach($trending_topics as $index => $topic): ?>
+                        <div class="trending-item">
+                            <div class="trending-rank"><?php echo $index + 1; ?></div>
+                                <div class="trending-content">
+                                    <a href="topic.php?id=<?php echo $topic['id']; ?>" class="trending-title"><?php echo htmlspecialchars($topic['title']); ?></a>
+                                    <div class="trending-meta"><?php echo $topic['views']; ?> views • <?php echo $topic['reply_count']; ?> replies</div>
+                                </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+
+                <!-- Online Users Widget -->
+                <div class="widget">
+                    <div class="widget-header">
+                        <div class="widget-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>Online Users</h3>
+                    </div>
+                    <?php
+                        $online_query = "SELECT username FROM users WHERE last_active > DATE_SUB(NOW(), INTERVAL 15 MINUTE) AND status = 'active' ORDER BY last_active DESC LIMIT 10";
+                        $stmt = $conn->prepare($online_query);
+                        $stmt->execute();
+                        $online_users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    ?>
+                    <div class="online-users">
+                        <?php if(count($online_users) > 0): ?>
+                            <?php foreach($online_users as $online_user): ?>
+                                <div class="user-badge">
+                                    <div class="user-avatar"><?php echo strtoupper(substr($online_user['username'], 0, 1)); ?></div>
+                                        <span>
+                                        <?php echo htmlspecialchars($online_user['username']); ?></span>
+                                    </div>
+                                        <?php endforeach; ?>
+                            <?php else: ?>
+                            <p class="text-secondary">No users online</p>
+                        <?php endif; ?>
+                    </div>
+            </aside>
         </div>
     </main>
     <?php require_once 'includes/footer.php'; ?>
