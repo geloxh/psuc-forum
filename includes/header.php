@@ -70,28 +70,66 @@ if (!isset($auth)) {
 </header>
 
 <style>
+/* Mobile Toggle Button */
+.mobile-nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    z-index: 1002;
+    transition: transform 0.2s ease;
+}
+
+.mobile-nav-toggle:hover {
+    transform: scale(1.1);
+}
+
+.mobile-nav-toggle i {
+    transition: transform 0.2s ease;
+}
+
+/* Desktop Dropdown Animations */
+.dropdown {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+}
+
+.dropdown-toggle.active .dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-toggle .fa-chevron-down {
+    transition: transform 0.2s ease;
+}
+
+.dropdown-toggle.active .fa-chevron-down {
+    transform: rotate(180deg);
+}
+
+/* Mobile Styles */
 @media (max-width: 768px) {
     .mobile-nav-toggle {
         display: block;
-        background: none;
-        border: none;
-        font-size: 1.5rem;
-        color: var(--text-primary);
-        cursor: pointer;
-        z-index: 1002;
     }
 
     .nav {
         position: fixed;
         top: 0;
         right: -100%;
-        width: 280px;
+        width: 260px;
         height: 100vh;
         background: white;
-        box-shadow: -2px 0 20px rgba(0, 0, 0, 0.1);
-        transition: right 0.3s ease;
+        box-shadow: -4px 0 15px rgba(0,0,0,0.1);
+        transition: right 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 1001;
-        padding-top: 80px;
+        padding-top: 70px;
+        overflow-y: auto;
     }
 
     .nav.active {
@@ -100,18 +138,39 @@ if (!isset($auth)) {
 
     .nav-menu {
         flex-direction: column;
-        padding: 1rem 0;
+        padding: 0;
         gap: 0;
     }
 
     .nav-menu li {
         width: 100%;
+        opacity: 0;
+        transform: translateX(20px);
+        animation: slideIn 0.3s ease forwards;
     }
+
+    .nav.active .nav-menu li {
+        animation-delay: calc(var(--i) * 0.05s);
+    }
+
+    .nav-menu li:nth-child(1) { --i: 1; }
+    .nav-menu li:nth-child(2) { --i: 2; }
+    .nav-menu li:nth-child(3) { --i: 3; }
+    .nav-menu li:nth-child(4) { --i: 4; }
+    .nav-menu li:nth-child(5) { --i: 5; }
+    .nav-menu li:nth-child(6) { --i: 6; }
+    .nav-menu li:nth-child(7) { --i: 7; }
+    .nav-menu li:nth-child(8) { --i: 8; }
 
     .nav-menu > li > a {
         padding: 1rem 1.5rem;
         display: block;
-        border-bottom: 1px solid #f0f0f0;
+        border-bottom: 1px solid #f5f5f5;
+        transition: background 0.2s ease;
+    }
+
+    .nav-menu > li > a:hover {
+        background: #f8f9fa;
     }
 
     .dropdown {
@@ -121,37 +180,53 @@ if (!isset($auth)) {
         background: #f8f9fa;
         margin: 0;
         padding: 0;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+
+    .dropdown-toggle.active .dropdown {
+        max-height: 200px;
     }
 
     .dropdown a {
-        padding: 0.75rem 2rem;
+        padding: 0.75rem 2.5rem;
         border-bottom: 1px solid #e9ecef;
+        transition: background 0.2s ease;
+    }
+
+    .dropdown a:hover {
+        background: #e9ecef;
+    }
+}
+
+@keyframes slideIn {
+    to {
+        opacity: 1;
+        transform: translateX(0);
     }
 }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const mobileNavToggle = document.getElementById('mobileNavToggle');
-    const navMenu = document.getElementById('navMenu');
+    const toggle = document.getElementById('mobileNavToggle');
+    const nav = document.getElementById('navMenu');
 
-    if (mobileNavToggle && navMenu) {
-        mobileNavToggle.addEventListener('click', function() {
-            navMenu.classList.toggle('active');
-            
+    if (toggle && nav) {
+        toggle.addEventListener('click', function() {
+            nav.classList.toggle('active');
             const icon = this.querySelector('i');
-            if (navMenu.classList.contains('active')) {
-                icon.className = 'fas fa-times';
-            } else {
-                icon.className = 'fas fa-bars';
-            }
+            icon.className = nav.classList.contains('active') ? 'fas fa-times' : 'fas fa-bars';
         });
 
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.nav') && !e.target.closest('.mobile-nav-toggle')) {
-                navMenu.classList.remove('active');
-                const icon = mobileNavToggle.querySelector('i');
-                icon.className = 'fas fa-bars';
+                nav.classList.remove('active');
+                toggle.querySelector('i').className = 'fas fa-bars';
             }
         });
     }
