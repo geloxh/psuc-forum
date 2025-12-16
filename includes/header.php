@@ -17,13 +17,11 @@ if (!isset($auth)) {
                 <img src="assets/imgs/suc-logo.jpg" alt="SUC Forum Logo" style="height: 60px;">
             </a>
 
-            <button class="mobile-nav-toggle" aria-controls="nav-menu" aria-expanded="false">
-                <span class="sr-only">Menu</span>
-                <i class="fas fa-bars open"></i>
-                <i class="fas fa-times close"></i>
+            <button class="mobile-nav-toggle" id="mobileNavToggle">
+                <i class="fas fa-bars"></i>
             </button>
 
-            <nav class="nav">
+            <nav class="nav" id="navMenu">
                 <ul class="nav-menu">
                     <li><a href="index.php"><i class="fas fa-home"></i>Home</a></li>
                     <li class="user-menu dropdown-toggle">
@@ -43,7 +41,7 @@ if (!isset($auth)) {
                         </div>
                     </li>
                     <li><a href="about.php"><i class="fas fa-info-circle"></i>About</a></li>
-                    <li><a href="search.php"><i class="fas fa-search"></i> Search</a></li>
+                    <li><a href="search.php"><i class="fas fa-search"></i>Search</a></li>
                     <?php if($user): ?>
                         <li><a href="messages.php"><i class="fas fa-envelope"></i>Messages</a></li>
                         <li><a href="notifications.php"><i class="fas fa-bell"></i>Notifications</a></li>
@@ -52,7 +50,7 @@ if (!isset($auth)) {
                                 <i class="fas fa-user"></i> <?php echo htmlspecialchars($user['username']); ?>
                                 <i class="fas fa-chevron-down"></i>
                             </a>
-                            <div class="dropdown" id="userDropdown">
+                            <div class="dropdown">
                                 <a href="profile.php"><i class="fas fa-user-circle"></i>Profile</a>
                                 <a href="settings.php"><i class="fas fa-cog"></i>Settings</a>
                                 <?php if($user['role'] == 'admin'): ?>
@@ -70,5 +68,94 @@ if (!isset($auth)) {
         </div>
     </div>
 </header>
+
+<style>
+@media (max-width: 768px) {
+    .mobile-nav-toggle {
+        display: block;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--text-primary);
+        cursor: pointer;
+        z-index: 1002;
+    }
+
+    .nav {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 280px;
+        height: 100vh;
+        background: white;
+        box-shadow: -2px 0 20px rgba(0, 0, 0, 0.1);
+        transition: right 0.3s ease;
+        z-index: 1001;
+        padding-top: 80px;
+    }
+
+    .nav.active {
+        right: 0;
+    }
+
+    .nav-menu {
+        flex-direction: column;
+        padding: 1rem 0;
+        gap: 0;
+    }
+
+    .nav-menu li {
+        width: 100%;
+    }
+
+    .nav-menu > li > a {
+        padding: 1rem 1.5rem;
+        display: block;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .dropdown {
+        position: static;
+        box-shadow: none;
+        border: none;
+        background: #f8f9fa;
+        margin: 0;
+        padding: 0;
+    }
+
+    .dropdown a {
+        padding: 0.75rem 2rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const mobileNavToggle = document.getElementById('mobileNavToggle');
+    const navMenu = document.getElementById('navMenu');
+
+    if (mobileNavToggle && navMenu) {
+        mobileNavToggle.addEventListener('click', function() {
+            navMenu.classList.toggle('active');
+            
+            const icon = this.querySelector('i');
+            if (navMenu.classList.contains('active')) {
+                icon.className = 'fas fa-times';
+            } else {
+                icon.className = 'fas fa-bars';
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.nav') && !e.target.closest('.mobile-nav-toggle')) {
+                navMenu.classList.remove('active');
+                const icon = mobileNavToggle.querySelector('i');
+                icon.className = 'fas fa-bars';
+            }
+        });
+    }
+});
+</script>
 
 <script src="assets/scripts/main.js"></script>
